@@ -3,11 +3,11 @@ pragma solidity >=0.4.21 <0.7.0; /**
   */
  contract Loan {
  	address receiver;
- 	uint128 loan_amount;
+ 	uint128 loanAmount;
 
    constructor() public {
      receiver = msg.receiver;
-     loan_amount = Organization.getLoanAmount();
+     loanAmount = Organization.getLoanAmount();
    }
 
 

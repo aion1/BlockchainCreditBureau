@@ -3,6 +3,7 @@
 <ul>
 	<li><code>Ganache</code></li>
 	<li><code>Truffle framework</code></li>
+	<li>Update network section in <code>truffle-config.js</code> file to match the network specification of your <code>Ganache</code></li>
 </ul>
 <h3>To run:</h3></br>
 <ul>

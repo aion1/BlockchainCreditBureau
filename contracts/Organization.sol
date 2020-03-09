@@ -8,13 +8,13 @@ contract Organization {
   constructor() public {
  	   
   }
-  function creatLoan (user _userAddress) returns(bool res) internal {
+  function creatLoan (address _userAddress) internal returns(bool res)  {
   	return true;
   }
-  function getLoanAmount () returns(uint128 res) internal {
+  function getLoanAmount () internal returns(uint128 res)  {
   	 
   }
-  function inquiry (){
+  function inquiry () public{
    }
   
 }

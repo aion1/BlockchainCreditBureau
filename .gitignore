@@ -1,1 +1,5 @@
+# Json files
 build/
+# PyCharm
+venv/
+.idea/

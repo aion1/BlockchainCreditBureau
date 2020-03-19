@@ -2,4 +2,5 @@
 
 
 # Get the organization contract address
-organizationContractAdd = '0xcb9248045063547717a3FB3aE383E59Fb2071D0f'
+organizationContractAdd = '0x69d3Adc7459707754F3C8755066AE55948819270'
+accountsContractAdd = '0xDE22E30624553011519f0196095E7245f89EC45a'

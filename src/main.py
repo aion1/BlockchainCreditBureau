@@ -8,7 +8,6 @@ web3 = Web3(Web3.HTTPProvider(ganache_url))
 web3.eth.defaultAccount = web3.eth.accounts[0]
 
 
-# Suppose bank wants to create a loan
  
 
 # Get the organization contract address
@@ -34,4 +33,7 @@ def addUsers():
 #addUsers()
 
 
-
+# Suppose bank wants to create a loan
+loanie = '0xa2D0B6dbCd04a789da44CCECA9d66B6dfc93A124'
+### Check to see whether it is a user or organization address
+accountsConract.

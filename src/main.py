@@ -11,14 +11,14 @@ web3.eth.defaultAccount = web3.eth.accounts[0]
  
 
 # Get the organization contract address
-organizationContractAdd = web3.toChecksumAddress('0x255A0901AdA7eA2292aec6532ED4B409D7A9FDc0')
+organizationContractAdd = web3.toChecksumAddress('0xdA3F8763B51A5D0c0Daad2e96Ed3Cfad791AeDAC')
 with open('../build/contracts/Organization.json') as orgFile:
 	organizationContractABI = json.load(orgFile)['abi']
 organizationContract = web3.eth.contract(address=organizationContractAdd, abi=organizationContractABI)
 
 
 # Get the accounts contract address
-accountsContractAdd = web3.toChecksumAddress('0x3e3c76571595C9eaD640310AB00734F3982D2ea0')
+accountsContractAdd = web3.toChecksumAddress('0x8ad0c4512e09e708d71949be98a62db494Ec388A')
 with open('../build/contracts/Accounts.json') as accFile:
 	accountsContractABI = json.load(accFile)['abi']
 accountsConract = web3.eth.contract(address=accountsContractAdd, abi=accountsContractABI)
@@ -30,10 +30,19 @@ def addUsers():
 	accountsConract.functions.add(web3.eth.accounts[5], True).transact()
 	accountsConract.functions.add(web3.eth.accounts[6], True).transact()
 
-#addUsers()
+addUsers()
 
 
 # Suppose bank wants to create a loan
-loanie = '0xa2D0B6dbCd04a789da44CCECA9d66B6dfc93A124'
+loanieAddress = '0xa2D0B6dbCd04a789da44CCECA9d66B6dfc93A124'
 ### Check to see whether it is a user or organization address
-accountsConract.
+index = accountsConract.functions.getIndex(loanieAddress).call()
+
+if index != -1:
+	loanieType = accountsConract.functions.getType(index).call()
+	if not loanieType:
+		organizationContract.functions.createLoan(loanieAddress).transact()
+else:
+	print("This account is not registered in our system.")
+
+

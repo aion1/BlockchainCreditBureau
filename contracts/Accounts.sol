@@ -8,13 +8,17 @@ contract Accounts{
 	Account [] accounts;
 	constructor() public{
 	}
-	function getType(address _accountAddress) public return(bool){
-		for(uint i =0; i<accounts.length; i+=1)
+	function getIndex(address _accountAddress) public returns(int256){
+		for(uint256 i =0; i<accounts.length; i+=1)
 		{
-			if(accounts[i] == _accountAddress)
-				return accounts[i].typee;
+			if(accounts[i].addr == _accountAddress)
+				return int256(i);
 		}
+		return -1;
 
+	}
+	function getType(uint index) public returns(bool){
+		return accounts[index].typee;
 	}
 	function add(address _accAddress, bool _type) public{
 		Account memory acc = Account(_accAddress, _type);

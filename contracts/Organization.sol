@@ -9,6 +9,7 @@ contract Organization {
  	   
   }
   function creatLoan (address _userAddress) internal returns(bool res)  {
+
   	return true;
   }
   function getLoanAmount () internal returns(uint128 res)  {

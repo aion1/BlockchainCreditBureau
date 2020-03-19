@@ -6,4 +6,7 @@ contract Accounts{
 		bool typee;//0 for user, 1 for org
 	}
 	Account [] accounts;
+	constructor() public{
+		
+	}
 }

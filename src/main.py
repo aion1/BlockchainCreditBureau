@@ -46,7 +46,7 @@ index = accountsConract.functions.getIndex(loanieAddress).call()
 if index != -1:
 	loanieType = accountsConract.functions.getType(index).call()
 	if not loanieType:
-		organizationContract.functions.createLoan(loanieAddress).transact()
+		res = organizationContract.functions.createLoan(loanieAddress).call()
 else:
 	print("This account is not registered in our system.")
 

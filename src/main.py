@@ -1,6 +1,11 @@
 import json
 from web3 import Web3
 import os
+import platform
+operating_system = platform.system()
+d = '/'
+if operating_system == 'Windows':
+    d = '\\'
 
 ganache_url = "HTTP://127.0.0.1:7545"
 web3 = Web3(Web3.HTTPProvider(ganache_url))
@@ -12,14 +17,14 @@ web3.eth.defaultAccount = web3.eth.accounts[0]
 
 # Get the organization contract address
 organizationContractAdd = web3.toChecksumAddress('0xdA3F8763B51A5D0c0Daad2e96Ed3Cfad791AeDAC')
-with open('../build/contracts/Organization.json') as orgFile:
+with open('..'+ d +'build'+ d +'contracts'+ d +'Organization.json') as orgFile:
 	organizationContractABI = json.load(orgFile)['abi']
 organizationContract = web3.eth.contract(address=organizationContractAdd, abi=organizationContractABI)
 
 
 # Get the accounts contract address
 accountsContractAdd = web3.toChecksumAddress('0x8ad0c4512e09e708d71949be98a62db494Ec388A')
-with open('../build/contracts/Accounts.json') as accFile:
+with open('..'+ d +'build'+ d +'contracts'+ d +'Accounts.json') as accFile:
 	accountsContractABI = json.load(accFile)['abi']
 accountsConract = web3.eth.contract(address=accountsContractAdd, abi=accountsContractABI)
 

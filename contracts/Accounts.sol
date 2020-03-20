@@ -20,8 +20,18 @@ contract Accounts{
 	function getType(uint index) public returns(bool){
 		return accounts[index].typee;
 	}
-	function add(address _accAddress, bool _type) public{
-		Account memory acc = Account(_accAddress, _type);
-		accounts.push(acc);
+	function add(address _accAddress, bool _type) public returns(bool){
+		if (!accountExists(_accAddress)){
+			Account memory acc = Account(_accAddress, _type);
+			accounts.push(acc);
+			return true;
+		}
+		return false;
+
 	}
+	function accountExists(address _accAddress) internal returns(bool){
+		if (getIndex(_accAddress) == -1)
+			return false;
+		return true;
+	} 
 }

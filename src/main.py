@@ -29,8 +29,9 @@ with open('..'+ d +'build'+ d +'contracts'+ d +'Accounts.json') as accFile:
 	accountsContractABI = accountJson['abi']
 	accountsContractAdd= web3.toChecksumAddress(accountJson['networks']['5777']['address'])
 accountsConract = web3.eth.contract(address=accountsContractAdd, abi=accountsContractABI)
-
-
+with open('..'+ d +'build'+ d +'contracts'+ d +'Loans.json') as loansFile:
+	loansJson=json.load(loansFile)
+	loansContractAddress= web3.toChecksumAddress(loansJson['networks']['5777']['address'])
 # Put dummy user account and org account
 def addUsers():
 	accountsConract.functions.add(web3.eth.accounts[1], False).transact()
@@ -41,12 +42,15 @@ def addUsers():
 def deleteUser():
 	accountsConract.functions.deleteAccount(web3.eth.accounts[1]).transact()
 
-def createLoan(_address,_amount):
-	check=organizationContract.functions.createLoan(_address,_amount).transact()	
+def createLoan(_address,_loaner,_amount,_loansContractAddress):
+	organizationContract.functions.setLoansContractAddress(_loansContractAddress).transact();
+	check=organizationContract.functions.createLoan(_address,_loaner,_amount).transact()	
 	return check
 
 addUsers()
-deleteUser()
+deletuser = input("delete user? Y/N")
+if deletuser == 'Y':
+	deleteUser()
 
 # Suppose bank wants to create a loan
 loanieAddress = input("Enter the addrses: ")
@@ -63,7 +67,7 @@ if index != -1:
 	else :
 		choice=input("create loan Y/N?")
 		if choice=="Y":
-			if createLoan(web3.eth.accounts[5],1000):
+			if createLoan(web3.eth.accounts[2],web3.eth.accounts[6],1000,loansContractAddress):
 				print("Loan created")
 else:
 	print("This account is not registered in our system.")

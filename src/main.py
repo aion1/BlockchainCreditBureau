@@ -38,20 +38,33 @@ def addUsers():
 	accountsConract.functions.add(web3.eth.accounts[5], True).transact()
 	accountsConract.functions.add(web3.eth.accounts[6], True).transact()
 
-addUsers()
+def deleteUser():
+	accountsConract.functions.deleteAccount(web3.eth.accounts[1]).transact()
 
+def createLoan(_address,_amount):
+	check=organizationContract.functions.createLoan(_address,_amount).transact()	
+	return check
+
+addUsers()
+deleteUser()
 
 # Suppose bank wants to create a loan
 loanieAddress = input("Enter the addrses: ")
 ### Check to see whether it is a user or organization address
 index = accountsConract.functions.getIndex(loanieAddress).call()
 
+
 if index != -1:
 	loanieType = accountsConract.functions.getType(index).call()
 	if not loanieType:
-		res = organizationContract.functions.createLoan(loanieAddress).call()
+		 #res = organizationContract.functions.createLoan(loanieAddress).call()
+		res=True
 		print(res)
+	else :
+		choice=input("create loan Y/N?")
+		if choice=="Y":
+			if createLoan(web3.eth.accounts[5],1000):
+				print("Loan created")
 else:
 	print("This account is not registered in our system.")
-
 

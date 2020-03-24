@@ -9,7 +9,7 @@ contract User {
   constructor() public {
     userAddress = msg.sender;
   }
-  function Confirm_loan () internal returns(bool res)  
+  function confirmLoan () internal returns(bool res)  
   {
     return true;
   }

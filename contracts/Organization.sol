@@ -5,17 +5,17 @@ pragma solidity >=0.4.21 <0.7.0;
  */
 
 
-import "./Loan.sol";
+import "./Loans.sol";
  
 contract Organization{
+  address loansContractAddress;
   constructor() public {
  	   
   }
   
-  function createLoan (address _userAddress,uint128 _amount) public returns(bool)  {
-    Loan myLoan;
-    myLoan.setloanReceiver(_userAddress);
-    myLoan.setLoanAmount(_amount);
+  function createLoan (address _userAddress,address loaner,uint128 _amount) public returns(bool)  {
+    Loans myloans = Loans(loansContractAddress);
+    myloans.add(_userAddress,loaner,_amount);
   	return true;
   }
   function getLoanAmount () internal returns(uint128)  {
@@ -23,5 +23,8 @@ contract Organization{
   }
   function inquiry () public{
    }
+  function setLoansContractAddress(address _loansContractAddress) public {
+    loansContractAddress=_loansContractAddress;
+  }
   
 }

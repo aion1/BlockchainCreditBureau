@@ -7,9 +7,10 @@ contract Accounts{
 	}
 	Account [] accounts;
 	constructor() public{
+		
 	}
 	function getIndex(address _accountAddress) public returns(int256){
-		for(uint256 i =0; i<accounts.length; i+=1)
+		for(uint256 i = 0; i<accounts.length; i += 1)
 		{
 			if(accounts[i].addr == _accountAddress)
 				return int256(i);
@@ -34,4 +35,14 @@ contract Accounts{
 			return false;
 		return true;
 	} 
+
+	function deleteAccount(address _accAddress)public returns(bool){
+		int256 myIndex=getIndex(_accAddress);
+		if(myIndex != -1)
+		{
+			delete accounts[uint256(myIndex)];
+			return true;
+		}
+		return false;		
+	}
 }

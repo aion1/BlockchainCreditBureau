@@ -15,7 +15,10 @@ contract Organization{
   
   function createLoan (address _userAddress,address loaner,uint128 _amount) public returns(bool)  {
     Loans myloans = Loans(loansContractAddress);
-    myloans.add(_userAddress,loaner,_amount);
+    //TRIGGER EVENT TO USER
+    // WAIT AN EVENT COMING FROM THE USER IF IT COME ADD
+    
+    myloans.add(_userAddress,loaner,_amount,false);
   	return true;
   }
   function getLoanAmount () internal returns(uint128)  {

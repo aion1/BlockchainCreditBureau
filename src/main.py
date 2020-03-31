@@ -22,16 +22,23 @@ with open('..'+ d +'build'+ d +'contracts'+ d +'Organization.json') as orgFile:
 	organizationContractAdd=web3.toChecksumAddress(orgJson['networks']['5777']['address'])
 organizationContract = web3.eth.contract(address=organizationContractAdd, abi=organizationContractABI)
 
-
+#get the user contract address
+with open('..'+ d +'build'+ d +'contracts'+ d +'User.json') as userFile:
+	userJson=json.load(userFile)
+	userContractABI =userJson['abi']
+	userContractAdd=web3.toChecksumAddress(userJson['networks']['5777']['address'])
+userContract = web3.eth.contract(address=userContractAdd, abi=userContractABI)
 # Get the accounts contract address
 with open('..'+ d +'build'+ d +'contracts'+ d +'Accounts.json') as accFile:
 	accountJson=json.load(accFile)
 	accountsContractABI = accountJson['abi']
 	accountsContractAdd= web3.toChecksumAddress(accountJson['networks']['5777']['address'])
 accountsConract = web3.eth.contract(address=accountsContractAdd, abi=accountsContractABI)
+
 with open('..'+ d +'build'+ d +'contracts'+ d +'Loans.json') as loansFile:
 	loansJson=json.load(loansFile)
 	loansContractAddress= web3.toChecksumAddress(loansJson['networks']['5777']['address'])
+userContract.functions.setLoansContractAddress(loansContractAddress)	
 # Put dummy user account and org account
 def addUsers():
 	accountsConract.functions.add(web3.eth.accounts[1], False).transact()
@@ -64,6 +71,13 @@ if index != -1:
 		 #res = organizationContract.functions.createLoan(loanieAddress).call()
 		res=True
 		print(res)
+		choice=input("pending loans Y or N")
+		if choice == "Y":
+			pendingLoans=userContract.functions.getPendingLoans().buildTransaction({'gas': 70000,'gasPrice': web3.toWei('1', 'gwei'),'from': userContractAdd,'nonce': 1}) 
+			private_key = "3d9fdda2ab07dfd49f05127b8eaa39f0b936d37979bc345f191a1f64dac83578" 
+			signed_txn = web3.eth.account.signTransaction(pendingLoans, private_key=private_key)
+			web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+
 	else :
 		choice=input("create loan Y/N?")
 		if choice=="Y":

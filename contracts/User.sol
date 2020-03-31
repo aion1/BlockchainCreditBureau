@@ -1,37 +1,37 @@
 pragma solidity >=0.4.21 <0.7.0;
-
+import "./Loans.sol";
 contract User {
-  //Loan loan;
-  address public userAddress;
-  bytes32 userName;
-  address [] array;
-  //creator TokenCreator(msg.sender);
-  constructor() public {
-    userAddress = msg.sender;
+  address loansContractAddress;
+  constructor() public
+   {
+
+   }
+  function setLoansContractAddress(address _loansContractAddress) public {
+    loansContractAddress=_loansContractAddress;
   }
-  function confirmLoan () internal returns(bool res)  
-  {
+  function validateLoan (bool _type,uint256 _id) internal returns(bool res)  
+  { 
+    Loans myloans = Loans(loansContractAddress);
+    if (_type ){
+      myloans.confirmLoan(_id);
+    }
+    else
+    {
+      myloans.rejectLoan(_id);
+    }
     return true;
   }
-
-  function changeName(bytes32 _newName) public {
-    // Only the creator can alter the name --
-    // the comparison is possible since contracts
-    // are implicitly convertible to addresses.
-    if (msg.sender == userAddress)
-        userName = _newName;
+  function getPendingLoans() public returns (address [] memory)
+  {
+    address loanie = msg.sender;
+    Loans myloans = Loans(loansContractAddress);
+    uint256 len = myloans.getPendingLoansLength();
+    address [] memory loanersAddresses = new address [](len);
+    uint256 [] memory loansAmounts = new uint256 [](len);
+    loanersAddresses = myloans.getPendingListLoanersAddresses(loanie);
+    loansAmounts = myloans.getPendingListLoansAmounts(loanie);
+    return loanersAddresses;
   }
-
-  function push(address _text) external {
-      array.push(_text);
-  }
-
-  function get() external view returns(address[] memory) {
-    return array;
-  }
-
-  function view_user () internal returns(bool res)  {
-    
-  }
-    
+  
+  
 }

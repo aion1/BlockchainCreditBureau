@@ -78,6 +78,7 @@ if index != -1:
 			private_key = input('Enter your key: ') 
 			signed_txn = web3.eth.account.signTransaction({'gas': 70000,'gasPrice': web3.toWei('1', 'gwei'),'from': loanieAddress,'nonce': web3.eth.getTransactionCount(loanieAddress)}, private_key=private_key)
 			var = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+			print('Transaction Block: ', web3.eth.getTransaction(var))
 			print('Pending loan ended!')
 
 	else :

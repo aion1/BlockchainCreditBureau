@@ -61,6 +61,7 @@ if deletuser == 'Y':
 
 # Suppose bank wants to create a loan
 loanieAddress = input("Enter the addrses: ")
+
 ### Check to see whether it is a user or organization address
 index = accountsConract.functions.getIndex(loanieAddress).call()
 
@@ -73,10 +74,11 @@ if index != -1:
 		print(res)
 		choice=input("pending loans Y or N")
 		if choice == "Y":
-			pendingLoans=userContract.functions.getPendingLoans().buildTransaction({'gas': 70000,'gasPrice': web3.toWei('1', 'gwei'),'from': userContractAdd,'nonce': 1}) 
-			private_key = "3d9fdda2ab07dfd49f05127b8eaa39f0b936d37979bc345f191a1f64dac83578" 
-			signed_txn = web3.eth.account.signTransaction(pendingLoans, private_key=private_key)
-			web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+			pendingLoans=userContract.functions.getPendingLoans().buildTransaction({'gas': 70000,'gasPrice': web3.toWei('1', 'gwei'),'from': loanieAddress,'nonce': web3.eth.getTransactionCount(loanieAddress)}) 
+			private_key = input('Enter your key: ') 
+			signed_txn = web3.eth.account.signTransaction({'gas': 70000,'gasPrice': web3.toWei('1', 'gwei'),'from': loanieAddress,'nonce': web3.eth.getTransactionCount(loanieAddress)}, private_key=private_key)
+			var = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+			print('Pending loan ended!')
 
 	else :
 		choice=input("create loan Y/N?")

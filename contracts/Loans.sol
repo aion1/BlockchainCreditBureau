@@ -63,10 +63,12 @@ contract Loans {
    delete  pendingLoans[index];
    return true;
   }
+
+  //******************************************//
   function getPendingLoansLength() public returns (uint256){
     return pendingLoans.length;
   }
- function getPendingListLoanersAddresses(address _loanie) public returns (address [] memory){
+  function getPendingListLoanersAddresses(address _loanie) public returns (address [] memory){
     address [] memory loanersAddresses = new address [](pendingLoans.length);
     uint256 counter =0;
 

@@ -26,6 +26,8 @@ contract Organization{
   }
   function inquiry () public{
    }
+  //To set the (loans contract) address deployed on the chain
+  //It should be set before deploying, but will be updated later
   function setLoansContractAddress(address _loansContractAddress) public {
     loansContractAddress=_loansContractAddress;
   }

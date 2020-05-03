@@ -2,6 +2,8 @@ pragma solidity >=0.4.21 <0.7.0;
 import "./Loans.sol";
 contract User {
     address loansContractAddress;
+    event getAmounts(uint256 [] _amounts);
+
     constructor() public
     {
 
@@ -35,6 +37,7 @@ contract User {
         //Spil
         loanersAddresses = myloans.getPendingListLoanersAddresses(loanie);
         loansAmounts = myloans.getPendingListLoansAmounts(loanie);
+        emit getAmounts(loansAmounts);
         return loanersAddresses;
     }
 }

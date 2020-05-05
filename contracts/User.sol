@@ -35,8 +35,8 @@ contract User {
         address [] memory loanersAddresses = new address [](len);
         uint256 [] memory loansAmounts = new uint256 [](len);
         //Spil
-        loanersAddresses = myloans.getPendingListLoanersAddresses(loanie);
-        loansAmounts = myloans.getPendingListLoansAmounts(loanie);
+        //loanersAddresses = myloans.getPendingListLoanersAddresses(loanie);
+        //loansAmounts = myloans.getPendingListLoansAmounts(loanie);
         emit getAmounts(loansAmounts);
         return loanersAddresses;
     }

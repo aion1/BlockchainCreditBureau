@@ -12,6 +12,9 @@ contract User {
     function setLoansContractAddress(address _loansContractAddress) public {
         loansContractAddress=_loansContractAddress;
     }
+
+
+    
     function validateLoan (bool _type,uint256 _id) internal returns(bool res)  
     { 
         Loans myloans = Loans(loansContractAddress);
@@ -24,7 +27,7 @@ contract User {
         }
         return true;
     }
-    function getPendingLoans() public returns (address [] memory)
+    function getPendingLoans() public returns(bool res)
     {
         //Will get the peding loans of the user that calls the function
         address loanie = msg.sender;
@@ -35,9 +38,9 @@ contract User {
         address [] memory loanersAddresses = new address [](len);
         uint256 [] memory loansAmounts = new uint256 [](len);
         //Spil
-        //loanersAddresses = myloans.getPendingListLoanersAddresses(loanie);
-        //loansAmounts = myloans.getPendingListLoansAmounts(loanie);
+        loanersAddresses = myloans.getPendingListLoanersAddresses(loanie);
+        loansAmounts = myloans.getPendingListLoansAmounts(loanie);
         emit getAmounts(loansAmounts);
-        return loanersAddresses;
+        return true;
     }
 }

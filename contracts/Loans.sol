@@ -15,15 +15,17 @@ contract Loans {
   }
   Loan [] loans ;
   Loan [] pendingLoans;
+  //mapping (address => Loan[]) pendingLoans;
+  
   uint256 pendingLoansLength;
  
   constructor() public{
     pendingLoansLength = 0;
   }
   
-  function add(address _loanReceiver,address _loaner,uint128 _loanAmount,bool _type) public {
+  function add(address _loanReceiver, address _loaner, uint128 _loanAmount,bool _type) public {
     uint256 id = now;
-    Loan memory loan = Loan(id,_loanReceiver,_loaner,_loanAmount);
+    Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount);
      
      if (_type){
       loans.push(loan);  

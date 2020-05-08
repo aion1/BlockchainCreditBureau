@@ -15,10 +15,10 @@ contract Loans {
   }
   Loan [] loans ;
   Loan [] pendingLoans;
-  uint256 test;
+  uint256 pendingLoansLength;
  
   constructor() public{
-    
+    pendingLoansLength = 0;
   }
   
   function add(address _loanReceiver,address _loaner,uint128 _loanAmount,bool _type) public {
@@ -31,45 +31,56 @@ contract Loans {
      else
      { 
       pendingLoans.push(loan);
+      pendingLoansLength += 1;
      }
    }
-  function searchPending(uint256 _loanId)private view returns (uint256) 
+  function searchPending(uint256 _loanId)private view returns (int256) 
   {
     for(uint256 i = 0; i<pendingLoans.length; i += 1)
     {
       if(pendingLoans[i].id == _loanId)
-        return uint256(i);
-    } 
+        return int256(i);
+    }
+    return -1;
   }
   function confirmLoan(uint256 _loanId, address _loanie)public returns(bool){
-    uint256 index = searchPending(_loanId);
-    test = index;
-    if(pendingLoans[index].loanReceiver!=_loanie)
-    {
+    int256 intIndex = searchPending(_loanId);
+    if(intIndex == -1)
       return false;
-    }
+
+    uint256 index = uint256(intIndex);// For indexing
+    if(pendingLoans[index].loanReceiver!=_loanie)
+      return false;
+
     //Loan memory myLoan = pendingLoans[index];
     Loan memory loan = Loan(pendingLoans[index].id, pendingLoans[index].loanReceiver, pendingLoans[index].loaner, pendingLoans[index].loanAmount);
     loans.push(loan);
     delete  pendingLoans[index];
+    pendingLoansLength -= 1;
     return true;
+
   }
   function rejectLoan(uint256 _loanId, address _loanie)public returns(bool){
-    uint256 index = searchPending(_loanId);
+    int256 intIndex = searchPending(_loanId);
+    if(intIndex == -1)
+      return false;
+
+    uint256 index = uint256(intIndex);// For indexing
     if(pendingLoans[index].loanReceiver!=_loanie)
     {
       return false;
     }
     delete  pendingLoans[index];
+    pendingLoansLength -= 1;
     return true;
   }
 
   //******************************************//
   function getPendingLoansLength() public returns (uint256){
-    return pendingLoans.length;
+    return pendingLoansLength;
   }
   function getPendingListLoanersAddresses(address _loanie) public returns (address [] memory){
-    address [] memory loanersAddresses = new address [](pendingLoans.length);
+    address [] memory loanersAddresses = new address [](pendingLoansLength);
     uint256 counter =0;
 
     for(uint256 i = 0; i<pendingLoans.length; i += 1)
@@ -78,14 +89,13 @@ contract Loans {
        {
         loanersAddresses[counter]=pendingLoans[i].loaner;
         counter+=1;
-
        }
 
     }
     return loanersAddresses;
   }
   function getPendingListLoansAmounts(address _loanie) public returns (uint256 [] memory){
-    uint256 [] memory loansAmounts = new uint256 [](pendingLoans.length);
+    uint256 [] memory loansAmounts = new uint256 [](pendingLoansLength);
     uint256 counter =0;
     for(uint256 i = 0; i<pendingLoans.length; i += 1)
     {
@@ -99,7 +109,7 @@ contract Loans {
     return loansAmounts;
   }
   function getPendingListLoansIds(address _loanie) public returns (uint256 [] memory){
-    uint256 [] memory loansIds = new uint256 [](pendingLoans.length);
+    uint256 [] memory loansIds = new uint256 [](pendingLoansLength);
     uint256 counter =0;
     for(uint256 i = 0; i<pendingLoans.length; i += 1)
     {

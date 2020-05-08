@@ -19,11 +19,11 @@ contract User {
     function validateLoan (bool _type, uint256 _loanId) public returns(bool res)  
     { 
         address loanie = msg.sender;
-        Loans myloans = Loans(loansContractAddress);
+        Loans loansContract = Loans(loansContractAddress);
         if (_type)
-          myloans.confirmLoan(_loanId, loanie);
+          loansContract.confirmLoan(_loanId, loanie);
         else
-          myloans.rejectLoan(_loanId, loanie);
+          loansContract.rejectLoan(_loanId, loanie);
         return true;
     }
     function getPendingLoans() public returns(bool)
@@ -32,15 +32,15 @@ contract User {
         address loanie = msg.sender;
 
 
-        Loans myloans = Loans(loansContractAddress);
-        uint256 len = myloans.getPendingLoansLength();
+        Loans loansContract = Loans(loansContractAddress);
+        uint256 len = loansContract.getPendingLoansLength();
         address [] memory loanersAddresses = new address [](len);
         uint256 [] memory loansAmounts = new uint256 [](len);
         uint256 [] memory loansIds = new uint256 [](len);
         //Spil
-        loanersAddresses = myloans.getPendingListLoanersAddresses(loanie);
-        loansAmounts = myloans.getPendingListLoansAmounts(loanie);
-        loansIds = myloans.getPendingListLoansIds(loanie);
+        loanersAddresses = loansContract.getPendingListLoanersAddresses(loanie);
+        loansAmounts = loansContract.getPendingListLoansAmounts(loanie);
+        loansIds = loansContract.getPendingListLoansIds(loanie);
         emit getAmounts(loansAmounts, loanersAddresses, loansIds);
         return true;
     }

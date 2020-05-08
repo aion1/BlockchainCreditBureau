@@ -14,8 +14,8 @@ contract Loans {
 
   }
   Loan [] loans ;
-  Loan [] pendingLoans;
-  //mapping (address => Loan[]) pendingLoans;
+  //Loan [] pendingLoans;
+  mapping (address => Loan[]) pendingLoans;
   
   uint256 pendingLoansLength;
  
@@ -23,7 +23,7 @@ contract Loans {
     pendingLoansLength = 0;
   }
   
-  function add(address _loanReceiver, address _loaner, uint128 _loanAmount,bool _type) public {
+  function add(address _loanReceiver, address _loaner, uint128 _loanAmount, bool _type) public {
     uint256 id = now;
     Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount);
      
@@ -32,47 +32,47 @@ contract Loans {
      }
      else
      { 
-      pendingLoans.push(loan);
+      pendingLoans[_loanReceiver].push(loan);
       pendingLoansLength += 1;
      }
    }
-  function searchPending(uint256 _loanId)private view returns (int256) 
+  function searchPending(uint256 _loanId, address _loanie)private view returns (int256) 
   {
-    for(uint256 i = 0; i<pendingLoans.length; i += 1)
+    for(uint256 i = 0; i<pendingLoans[_loanie].length; i += 1)
     {
-      if(pendingLoans[i].id == _loanId)
+      if(pendingLoans[_loanie][i].id == _loanId)
         return int256(i);
     }
     return -1;
   }
   function confirmLoan(uint256 _loanId, address _loanie)public returns(bool){
-    int256 intIndex = searchPending(_loanId);
+    int256 intIndex = searchPending(_loanId, _loanie);
     if(intIndex == -1)
       return false;
 
     uint256 index = uint256(intIndex);// For indexing
-    if(pendingLoans[index].loanReceiver!=_loanie)
+    if(pendingLoans[_loanie][index].loanReceiver!=_loanie)
       return false;
 
     //Loan memory myLoan = pendingLoans[index];
-    Loan memory loan = Loan(pendingLoans[index].id, pendingLoans[index].loanReceiver, pendingLoans[index].loaner, pendingLoans[index].loanAmount);
+    Loan memory loan = Loan(pendingLoans[_loanie][index].id, pendingLoans[_loanie][index].loanReceiver, pendingLoans[_loanie][index].loaner, pendingLoans[_loanie][index].loanAmount);
     loans.push(loan);
-    delete  pendingLoans[index];
+    delete  pendingLoans[_loanie][index];
     pendingLoansLength -= 1;
     return true;
 
   }
   function rejectLoan(uint256 _loanId, address _loanie)public returns(bool){
-    int256 intIndex = searchPending(_loanId);
+    int256 intIndex = searchPending(_loanId, _loanie);
     if(intIndex == -1)
       return false;
 
     uint256 index = uint256(intIndex);// For indexing
-    if(pendingLoans[index].loanReceiver!=_loanie)
+    if(pendingLoans[_loanie][index].loanReceiver!=_loanie)
     {
       return false;
     }
-    delete  pendingLoans[index];
+    delete  pendingLoans[_loanie][index];
     pendingLoansLength -= 1;
     return true;
   }
@@ -85,11 +85,11 @@ contract Loans {
     address [] memory loanersAddresses = new address [](pendingLoansLength);
     uint256 counter =0;
 
-    for(uint256 i = 0; i<pendingLoans.length; i += 1)
+    for(uint256 i = 0; i<pendingLoans[_loanie].length; i += 1)
     {
-      if(pendingLoans[i].loanReceiver == _loanie)
+      if(pendingLoans[_loanie][i].loanReceiver == _loanie)
        {
-        loanersAddresses[counter]=pendingLoans[i].loaner;
+        loanersAddresses[counter]=pendingLoans[_loanie][i].loaner;
         counter+=1;
        }
 
@@ -99,11 +99,11 @@ contract Loans {
   function getPendingListLoansAmounts(address _loanie) public returns (uint256 [] memory){
     uint256 [] memory loansAmounts = new uint256 [](pendingLoansLength);
     uint256 counter =0;
-    for(uint256 i = 0; i<pendingLoans.length; i += 1)
+    for(uint256 i = 0; i<pendingLoans[_loanie].length; i += 1)
     {
-      if(pendingLoans[i].loanReceiver == _loanie)
+      if(pendingLoans[_loanie][i].loanReceiver == _loanie)
        {
-        loansAmounts[counter]=pendingLoans[i].loanAmount;
+        loansAmounts[counter]=pendingLoans[_loanie][i].loanAmount;
         counter+=1;
        }
 
@@ -113,11 +113,11 @@ contract Loans {
   function getPendingListLoansIds(address _loanie) public returns (uint256 [] memory){
     uint256 [] memory loansIds = new uint256 [](pendingLoansLength);
     uint256 counter =0;
-    for(uint256 i = 0; i<pendingLoans.length; i += 1)
+    for(uint256 i = 0; i<pendingLoans[_loanie].length; i += 1)
     {
-      if(pendingLoans[i].loanReceiver == _loanie)
+      if(pendingLoans[_loanie][i].loanReceiver == _loanie)
        {
-        loansIds[counter]=pendingLoans[i].id;
+        loansIds[counter]=pendingLoans[_loanie][i].id;
         counter+=1;
        }
 

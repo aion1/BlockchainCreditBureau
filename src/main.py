@@ -2,6 +2,9 @@ import json
 from web3 import Web3
 import os
 import platform
+from getpass import getpass
+
+
 operating_system = platform.system()
 d = '/'
 if operating_system == 'Windows':
@@ -13,32 +16,30 @@ web3 = Web3(Web3.HTTPProvider(ganache_url))
 web3.eth.defaultAccount = web3.eth.accounts[0]
 
 
- 
+def getContract(filename):
+	with open('..'+ d +'build'+ d +'contracts'+ d +filename) as contractFile:
+		contractJson=json.load(contractFile)
+		contractABI =contractJson['abi']
+		contractAdd=web3.toChecksumAddress(contractJson['networks']['5777']['address']) 
+		return contractABI, contractAdd
+
+
 
 # Get the organization contract address
-with open('..'+ d +'build'+ d +'contracts'+ d +'Organization.json') as orgFile:
-	orgJson=json.load(orgFile)
-	organizationContractABI =orgJson['abi']
-	organizationContractAdd=web3.toChecksumAddress(orgJson['networks']['5777']['address'])
+organizationContractABI, organizationContractAdd = getContract('Organization.json')	
 organizationContract = web3.eth.contract(address=organizationContractAdd, abi=organizationContractABI)
 
 #get the user contract address
-with open('..'+ d +'build'+ d +'contracts'+ d +'User.json') as userFile:
-	userJson=json.load(userFile)
-	userContractABI =userJson['abi']
-	userContractAdd=web3.toChecksumAddress(userJson['networks']['5777']['address'])
+userContractABI,userContractAdd = getContract('User.json')
 userContract = web3.eth.contract(address=userContractAdd, abi=userContractABI)
+
 # Get the accounts contract address
-with open('..'+ d +'build'+ d +'contracts'+ d +'Accounts.json') as accFile:
-	accountJson=json.load(accFile)
-	accountsContractABI = accountJson['abi']
-	accountsContractAdd= web3.toChecksumAddress(accountJson['networks']['5777']['address'])
+accountsContractABI,accountsContractAdd = getContract('Accounts.json')
 accountsConract = web3.eth.contract(address=accountsContractAdd, abi=accountsContractABI)
 
-with open('..'+ d +'build'+ d +'contracts'+ d +'Loans.json') as loansFile:
-	loansJson=json.load(loansFile)
-	loansContractAddress= web3.toChecksumAddress(loansJson['networks']['5777']['address'])
-userContract.functions.setLoansContractAddress(loansContractAddress)	
+loansContractABI, loansContractAddress= getContract('Loans.json')
+userContract.functions.setLoansContractAddress(loansContractAddress)
+
 # Put dummy user account and org account
 def addUsers():
 	accountsConract.functions.add(web3.eth.accounts[1], False).transact()
@@ -59,13 +60,29 @@ deletuser = input("delete user? Y/N")
 if deletuser == 'Y':
 	deleteUser()
 
+
+def getPendingLoans(_userContract, _pk=None):
+    pendingLoans = _userContract.functions.getPendingLoans().buildTransaction({'gas': 70000,'gasPrice': web3.toWei('1', 'gwei'),'from': loanieAddress,'nonce': web3.eth.getTransactionCount(loanieAddress)}) 
+    print(type(pendingLoans))
+    private_key = getpass('Enter your key: ') if _pk is not None else _pk
+    test_transaction = {'gas': 70000,'gasPrice': web3.toWei('1', 'gwei'),'from': loanieAddress,
+                        'nonce': web3.eth.getTransactionCount(loanieAddress), 'data':pendingLoans['data']}
+    print(type(test_transaction))
+    signed_txn = web3.eth.account.signTransaction(test_transaction, private_key=private_key)
+    print(signed_txn)
+    transaction_hash = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+    print('Transaction Block: \n', web3.eth.getTransaction(transaction_hash))
+    print('Transaction Receipt: \n', web3.eth.getTransactionReceipt(transaction_hash))
+    print('Pending loan ended!')
+
+
 # Suppose bank wants to create a loan
 loanieAddress = input("Enter the addrses: ")
 
 ### Check to see whether it is a user or organization address
 index = accountsConract.functions.getIndex(loanieAddress).call()
 
-
+pk = '8700bbbe5cc527282fc13aa85dfc9cbe2493cdaa4b87fea14c0b30ad56c129d7'
 if index != -1:
 	loanieType = accountsConract.functions.getType(index).call()
 	if not loanieType:
@@ -74,12 +91,7 @@ if index != -1:
 		print(res)
 		choice=input("pending loans Y or N")
 		if choice == "Y":
-			pendingLoans=userContract.functions.getPendingLoans().buildTransaction({'gas': 70000,'gasPrice': web3.toWei('1', 'gwei'),'from': loanieAddress,'nonce': web3.eth.getTransactionCount(loanieAddress)}) 
-			private_key = input('Enter your key: ') 
-			signed_txn = web3.eth.account.signTransaction({'gas': 70000,'gasPrice': web3.toWei('1', 'gwei'),'from': loanieAddress,'nonce': web3.eth.getTransactionCount(loanieAddress)}, private_key=private_key)
-			var = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-			print('Transaction Block: ', web3.eth.getTransaction(var))
-			print('Pending loan ended!')
+			getPendingLoans(userContract, pk)
 
 	else :
 		choice=input("create loan Y/N?")

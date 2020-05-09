@@ -5,13 +5,12 @@ pragma solidity>=0.4.21<0.7.0;
 contract Loans {
 
   struct Loan
-  { uint256  id;
+  {
+    uint256  id;
     address  loanReceiver;
     address  loaner;
     uint128  loanAmount;
-
-//    bool     typee; // if 1 == loan else if 0 == pending loan
-
+    //bool   typee; // if 1 == loan else if 0 == pending loan
   }
   Loan [] loans ;
   //Loan [] pendingLoans;

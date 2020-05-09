@@ -1,8 +1,6 @@
 //pragma solidity>=0.4.21<0.7.0;
 pragma experimental ABIEncoderV2;
- /**
-  * The Loan contract does this and that...
-  */
+
 contract Loans {
 
   struct Loan
@@ -11,10 +9,8 @@ contract Loans {
     address  loanReceiver;
     address  loaner;
     uint128  loanAmount;
-    //bool   typee; // if 1 == loan else if 0 == pending loan
   }
-  Loan [] loans ;
-  //Loan [] pendingLoans;
+  Loan[] loans ;
   mapping (address => Loan[]) pendingLoans;
   
   uint256 pendingLoansLength;
@@ -45,7 +41,12 @@ contract Loans {
     }
     return -1;
   }
-  function confirmLoan(uint256 _loanId, address _loanie)public returns(bool){
+
+  
+  function confirmLoan(uint256 _loanId, address _loanie)
+    public
+    returns(bool)
+  {
     int256 intIndex = searchPending(_loanId, _loanie);
     if(intIndex == -1)
       return false;
@@ -54,9 +55,10 @@ contract Loans {
     if(pendingLoans[_loanie][index].loanReceiver!=_loanie)
       return false;
 
-    //Loan memory myLoan = pendingLoans[index];
-    Loan memory loan = Loan(pendingLoans[_loanie][index].id, pendingLoans[_loanie][index].loanReceiver, pendingLoans[_loanie][index].loaner, pendingLoans[_loanie][index].loanAmount);
-    loans.push(loan);
+    Loans.Loan memory confimedLoan = pendingLoans[_loanie][index];
+    
+    loans.push(confimedLoan);
+    //uint length = loans.push(pendingLoans[_loanie][index]);
     delete  pendingLoans[_loanie][index];
     pendingLoansLength -= 1;
     return true;

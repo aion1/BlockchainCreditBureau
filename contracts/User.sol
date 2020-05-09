@@ -1,10 +1,10 @@
-pragma solidity >=0.4.21 <0.7.0;
-//pragma experimental ABIEncoderV2;
+//pragma solidity >=0.4.21 <0.7.0;
+k experimental ABIEncoderV2;
 import "./Loans.sol";
 contract User {
     address loansContractAddress;
     event getAmounts(uint256 [] _amounts, address [] _addresses, uint256 [] _ids);
-
+    event getLoans(Loans.Loan[] _loans);
     constructor() public
     {
 
@@ -34,14 +34,21 @@ contract User {
 
         Loans loansContract = Loans(loansContractAddress);
         uint256 len = loansContract.getPendingLoansLength();
+        
         address [] memory loanersAddresses = new address [](len);
         uint256 [] memory loansAmounts = new uint256 [](len);
         uint256 [] memory loansIds = new uint256 [](len);
-        //Spil
-        loanersAddresses = loansContract.getPendingListLoanersAddresses(loanie);
-        loansAmounts = loansContract.getPendingListLoansAmounts(loanie);
-        loansIds = loansContract.getPendingListLoansIds(loanie);
+        
+        Loans.Loan [] memory pendingLoans = new Loans.Loan[](len);
+        pendingLoans = loansContract.getPendingLoansList(loanie); 
+        for(uint256 i = 0; i < len; i += 1)
+        {
+          loanersAddresses[i] = pendingLoans[i].loaner;
+          loansAmounts[i] = pendingLoans[i].loanAmount;
+          loansIds[i] = pendingLoans[i].id;
+        }
         emit getAmounts(loansAmounts, loanersAddresses, loansIds);
+        //emit getLoans(pendingLoans);
         return true;
     }
 }

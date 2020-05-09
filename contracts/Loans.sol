@@ -1,4 +1,5 @@
-pragma solidity>=0.4.21<0.7.0;
+//pragma solidity>=0.4.21<0.7.0;
+pragma experimental ABIEncoderV2;
  /**
   * The Loan contract does this and that...
   */
@@ -80,49 +81,24 @@ contract Loans {
   function getPendingLoansLength() public returns (uint256){
     return pendingLoansLength;
   }
-  function getPendingListLoanersAddresses(address _loanie) public returns (address [] memory){
-    address [] memory loanersAddresses = new address [](pendingLoansLength);
-    uint256 counter =0;
 
-    for(uint256 i = 0; i<pendingLoans[_loanie].length; i += 1)
-    {
+
+  /*Using just one function when compiling with:
+    pragma experimental ABIEncoderV2;*/
+  function getPendingLoansList (address _loanie) public returns(Loan [] memory) {
+    Loan [] memory myPendingLoans = new Loan [](pendingLoansLength);
+    uint256 counter = 0;
+
+    for(uint256 i = 0; i < pendingLoans[_loanie].length; i+=1){
       if(pendingLoans[_loanie][i].loanReceiver == _loanie)
-       {
-        loanersAddresses[counter]=pendingLoans[_loanie][i].loaner;
+      {
+        myPendingLoans[counter] = pendingLoans[_loanie][i];
         counter+=1;
-       }
-
+      }
     }
-    return loanersAddresses;
+    return myPendingLoans;
   }
-  function getPendingListLoansAmounts(address _loanie) public returns (uint256 [] memory){
-    uint256 [] memory loansAmounts = new uint256 [](pendingLoansLength);
-    uint256 counter =0;
-    for(uint256 i = 0; i<pendingLoans[_loanie].length; i += 1)
-    {
-      if(pendingLoans[_loanie][i].loanReceiver == _loanie)
-       {
-        loansAmounts[counter]=pendingLoans[_loanie][i].loanAmount;
-        counter+=1;
-       }
-
-    }
-    return loansAmounts;
-  }
-  function getPendingListLoansIds(address _loanie) public returns (uint256 [] memory){
-    uint256 [] memory loansIds = new uint256 [](pendingLoansLength);
-    uint256 counter =0;
-    for(uint256 i = 0; i<pendingLoans[_loanie].length; i += 1)
-    {
-      if(pendingLoans[_loanie][i].loanReceiver == _loanie)
-       {
-        loansIds[counter]=pendingLoans[_loanie][i].id;
-        counter+=1;
-       }
-
-    }
-    return loansIds;
-  }
+  
 
   /*function getUserPendingLoans(address _loanie)public 
   {

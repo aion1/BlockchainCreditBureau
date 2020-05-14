@@ -53,4 +53,23 @@ contract User {
         //emit getLoans(pendingLoans);
         return true;
     }
+    function getMyLoans() public returns(bool) {
+        address loanie = msg.sender;
+        Loans loansContract = Loans(loansContractAddress);
+        uint256 loansLen = loansContract.uGetMyLoansLen(loanie);
+        Loans.Loan [] memory loans = new Loans.Loan[](loansLen);
+        loans = loansContract.uGetMyLoans(loanie);
+        address [] memory loanersAddresses = new address [](loansLen);
+        uint256 [] memory loansAmounts = new uint256 [](loansLen);
+        uint256 [] memory loansIds = new uint256 [](loansLen);
+        for(uint256 i = 0; i < loansLen; i += 1)
+        {
+          loanersAddresses[i] = loans[i].loaner;
+          loansAmounts[i] = loans[i].loanAmount;
+          loansIds[i] = loans[i].id;
+        }
+        emit getAmounts(loansAmounts, loanersAddresses, loansIds);
+        return true;
+    }
+    
 }

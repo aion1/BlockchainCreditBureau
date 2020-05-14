@@ -10,21 +10,21 @@ contract Loans {
     address  loaner;
     uint128  loanAmount;
   }
-  Loan[] loans ;
   mapping (address => Loan[]) pendingLoans;
+  mapping (address => Loan[]) loans;
   
   uint256 pendingLoansLength;
  
   constructor() public{
     pendingLoansLength = 0;
   }
-  
+
   function add(address _loanReceiver, address _loaner, uint128 _loanAmount, bool _type) public {
     uint256 id = now;
      Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount);
 
      if (_type){
-      loans.push(loan);  
+      loans[_loanReceiver].push(loan);  
      }
      else
      { 
@@ -57,7 +57,7 @@ contract Loans {
 
     Loans.Loan memory confimedLoan = pendingLoans[_loanie][index];
     
-    loans.push(confimedLoan);
+    loans[_loanie].push(confimedLoan);
     //uint length = loans.push(pendingLoans[_loanie][index]);
     delete  pendingLoans[_loanie][index];
     pendingLoansLength -= 1;
@@ -101,10 +101,10 @@ contract Loans {
     return myPendingLoans;
   }
   
-  function getLoans () public returns(Loan [] memory)  {
+ /** function getLoans () public returns(Loan [] memory)  {
       return loans;
   }
-
+*/
   /*function getUserPendingLoans(address _loanie)public 
   {
     
@@ -117,7 +117,16 @@ contract Loans {
     }
    */
 
+   //u stands for user
+   function uGetMyLoans (address _loanie) public returns(Loan [] memory){
 
+    return loans[_loanie];
+   }
+   function uGetMyLoansLen (address _loanie) public returns(uint256) {
+     
+     return loans[_loanie].length;
+   }
+   
     
   
 }

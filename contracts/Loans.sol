@@ -101,7 +101,9 @@ contract Loans {
     return myPendingLoans;
   }
   
-
+  function getLoans () public returns(Loan [] memory)  {
+      return loans;
+  }
   /*function getUserPendingLoans(address _loanie)public 
   {
     

@@ -26,6 +26,9 @@ contract User {
           loansContract.rejectLoan(_loanId, loanie);
         return true;
     }
+
+
+
     function getPendingLoans() public returns(bool)
     {
         //Will get the peding loans of the user that calls the function
@@ -34,7 +37,6 @@ contract User {
 
         Loans loansContract = Loans(loansContractAddress);
         uint256 len = loansContract.getPendingLoansLength();
-        
         address [] memory loanersAddresses = new address [](len);
         uint256 [] memory loansAmounts = new uint256 [](len);
         uint256 [] memory loansIds = new uint256 [](len);

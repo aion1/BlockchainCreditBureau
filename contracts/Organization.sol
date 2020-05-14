@@ -18,6 +18,7 @@ contract Organization{
     address loaner = msg.sender;
     loanerAddress = loaner;
     Loans loansContract = Loans(loansContractAddress);
+    
     //TRIGGER EVENT TO USER
     // WAIT AN EVENT COMING FROM THE USER IF IT COME ADD
     

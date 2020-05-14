@@ -14,7 +14,7 @@ contract Organization{
  	   
   }
   
-  function createLoan (address _loanie, uint128 _amount) public returns(bool)  {
+  function createLoan (address _loanie, uint128 _amount, uint128 _installmentsNum, uint128 _interest) public returns(bool)  {
     address loaner = msg.sender;
     loanerAddress = loaner;
     Loans loansContract = Loans(loansContractAddress);
@@ -22,7 +22,7 @@ contract Organization{
     //TRIGGER EVENT TO USER
     // WAIT AN EVENT COMING FROM THE USER IF IT COME ADD
     
-    loansContract.add(_loanie, loaner, _amount, false);
+    loansContract.add(_loanie, loaner, _amount, false, _installmentsNum, _interest);
   	return true;
   }
   function getLoanAmount () internal returns(uint128)  {

@@ -25,8 +25,8 @@ contract Loans {
   
   function add(address _loanReceiver, address _loaner, uint128 _loanAmount, bool _type) public {
     uint256 id = now;
-    Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount);
-     
+     Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount);
+
      if (_type){
       loans.push(loan);  
      }
@@ -99,7 +99,10 @@ contract Loans {
     return myPendingLoans;
   }
   
-
+  function getLoans () public returns(Loan [] memory)  {
+      return loans;
+  }
+  
   /*function getUserPendingLoans(address _loanie)public 
   {
     

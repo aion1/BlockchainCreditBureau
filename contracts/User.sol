@@ -1,5 +1,5 @@
 //pragma solidity >=0.4.21 <0.7.0;
-k experimental ABIEncoderV2;
+pragma experimental ABIEncoderV2;
 import "./Loans.sol";
 contract User {
     address loansContractAddress;

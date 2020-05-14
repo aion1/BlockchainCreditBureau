@@ -3,28 +3,37 @@ pragma experimental ABIEncoderV2;
 
 contract Loans {
 
+  struct  Installment{
+    uint256 amount;
+    uint24 payDate;
+    uint24 paidOutDate;
+    bool paid;
+  }
   struct Loan
   {
     uint256  id;
     address  loanReceiver;
     address  loaner;
     uint128  loanAmount;
-  }
+    uint128  installmentsNum;
+    uint128  interest;
+  }  
   mapping (address => Loan[]) pendingLoans;
   mapping (address => Loan[]) loans;
-  
+  mapping (uint256 => Installment[]) installments;
+
   uint256 pendingLoansLength;
  
   constructor() public{
     pendingLoansLength = 0;
   }
 
-  function add(address _loanReceiver, address _loaner, uint128 _loanAmount, bool _type) public {
+  function add(address _loanReceiver, address _loaner, uint128 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
     uint256 id = now;
-     Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount);
+     Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount, _installmentsNum, _interest);
 
      if (_type){
-      loans[_loanReceiver].push(loan);  
+      loans[_loanReceiver].push(loan);
      }
      else
      { 

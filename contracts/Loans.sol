@@ -5,8 +5,8 @@ contract Loans {
 
   struct  Installment{
     uint256 amount;
-    uint24 payDate;
-    uint24 paidOutDate;
+    uint256 payDate;
+    uint256 paidOutDate;
     bool paid;
   }
   struct Loan
@@ -70,6 +70,8 @@ contract Loans {
     //uint length = loans.push(pendingLoans[_loanie][index]);
     delete  pendingLoans[_loanie][index];
     pendingLoansLength -= 1;
+    uint256 date = now;
+    initializeInstallments(confimedLoan.loanAmount,confimedLoan.interest,confimedLoan.installmentsNum,confimedLoan.id,date);
     return true;
 
   }
@@ -135,7 +137,27 @@ contract Loans {
      
      return loans[_loanie].length;
    }
-   
-    
-  
+   function initializeInstallments(uint128 _loanAmount,uint128 _interest,uint128 _installmentsNum,uint256 _id,uint256 _initialDate) public returns(bool)
+   {
+      uint256 date = _initialDate + 30;
+      uint256 amount = 10000;
+      //_loanAmount + _loanAmount * (_interest/100);
+      uint256 installmentAmount= amount / _installmentsNum;
+      for(uint256 i=0; i<_installmentsNum; i+=1)
+      {
+        Installment memory installment =Installment(installmentAmount,date,0,false);
+        // 0 means that the paydate is not initialized yet
+        installments[_id].push(installment);
+      }
+      return true;
+   }
+
+   function getInstallments (uint256 _id) public returns(Installment [] memory ) {
+     
+     return installments[_id];
+   }
+   function getInstallmentsLen (uint256 _id) public returns(uint256) {
+     
+     return installments[_id].length;
+   }
 }

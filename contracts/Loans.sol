@@ -14,7 +14,7 @@ contract Loans {
     uint256  id;
     address  loanReceiver;
     address  loaner;
-    uint128  loanAmount;
+    uint256  loanAmount;
     uint128  installmentsNum;
     uint128  interest;
   }  
@@ -28,7 +28,7 @@ contract Loans {
     pendingLoansLength = 0;
   }
 
-  function add(address _loanReceiver, address _loaner, uint128 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
+  function add(address _loanReceiver, address _loaner, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
     uint256 id = now;
      Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount, _installmentsNum, _interest);
 
@@ -137,15 +137,15 @@ contract Loans {
      
      return loans[_loanie].length;
    }
-   function initializeInstallments(uint128 _loanAmount,uint128 _interest,uint128 _installmentsNum,uint256 _id,uint256 _initialDate) public returns(bool)
+   function initializeInstallments(uint256 _loanAmount,uint128 _interest,uint128 _installmentsNum,uint256 _id,uint256 _initialDate) public returns(bool)
    {
       uint256 month =  2592000 ;  
       uint256 date = _initialDate +month;
-      uint256 amount = 10000;
+     
       //_loanAmount + _loanAmount * (_interest/100);
-      uint256 installmentAmountReminder=amount % _installmentsNum;
-      amount-=installmentAmountReminder;
-      uint256 installmentAmount=amount/_installmentsNum;
+      uint256 installmentAmountReminder=_loanAmount % _installmentsNum;
+      _loanAmount-=installmentAmountReminder;
+      uint256 installmentAmount=_loanAmount/_installmentsNum;
       for(uint256 i=0; i<_installmentsNum; i+=1)
       {
         if(i==_installmentsNum-1)

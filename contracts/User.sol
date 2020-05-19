@@ -5,6 +5,10 @@ contract User {
     address loansContractAddress;
     event getAmounts(uint256 [] _amounts, address [] _addresses, uint256 [] _ids, uint128 [] _installmentsNum , uint128 [] _interest);
     event getLoans(Loans.Loan[] _loans);
+    event getInstallments(uint256 []_amount,uint256 []_payDate,uint256 []_payOutDate,bool []_paid);
+
+
+    
     constructor() public
     {
 
@@ -77,6 +81,27 @@ contract User {
           loansInterests[i] = loans[i].interest;
         }
         emit getAmounts(loansAmounts, loanersAddresses, loansIds, loansInstallmentsNums, loansInterests);
+        return true;
+    }
+    function getMyInstallments (uint256 _id) public returns(bool res){
+        address loanie = msg.sender;
+        Loans loansContract = Loans(loansContractAddress);
+        uint256 installmentsLen = loansContract.getInstallmentsLen(_id);
+        //uint256 loansLen = loansContract.getInstallments(_id);
+        Loans.Installment [] memory installments = new Loans.Installment[](installmentsLen);
+        installments = loansContract.getInstallments(_id);
+        uint256 [] memory installmentAmounts = new uint256 [](installmentsLen);
+        uint256 [] memory payDates = new uint256 [](installmentsLen);
+        uint256 [] memory payOutDate = new uint256 [](installmentsLen);
+        bool [] memory paids = new bool [](installmentsLen);
+        for(uint256 i = 0; i < installmentsLen; i += 1)
+        {
+            installmentAmounts[i] = installments[i].amount;
+            payDates[i] = installments[i].payDate;
+            payOutDate[i] = installments[i].paidOutDate;
+            paids[i] = installments[i].paid;
+        }
+        emit getInstallments(installmentAmounts, payDates, payOutDate, paids);
         return true;
     }
     

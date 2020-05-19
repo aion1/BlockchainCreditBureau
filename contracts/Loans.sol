@@ -5,8 +5,8 @@ contract Loans {
 
   struct  Installment{
     uint256 amount;
-    uint24 payDate;
-    uint24 paidOutDate;
+    uint256 payDate;
+    uint256 paidOutDate;
     bool paid;
   }
   struct Loan
@@ -14,7 +14,7 @@ contract Loans {
     uint256  id;
     address  loanReceiver;
     address  loaner;
-    uint128  loanAmount;
+    uint256  loanAmount;
     uint128  installmentsNum;
     uint128  interest;
   }  
@@ -28,7 +28,7 @@ contract Loans {
     pendingLoansLength = 0;
   }
 
-  function add(address _loanReceiver, address _loaner, uint128 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
+  function add(address _loanReceiver, address _loaner, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
     uint256 id = now;
      Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount, _installmentsNum, _interest);
 
@@ -70,6 +70,8 @@ contract Loans {
     //uint length = loans.push(pendingLoans[_loanie][index]);
     delete  pendingLoans[_loanie][index];
     pendingLoansLength -= 1;
+    uint256 date = now;
+    initializeInstallments(confimedLoan.loanAmount,confimedLoan.interest,confimedLoan.installmentsNum,confimedLoan.id,date);
     return true;
 
   }
@@ -135,7 +137,37 @@ contract Loans {
      
      return loans[_loanie].length;
    }
-   
-    
-  
+   function initializeInstallments(uint256 _loanAmount,uint128 _interest,uint128 _installmentsNum,uint256 _id,uint256 _initialDate) public returns(bool)
+   {
+      uint256 month =  2592000 ;  
+      uint256 date = _initialDate +month;
+     
+      //_loanAmount + _loanAmount * (_interest/100);
+      uint256 installmentAmountReminder=_loanAmount % _installmentsNum;
+      _loanAmount-=installmentAmountReminder;
+      uint256 installmentAmount=_loanAmount/_installmentsNum;
+      for(uint256 i=0; i<_installmentsNum; i+=1)
+      {
+        if(i==_installmentsNum-1)
+        {
+          installmentAmount+=installmentAmountReminder;
+        }
+        Installment memory installment =Installment(installmentAmount,date,0,false);
+        // 0 means that the paydate is not initialized yet
+        installments[_id].push(installment);
+        date += month;
+      }
+
+      //installments[_id][_installmentsNum-1].amount+=installmentAmountReminder;
+      return true;
+   }
+
+   function getInstallments (uint256 _id) public returns(Installment [] memory ) {
+     
+     return installments[_id];
+   }
+   function getInstallmentsLen (uint256 _id) public returns(uint256) {
+     
+     return installments[_id].length;
+   }
 }

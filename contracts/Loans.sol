@@ -139,16 +139,26 @@ contract Loans {
    }
    function initializeInstallments(uint128 _loanAmount,uint128 _interest,uint128 _installmentsNum,uint256 _id,uint256 _initialDate) public returns(bool)
    {
-      uint256 date = _initialDate + 30;
+      uint256 month =  2592000 ;  
+      uint256 date = _initialDate +month;
       uint256 amount = 10000;
       //_loanAmount + _loanAmount * (_interest/100);
-      uint256 installmentAmount= amount / _installmentsNum;
+      uint256 installmentAmountReminder=amount % _installmentsNum;
+      amount-=installmentAmountReminder;
+      uint256 installmentAmount=amount/_installmentsNum;
       for(uint256 i=0; i<_installmentsNum; i+=1)
       {
+        if(i==_installmentsNum-1)
+        {
+          installmentAmount+=installmentAmountReminder;
+        }
         Installment memory installment =Installment(installmentAmount,date,0,false);
         // 0 means that the paydate is not initialized yet
         installments[_id].push(installment);
+        date += month;
       }
+
+      //installments[_id][_installmentsNum-1].amount+=installmentAmountReminder;
       return true;
    }
 

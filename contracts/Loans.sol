@@ -21,19 +21,21 @@ contract Loans {
   mapping (address => Loan[]) pendingLoans;
   mapping (address => Loan[]) loans;
   mapping (uint256 => Installment[]) installments;
+  mapping (address => Loan[]) loanerLoans;
 
   uint256 pendingLoansLength;
  
   constructor() public{
     pendingLoansLength = 0;
   }
-
+ event getLoanInstallments(uint256 []_amount,uint256 []_payDate,uint256 []_payOutDate,bool []_paid);
   function add(address _loanReceiver, address _loaner, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
     uint256 id = now;
      Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount, _installmentsNum, _interest);
 
      if (_type){
       loans[_loanReceiver].push(loan);
+      loanerLoans[_loaner].push(loan);
      }
      else
      { 
@@ -65,8 +67,9 @@ contract Loans {
       return false;
 
     Loans.Loan memory confimedLoan = pendingLoans[_loanie][index];
-    
+    address _loaner = confimedLoan.loaner;
     loans[_loanie].push(confimedLoan);
+    loanerLoans[_loaner].push(confimedLoan);
     //uint length = loans.push(pendingLoans[_loanie][index]);
     delete  pendingLoans[_loanie][index];
     pendingLoansLength -= 1;
@@ -110,6 +113,18 @@ contract Loans {
       }
     }
     return myPendingLoans;
+  }
+  function getLoanerLoans(address _loaner)public returns (Loan [] memory)
+  {
+    return loanerLoans[_loaner];
+
+
+  }
+  function getLoanerLoansLen(address _loaner)public returns (uint256 )
+  {
+    return loanerLoans[_loaner].length;
+
+
   }
   
  /** function getLoans () public returns(Loan [] memory)  {
@@ -170,4 +185,39 @@ contract Loans {
      
      return installments[_id].length;
    }
+  function getMyInstallments (uint256 _id) public returns(bool res)
+  {
+    address loanie = msg.sender;
+    
+    uint256 installmentsLen = getInstallmentsLen(_id);
+    //uint256 loansLen = loansContract.getInstallments(_id);
+    Installment [] memory installments = new Installment[](installmentsLen);
+    installments = getInstallments(_id);
+    uint256 [] memory installmentAmounts = new uint256 [](installmentsLen);
+    uint256 [] memory payDates = new uint256 [](installmentsLen);
+    uint256 [] memory payOutDate = new uint256 [](installmentsLen);
+    bool [] memory paids = new bool [](installmentsLen);
+    for(uint256 i = 0; i < installmentsLen; i += 1)
+    {
+        installmentAmounts[i] = installments[i].amount;
+        payDates[i] = installments[i].payDate;
+        payOutDate[i] = installments[i].paidOutDate;
+        paids[i] = installments[i].paid;
+    }
+    emit getLoanInstallments(installmentAmounts, payDates, payOutDate, paids);
+    return true;
+  }
+  function confirmLoanInstallment(uint256 _index,uint256 _id) public returns (bool)
+  {
+    if(installments[_id][_index].paid==true)
+    {
+      return false;
+    }
+    installments[_id][_index].paid=true;
+    installments[_id][_index].paidOutDate=now;
+    return true;
+
+
+
+  } 
 }

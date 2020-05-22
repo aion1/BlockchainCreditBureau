@@ -55,5 +55,11 @@ contract Organization{
   function setLoansContractAddress(address _loansContractAddress) public {
     loansContractAddress=_loansContractAddress;
   }
-  
+  function confirmInstallment(uint256 _index,uint256 _id)public returns(bool)
+  {
+    Loans loansContract = Loans(loansContractAddress);
+    bool result =loansContract.confirmLoanInstallment(_index,_id);
+    return result;
+
+  }
 }

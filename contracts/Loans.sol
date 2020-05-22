@@ -21,6 +21,7 @@ contract Loans {
   mapping (address => Loan[]) pendingLoans;
   mapping (address => Loan[]) loans;
   mapping (uint256 => Installment[]) installments;
+  mapping (address => Loan[]) loanerLoans;
 
   uint256 pendingLoansLength;
  
@@ -34,6 +35,7 @@ contract Loans {
 
      if (_type){
       loans[_loanReceiver].push(loan);
+      loanerLoans[_loaner].push(loan);
      }
      else
      { 
@@ -65,8 +67,9 @@ contract Loans {
       return false;
 
     Loans.Loan memory confimedLoan = pendingLoans[_loanie][index];
-    
+    address _loaner = confimedLoan.loaner;
     loans[_loanie].push(confimedLoan);
+    loanerLoans[_loaner].push(confimedLoan);
     //uint length = loans.push(pendingLoans[_loanie][index]);
     delete  pendingLoans[_loanie][index];
     pendingLoansLength -= 1;
@@ -110,6 +113,18 @@ contract Loans {
       }
     }
     return myPendingLoans;
+  }
+  function getLoanerLoans(address _loaner)public returns (Loan [] memory)
+  {
+    return loanerLoans[_loaner];
+
+
+  }
+  function getLoanerLoansLen(address _loaner)public returns (uint256 )
+  {
+    return loanerLoans[_loaner].length;
+
+
   }
   
  /** function getLoans () public returns(Loan [] memory)  {

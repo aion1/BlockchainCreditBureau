@@ -4,8 +4,10 @@ contract Accounts{
 	struct Account{
 		address addr;
 		bool typee;//0 for user, 1 for org
+		uint256 points; // 0 for init and 0 for any organization
+		uint256 optimalPoints; // 0 for init user and always 0 for organization
 	}
-	Account [] accounts;
+	Account []  accounts;
 	constructor() public{
 		
 	}
@@ -23,7 +25,7 @@ contract Accounts{
 	}
 	function add(address _accAddress, bool _type) public returns(bool){
 		if (!accountExists(_accAddress)){
-			Account memory acc = Account(_accAddress, _type);
+			Account memory acc = Account(_accAddress, _type,0,0);
 			accounts.push(acc);
 			return true;
 		}
@@ -45,4 +47,16 @@ contract Accounts{
 		}
 		return false;		
 	}
+	function changePoints (address _loanie,uint256 _points)public returns(bool res)
+	{
+		int256 myIndex=getIndex(_loanie);
+		if(myIndex != -1)
+		{
+			accounts[uint256(myIndex)].points+=_points;
+			accounts[uint256(myIndex)].optimalPoints+=5;
+			return true;
+		}
+		return false;
+	}
+	
 }

@@ -1,6 +1,8 @@
 //pragma solidity>=0.4.21<0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "./Accounts.sol";
+
 contract Loans {
 
   struct  Installment{
@@ -18,10 +20,18 @@ contract Loans {
     uint128  installmentsNum;
     uint128  interest;
   }  
+
+  address accountsContractAddress;
   mapping (address => Loan[]) pendingLoans;
   mapping (address => Loan[]) loans;
   mapping (uint256 => Installment[]) installments;
   mapping (address => Loan[]) loanerLoans;
+
+  //To set the (loans contract) address deployed on the chain
+  function setAccountsContractAddress(address _accountsContractAddress) public
+  {
+    accountsContractAddress=_accountsContractAddress;
+  }
 
   uint256 pendingLoansLength;
  
@@ -207,7 +217,7 @@ contract Loans {
     emit getLoanInstallments(installmentAmounts, payDates, payOutDate, paids);
     return true;
   }
-  function confirmLoanInstallment(uint256 _index,uint256 _id) public returns (bool)
+  function confirmLoanInstallment(address loaner,uint256 _index,uint256 _id) public returns (bool)
   {
     if(installments[_id][_index].paid==true)
     {
@@ -215,9 +225,58 @@ contract Loans {
     }
     installments[_id][_index].paid=true;
     installments[_id][_index].paidOutDate=now;
+
+    Loan [] memory organizationLoans=loanerLoans[loaner];
+    Loan memory currentLoan;
+    for(uint256 i=0;i<organizationLoans.length;i+=1)
+    {
+      if(_id==organizationLoans[i].id)
+      {
+        currentLoan=organizationLoans[i];
+        break;
+      }
+    }
+    address loanie=currentLoan.loanReceiver;
+
+    uint256 month =  2592000 ;
+
+    uint256 differanceTime=(installments[_id][_index].paidOutDate+month)-installments[_id][_index].payDate;
+    uint256 week=604800;
+    uint256 points=5;
+    uint256 day=86400;
+
+    if(differanceTime<=day) // pay in the same day
+    {
+      setNewPoints(loanie,points);
+    }
+    else if(differanceTime<=week)
+    {
+      points-=1;
+      setNewPoints(loanie,points);
+    }
+    else
+    {
+      for(uint256 i=1;week<differanceTime;i+=1)
+      {
+        if(week*i>differanceTime)
+        {
+          break;
+        }
+        if(points==0)
+        {
+          break;
+        }
+        points-=1;
+      } 
+      setNewPoints(loanie,points);
+    }
     return true;
-
-
-
   } 
+  function setNewPoints (address _loanie,uint256 _points) public returns(bool res)  
+  {
+    Accounts accountsContract = Accounts(accountsContractAddress);
+    accountsContract.changePoints(_loanie,_points);
+    return true;
+  }
+  
 }

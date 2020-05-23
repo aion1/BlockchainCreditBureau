@@ -57,8 +57,9 @@ contract Organization{
   }
   function confirmInstallment(uint256 _index,uint256 _id)public returns(bool)
   {
+    address loaner=msg.sender;
     Loans loansContract = Loans(loansContractAddress);
-    bool result =loansContract.confirmLoanInstallment(_index,_id);
+    bool result =loansContract.confirmLoanInstallment(loaner,_index,_id);
     return result;
 
   }

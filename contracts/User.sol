@@ -83,6 +83,13 @@ contract User {
         emit getAmounts(loansAmounts, loanersAddresses, loansIds, loansInstallmentsNums, loansInterests);
         return true;
     }
+
+    function getPoints () public returns(uint256)
+    {
+        address loanie = msg.sender;
+        
+    }
+    
    
     
 }

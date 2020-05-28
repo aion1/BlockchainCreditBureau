@@ -239,11 +239,13 @@ contract Loans {
     address loanie=currentLoan.loanReceiver;
 
     uint256 month =  2592000 ;
-
-    uint256 differanceTime=(installments[_id][_index].paidOutDate+month)-installments[_id][_index].payDate;
     uint256 week=604800;
     uint256 points=5;
     uint256 day=86400;
+
+    // (week*3) and month will be removed
+    uint256 differanceTime=(installments[_id][_index].paidOutDate+month+(week*3))-installments[_id][_index].payDate;
+
 
     if(differanceTime<=day) // pay in the same day
     {

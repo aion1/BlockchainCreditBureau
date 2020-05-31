@@ -1,9 +1,16 @@
 # Json files
 build/
 bin/
+
 # PyCharm
 venv/
 .idea/
 
 #Jupyter Notebook
 src/.ipynb_checkpoints/
+
+#PyCharm Django project
+src/CreditHistorySite/.idea
+src/CreditHistorySite/__pycache__
+src/CreditHistorySite/venv
+src/CreditHistorySite/CreditHistorySite/__pycache__

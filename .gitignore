@@ -1,3 +1,4 @@
+__pycache__/
 # Json files
 build/
 bin/
@@ -10,7 +11,4 @@ venv/
 src/.ipynb_checkpoints/
 
 #PyCharm Django project
-src/CreditHistorySite/.idea
-src/CreditHistorySite/__pycache__
-src/CreditHistorySite/venv
-src/CreditHistorySite/CreditHistorySite/__pycache__
+CreditHistorySite/__pycache__

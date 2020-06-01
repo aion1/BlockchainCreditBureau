@@ -1,9 +1,14 @@
+__pycache__/
 # Json files
-build/
+Solidity/build/
 bin/
+
 # PyCharm
 venv/
 .idea/
 
 #Jupyter Notebook
-src/.ipynb_checkpoints/
+CreditHistorySite/src/.ipynb_checkpoints/
+
+#PyCharm Django project
+CreditHistorySite/__pycache__

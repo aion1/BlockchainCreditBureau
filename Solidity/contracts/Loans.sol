@@ -21,11 +21,15 @@ contract Loans {
     uint128  interest;
   }  
 
+  mapping (uint256 => Loan) allLoans;
+  
+
   address accountsContractAddress;
+  //This should be refactored to something more memory-efficient
   mapping (address => Loan[]) pendingLoans;
-  mapping (address => Loan[]) loans;
+  mapping (address => uint256[]) loans;
   mapping (uint256 => Installment[]) installments;
-  mapping (address => Loan[]) loanerLoans;
+  mapping (address => uint256[]) loanerLoans;
 
   //To set the (loans contract) address deployed on the chain
   function setAccountsContractAddress(address _accountsContractAddress) public
@@ -38,14 +42,16 @@ contract Loans {
   constructor() public{
     pendingLoansLength = 0;
   }
- event getLoanInstallments(uint256 []_amount,uint256 []_payDate,uint256 []_payOutDate,bool []_paid);
+  event getLoanInstallments(uint256 []_amount,uint256 []_payDate,uint256 []_payOutDate,bool []_paid);
+  
   function add(address _loanReceiver, address _loaner, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
     uint256 id = now;
      Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount, _installmentsNum, _interest);
 
      if (_type){
-      loans[_loanReceiver].push(loan);
-      loanerLoans[_loaner].push(loan);
+      loans[_loanReceiver].push(id);
+      loanerLoans[_loaner].push(id);
+      allLoans[id] = loan;
      }
      else
      { 
@@ -53,6 +59,8 @@ contract Loans {
       pendingLoansLength += 1;
      }
    }
+
+
   function searchPending(uint256 _loanId, address _loanie)private view returns (int256) 
   {
     for(uint256 i = 0; i<pendingLoans[_loanie].length; i += 1)
@@ -78,8 +86,9 @@ contract Loans {
 
     Loans.Loan memory confimedLoan = pendingLoans[_loanie][index];
     address _loaner = confimedLoan.loaner;
-    loans[_loanie].push(confimedLoan);
-    loanerLoans[_loaner].push(confimedLoan);
+    loans[_loanie].push(confimedLoan.id);
+    loanerLoans[_loaner].push(confimedLoan.id);
+    allLoans[confimedLoan.id] = confimedLoan;
     //uint length = loans.push(pendingLoans[_loanie][index]);
     delete  pendingLoans[_loanie][index];
     pendingLoansLength -= 1;
@@ -124,17 +133,26 @@ contract Loans {
     }
     return myPendingLoans;
   }
+
+
   function getLoanerLoans(address _loaner)public returns (Loan [] memory)
   {
-    return loanerLoans[_loaner];
+    Loan [] memory myLoanerLoans = new Loan [](loanerLoans[_loaner].length);
+    for(uint256 i=0; i < loanerLoans[_loaner].length; i+=1)
+    {
+      uint256 loanId = loanerLoans[_loaner][i];
+      myLoanerLoans[i] = allLoans[loanId];
+    }
 
 
+    return myLoanerLoans;
   }
+
+
+
   function getLoanerLoansLen(address _loaner)public returns (uint256 )
   {
     return loanerLoans[_loaner].length;
-
-
   }
   
  /** function getLoans () public returns(Loan [] memory)  {
@@ -156,8 +174,16 @@ contract Loans {
    //u stands for user
    function uGetMyLoans (address _loanie) public returns(Loan [] memory){
 
-    return loans[_loanie];
+    
+    Loan [] memory myLoans = new Loan [](loans[_loanie].length);
+    for(uint256 i=0; i < loans[_loanie].length; i+=1)
+    {
+      uint256 loanId = loans[_loanie][i];
+      myLoans[i] = allLoans[loanId];
+    }
+    return myLoans;
    }
+
    function uGetMyLoansLen (address _loanie) public returns(uint256) {
      
      return loans[_loanie].length;
@@ -226,25 +252,18 @@ contract Loans {
     installments[_id][_index].paid=true;
     installments[_id][_index].paidOutDate=now;
 
-    Loan [] memory organizationLoans=loanerLoans[loaner];
-    Loan memory currentLoan;
-    for(uint256 i=0;i<organizationLoans.length;i+=1)
-    {
-      if(_id==organizationLoans[i].id)
-      {
-        currentLoan=organizationLoans[i];
-        break;
-      }
-    }
-    address loanie=currentLoan.loanReceiver;
 
+    Loan memory currentLoan = allLoans[_id];
+    
+
+    address loanie=currentLoan.loanReceiver;
     uint256 month =  2592000 ;
     uint256 week=604800;
     uint256 points=5;
     uint256 day=86400;
 
     // (week*3) and month will be removed
-    uint256 differanceTime=(installments[_id][_index].paidOutDate+month+(week*3))-installments[_id][_index].payDate;
+    uint256 differanceTime=(installments[_id][_index].paidOutDate+month+(week*4))-installments[_id][_index].payDate;
 
 
     if(differanceTime<=day) // pay in the same day

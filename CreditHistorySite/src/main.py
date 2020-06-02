@@ -7,6 +7,8 @@ from web3 import Web3
 from getpass import getpass
 import random
 from CreditHistorySite.src.utility import Web3Handler
+from CreditHistorySite.src.utility import TransactionDictionary
+from CreditHistorySite.src.utility import AccountsHandler
 
 # In[2]:
 
@@ -31,23 +33,24 @@ accountsContractAdd = web3Handler.getContractAddress('Accounts.json')
 
 # This should be changed to be a more robus way. We can give the loansContractAddress using the constructor
 # but this has problems when doing this in the 2_deploy_contracts.js
+transaction = organizationContract.functions.setLoansContractAddress(loansContractAddress). \
+    buildTransaction(TransactionDictionary(300000, web3Handler.web3.eth.defaultAccount, web3Handler.web3))
+transaction_hash = web3Handler.transact(transaction, web3Handler.defaultKey)
 userContract.functions.setLoansContractAddress(loansContractAddress).transact()
-organizationContract.functions.setLoansContractAddress(loansContractAddress).transact()
 loansContract.functions.setAccountsContractAddress(accountsContractAdd).transact()
-
-# In[5]:
-
-
-accountsConract.functions.add(web3.eth.accounts[1], False).transact()
-accountsConract.functions.add(web3.eth.accounts[2], False).transact()
-accountsConract.functions.add(web3.eth.accounts[5], True).transact()
-accountsConract.functions.add(web3.eth.accounts[6], True).transact()
-
 """
 HERE SHOULD BE THE END OF MAIN FUNCTIONS THAT RUN WHENEVER THE SERVER IS UP
 """
 
+# In[5]:
 
+accsHandler = AccountsHandler(web3Handler, accountsConract)
+accsHandler.addAccount(web3Handler.getAccount(1), False)
+accsHandler.addAccount(web3Handler.getAccount(2), False)
+accsHandler.addAccount(web3Handler.getAccount(5), True)
+accsHandler.addAccount(web3Handler.getAccount(6), True)
+
+'''
 # In[6]:
 
 
@@ -406,3 +409,5 @@ def confirmInstallment(_loanerIndex, _loansContract, _organizationContract, _loa
 confirmInstallment(loanerIndex, loansContract, organizationContract, loaner, accountsConract)
 
 # In[ ]:
+
+'''

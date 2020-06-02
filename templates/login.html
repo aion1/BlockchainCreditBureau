@@ -1,5 +1,6 @@
+{% load static %}
 <h2>Welcome to Graduation Project!</h2>
-<link rel="stylesheet" type="text/css" href="../css/login.css">
+<link rel="stylesheet" type="text/css" href="{% static "css/login.css" %}">
 <div class="container" id="container">
     <div class="form-container sign-up-container">
         <form action="#">
@@ -10,7 +11,7 @@
     <div class="form-container sign-in-container">
         <form action="#">
             <h4>Connect with MetaMask!</h4>
-            <button><a href="index.html">Sign In</a></button>
+            <button><a href="{% url 'index' %}">Sign In</a></button>
         </form>
     </div>
     <div class="overlay-container">
@@ -21,17 +22,17 @@
                 <button class="ghost" id="signIn">Sign In</button>
             </div>
             <div class="overlay-panel overlay-right">
-				<h1>Hello, Friend!</h1>
-				<p>Enter your personal details and start journey with us</p>
-				<button class="ghost" id="signUp">Sign Up</button>
-			</div>
-		</div>
-	</div>
-	<script src="../js/login.js"></script>
+                <h1>Hello, Friend!</h1>
+                <p>Enter your personal details and start journey with us</p>
+                <button class="ghost" id="signUp">Sign Up</button>
+            </div>
+        </div>
+    </div>
+    <script src="{% static "js/login.js" %}"></script>
 </div>
 
 <footer>
-	<p>
+    <p>
 
-	</p>
+    </p>
 </footer>

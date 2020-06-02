@@ -32,6 +32,8 @@ class Web3Handler:
         self.d = '/'
         if operating_system == 'Windows':
             self.d = '\\'
+        self.web3.eth.defaultAccount = self.web3.eth.accounts[0]
+        self.defaultKey = 'a0dd259af21c47254d99d6e22e0ac7a9b6da2ed7802a16a8cb264282e279037a'
 
     def getContractABI(self, filename):
         with open(os.path.join(BASE_DIR, (
@@ -51,3 +53,23 @@ class Web3Handler:
         contractABI, contractAdd = self.getContractABI(filename), self.getContractAddress(filename)
         contract = self.web3.eth.contract(address=contractAdd, abi=contractABI)
         return contract
+
+    def transact(self, transaction, private_key):
+        signed_txn = self.web3.eth.account.signTransaction(transaction, private_key=private_key)
+        transaction_hash = self.web3.eth.sendRawTransaction(self.web3.toHex(signed_txn.rawTransaction))
+        return transaction_hash
+
+    def getTransactionReceipt(self, transaction_hash):
+        return self.web3.eth.getTransactionReceipt(transaction_hash)
+
+    def getAccount(self, index):
+        return self.web3.eth.accounts[index]
+
+
+class AccountsHandler:
+    def __init__(self, web3Handler, accountsContract):
+        self.web3Handler = web3Handler
+        self.accountsContract = accountsContract
+
+    def addAccount(self, public_key, account_type):
+        self.accountsContract.functions.add(public_key, account_type).transact()

@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from CreditHistorySite.src import main
 
 
 def index(request):
-    return render(request, 'index.html')
+    hah = main.accountsContractAdd
+    return render(request, 'index.html', {'hah': hah})

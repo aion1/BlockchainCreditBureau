@@ -16,46 +16,48 @@
 </head>
 
 <body>
-	<!-- Page Preloder -->
-	<div id="preloder">
-		<div class="loader"></div>
-	</div>
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
 
-	<!-- Header section -->
-	<header class="header-section clearfix">
-		<div class="container-fluid">
-			<div class="responsive-bar"><i class="fa fa-bars"></i></div>
-			<a href="" class="user"><i class="fa fa-user"></i></a>
-			<a href="login.html" class="site-btn">Sign Up Free</a>
-			<nav class="main-menu">
-				<ul class="menu-list">
-					<li><a href="orghome.html">Log in as Organization</a></li>
-					<li><a href="BCBS-user.html">Login as User</a></li>
-					<li><a href="#About">About</a></li>
-					<li><a href="#About">Contact</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
-	<!-- Header section end -->
+<!-- Header section -->
+<header class="header-section clearfix">
+    <div class="container-fluid">
+        <div class="responsive-bar"><i class="fa fa-bars"></i></div>
+        <a href="" class="user"><i class="fa fa-user"></i></a>
+        <!--This should go to org page if logged in as org and user if else-->
+        <a href="{% url 'login' %}" class="site-btn">Login</a>
+        <nav class="main-menu">
+            <ul class="menu-list">
+                <li><a href="{% url 'org.signup' %}">Sign up as Organization</a></li>
+                <li><a href="{% url 'user.signup' %}">Sign up as User</a></li>
+                <li><a href="#About">About</a></li>
+                <li><a href="#About">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<!-- Header section end -->
 
 
-	<!-- info section -->
-	<section class="hero-section">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-6 hero-text">
-					<h2>Easy to get your <span>Credit History</span> </h2>
-					<h4>Use modern progressive technologies of blockchain to get info</h4>
-					<form class="hero-subscribe-from">
-						<button class="site-btn sb-gradients">Get Started</button>
-					</form>
-				</div>
-				<div class="col-md-6">
-					<img src="{% static "img/laptop.png" %}" class="laptop-image" alt="">
-				</div>
-			</div>
-		</div>
+<!-- info section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 hero-text">
+                    <h2>Easy to get your <span>Credit History</span></h2>
+                    <h2>{{ hah }}</h2>
+                    <h4>Use modern progressive technologies of blockchain to get info</h4>
+                    <form class="hero-subscribe-from">
+                        <button class="site-btn sb-gradients">Get Started</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <img src="{% static "img/laptop.png" %}" class="laptop-image" alt="">
+                </div>
+            </div>
+        </div>
 	</section>
 	<!-- info section end -->
 

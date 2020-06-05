@@ -6,6 +6,8 @@
 from web3 import Web3
 from getpass import getpass
 import random
+
+from CreditHistorySite.src.contracts import UserContract, AccountsContract
 from CreditHistorySite.src.utility import Web3Handler
 from CreditHistorySite.src.utility import TransactionDictionary
 from CreditHistorySite.src.utility import AccountsHandler
@@ -49,6 +51,10 @@ accsHandler.addAccount(web3Handler.getAccount(1), False)
 accsHandler.addAccount(web3Handler.getAccount(2), False)
 accsHandler.addAccount(web3Handler.getAccount(5), True)
 accsHandler.addAccount(web3Handler.getAccount(6), True)
+
+userContractClass = UserContract(userContract,web3Handler)
+
+accountsContractClass = AccountsContract(accountsConract,web3Handler)
 
 '''
 # In[6]:

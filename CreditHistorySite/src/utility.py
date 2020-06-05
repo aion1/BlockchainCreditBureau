@@ -33,7 +33,7 @@ class Web3Handler:
         if operating_system == 'Windows':
             self.d = '\\'
         self.web3.eth.defaultAccount = self.web3.eth.accounts[0]
-        self.defaultKey = 'a0dd259af21c47254d99d6e22e0ac7a9b6da2ed7802a16a8cb264282e279037a'
+        self.defaultKey = 'bc068f3928c573101f35ecd9dc773a8f76a482665941247eb2f1b607079e893c'
 
     def getContractABI(self, filename):
         with open(os.path.join(BASE_DIR, (
@@ -73,3 +73,11 @@ class AccountsHandler:
 
     def addAccount(self, public_key, account_type):
         self.accountsContract.functions.add(public_key, account_type).transact()
+
+
+class PendingLoan:
+    def __init__(self, amount, loanerAddress, id, installmentsNum, interest):
+        self.amount = amount
+        self.loanerAddress = loanerAddress
+        self.installmentsNum = installmentsNum
+        self.interest = interest

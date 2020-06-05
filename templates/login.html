@@ -11,7 +11,7 @@
     <div class="form-container sign-in-container">
         <form action="#">
             <h4>Connect with MetaMask!</h4>
-            <button><a href="{% url 'index' %}">Sign In</a></button>
+            <button><a href="{% url 'loanie'%}">Sign In</a></button>
         </form>
     </div>
     <div class="overlay-container">
@@ -19,7 +19,8 @@
             <div class="overlay-panel overlay-left">
                 <h2>Welcome Back!</h2>
                 <p>To keep connected with us please login with your personal info</p>
-                <button class="ghost" id="signIn">Sign In</button>
+                <button><a href="{% url 'loanie'%}">Sign In</a></button>
+
             </div>
             <div class="overlay-panel overlay-right">
                 <h1>Hello, Friend!</h1>

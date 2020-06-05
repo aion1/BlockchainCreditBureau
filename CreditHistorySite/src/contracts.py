@@ -34,4 +34,7 @@ class AccountsContract:
         return False if accountIndex == -1 else True
 
     def isLoanie(self, accountIndex):
-        return not self.accountsContract.functions.getType(accountIndex).call()
+        return not self.accountsContract.functions.getType(int(accountIndex)).call()
+
+    def getIndex(self,accountAddress):
+        return self.accountsContract.functions.getIndex(accountAddress).call()

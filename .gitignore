@@ -3,6 +3,8 @@ __pycache__/
 Solidity/build/
 bin/
 
+build/contracts
+
 # PyCharm
 venv/
 .idea/

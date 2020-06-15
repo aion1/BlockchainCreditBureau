@@ -1,10 +1,40 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Organization Signup</title>
-</head>
-<body>
-<p>Organization Signup</p>
-</body>
+<html>
+    <link rel="stylesheet" href="{% static "css/signuporg.css" %}">
+    
+    <head>
+        <title>Step 1: Enter Your Information</title>
+        <meta charset="UTF-8">
+        <meta name="X-UA-Compitable" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    
+    <body class="bg-img">
+            <div class="popup" onclick="myFunction()">Click me!
+                <span class="popuptext" id="myPopup">Popup text...</span>
+            </div>
+            <script>
+                // When the user clicks on <div>, open the popup
+                function myFunction() {
+                  var popup = document.getElementById("myPopup");
+                  popup.classList.toggle("show");
+                }
+                </script>
+            <form method='POST' action="{% url 'metamask' %}" class="container" >
+
+                <label for="fname">Name of The Organiztion:</label><br>
+                <input type="text" name="name" placeholder="Name of The Loaner"><br>
+                <label for="fname">Commercial No. of The Organiztion:</label><br>
+                <input type="text" name="commercial_no" placeholder="Commercial Registration No."><br>
+                <label for="fname">Select logo:</label></br>
+                <input type="file" name="logo" placeholder="Logo of The Loaner"></label><br>
+                <label for="fname">Private Key:</label></br>
+                <input type="text" name="private_key" placeholder="Enter Your Metamask Key"><br>
+                <button type="submit" id="signup" onclick ="metamask()">Sign Up</button>
+                
+            
+            </form>
+            
+    </body>
 </html>

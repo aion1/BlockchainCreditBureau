@@ -24,4 +24,5 @@ urlpatterns = [
     path('org/signup/', views.orgSignup, name='org.signup'),
     path('user/signup/', views.userSignup, name='user.signup'),
     path('loanie/', views.loanie, name='loanie'),
+    path('metamask/', views.metamask, name='metamask'),
 ]

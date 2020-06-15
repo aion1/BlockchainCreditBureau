@@ -12,11 +12,23 @@ def login(request):
 
 
 def orgSignup(request):
-    return render(request, 'orgSignup.html')
+    if request.method == 'POST':
+        name = request.POST['name']
+        commercial_no = request.POST['commercial_no']
+        logo = request.POST['logo']
+        private_key = request.POST['private_key']
+    else:
+        return render(request, 'orgSignup.html')
 
-
+def metamask(request):
+    return render(request, 'metamask.html')
+    
 def userSignup(request):
-    return render(request, 'userSignup.html')
+    if request.method == 'POST':
+        name = request.POST['name']
+        private_key = request.POST['private_key']
+    else:
+        return render(request, 'userSignup.html')
 
 
 def loanie(request):

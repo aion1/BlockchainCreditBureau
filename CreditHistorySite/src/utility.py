@@ -33,7 +33,7 @@ class Web3Handler:
         if operating_system == 'Windows':
             self.d = '\\'
         self.web3.eth.defaultAccount = self.web3.eth.accounts[0]
-        self.defaultKey = 'bc068f3928c573101f35ecd9dc773a8f76a482665941247eb2f1b607079e893c'
+        self.defaultKey = 'a0dd259af21c47254d99d6e22e0ac7a9b6da2ed7802a16a8cb264282e279037a'
 
     def getContractABI(self, filename):
         with open(os.path.join(BASE_DIR, (

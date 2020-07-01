@@ -22,7 +22,7 @@
                 }
                 </script>
             <form method='POST' action="{% url 'metamask' %}" class="container" >
-
+                {% csrf_token %}
                 <label for="fname">Name of The Organiztion:</label><br>
                 <input type="text" name="name" placeholder="Name of The Loaner"><br>
                 <label for="fname">Commercial No. of The Organiztion:</label><br>

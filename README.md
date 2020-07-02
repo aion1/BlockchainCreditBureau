@@ -11,6 +11,7 @@
 <ul>
 	<li><code>web3</code></li>	
 	<li><code>django</code></li>	
+	<li><code>mysqlclient</code></li>	
 	<li><code>jupyter</code>(optionally)</li>	
 </ul>
 <h2>To run:</h2></br>
@@ -22,5 +23,8 @@
 	<li><code>$ truffle deploy</code></li>
 </ul>
 </li>
+<li> Create a <code>mysql</code> account with credentials in <code>setting.py</code> file</li>
+<li> Grant all privileges to this account on database named <code>credit</code></li>
+<li> Start your <code>mysql server</code></li>
 <li>Start you <code>django</code> server</li>
 </ol>

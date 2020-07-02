@@ -13,7 +13,9 @@ from CreditHistorySite.src.utility import TransactionDictionary
 from CreditHistorySite.src.utility import AccountsHandler
 
 # In[2]:
+def sqlConnect():
 
+    return True
 
 ganache_url = "HTTP://127.0.0.1:7545"
 web3Handler = Web3Handler(ganache_url)

@@ -16,12 +16,20 @@ def orgSignup(request):
         name = request.POST['name']
         commercial_no = request.POST['commercial_no']
         logo = request.POST['logo']
-        private_key = request.POST['private_key']
+        password = request.POST['password']
+        public_key = request.POST['publickey']
+
+        # Save in database
+
+
+
     else:
         return render(request, 'orgSignup.html')
 
-def metamask(request):
-    return render(request, 'metamask.html')
+def orgHome(request):
+
+
+    return render(request, 'orghome.html')
     
 def userSignup(request):
     if request.method == 'POST':

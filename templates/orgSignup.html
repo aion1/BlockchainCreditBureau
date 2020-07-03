@@ -11,31 +11,24 @@
     </head>
     
     <body class="bg-img">
-            <div class="popup" onclick="myFunction()">Click me!
-                <span class="popuptext" id="myPopup">Popup text...</span>
-            </div>
-            <script>
-                // When the user clicks on <div>, open the popup
-                function myFunction() {
-                  var popup = document.getElementById("myPopup");
-                  popup.classList.toggle("show");
-                }
-            </script>
-            <form method='POST' action="{% url 'orgSignup' %}" class="container" >
+
+            <form method='POST' action="{% url 'afterSignup' %}" class="container" >
                 {% csrf_token %}
                 <label for="fname">Name of The Organiztion:</label><br>
-                <input type="text" name="name" placeholder="Name of The Loaner"><br>
+                <input type="text" name="name" placeholder="Name of The Loaner" required><br>
                 <label for="fname">Commercial No. of The Organiztion:</label><br>
-                <input type="text" name="commercial_no" placeholder="Commercial Registration No."><br>
+                <input type="text" name="commercial_no" placeholder="Commercial Registration No." required><br>
                 <label for="fname">Select logo:</label></br>
                 <input type="file" name="logo" placeholder="Logo of The Loaner"></label><br>
                 <label for="fname">Public key:</label></br>
-                <input type="text" name="publickey" placeholder="Enter your public key"><br>
+                <input type="text" name="publickey" placeholder="Enter your public key" required><br>
+                <label for="fname">Private key:</label></br>
+                <input type="password" name="privatekey" placeholder="Enter your private key" required><br>
                 <label for="fname">Password:</label></br>
-                <input type="text" name="password" placeholder="Enter the password"><br>
+                <input type="password" name="password" placeholder="Enter the password"><br>
+
+
                 <button type="submit" id="signup">Sign Up</button>
-                
-            
             </form>
             
     </body>

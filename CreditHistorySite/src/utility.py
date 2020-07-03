@@ -79,5 +79,6 @@ class PendingLoan:
     def __init__(self, amount, loanerAddress, id, installmentsNum, interest):
         self.amount = amount
         self.loanerAddress = loanerAddress
+        self.id = id
         self.installmentsNum = installmentsNum
         self.interest = interest

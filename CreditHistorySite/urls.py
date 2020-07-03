@@ -25,4 +25,5 @@ urlpatterns = [
     path('user/signup/', views.userSignup, name='user.signup'),
     path('loanie/', views.loanie, name='loanie'),
     path('orgHome/', views.orgHome, name='orgHome'),
+    path('org/afterSignup', views.afterSignup, name='afterSignup'),
 ]

@@ -20,10 +20,20 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('login', views.login, name='login'),
-    path('org/signup/', views.orgSignup, name='org.signup'),
-    path('user/signup/', views.userSignup, name='user.signup'),
-    path('loanie/', views.loanie, name='loanie'),
-    path('orgHome/', views.orgHome, name='orgHome'),
-    path('org/afterSignup', views.afterSignup, name='afterSignup'),
+    path('login', views.showLoginPage, name='login'),
+
+    # Intermediate page to determine whether the user is a loanie or organization
+    # after logging in
+    path('home', views.home, name='home'),
+
+    # Signup urls
+    path('org/signup', views.showOrgSignupPage, name='org.signup'),
+    path('org/signedup', views.orgSignedup, name='org.signedup'),
+    path('loanie/signup', views.showLoanieSignupPage, name='loanie.signup'),
+    path('loanie/signedup', views.loanieSignedup, name='loanie.signedup'),
+
+    # After logging in urls (must be authenticated)
+    path('loanie/home', views.loanieHome, name='loanie.home'),
+    path('org/home', views.orgHome, name='org.home'),
+
 ]

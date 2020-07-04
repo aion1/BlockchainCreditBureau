@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="{% static "css/signupind.css" %}">
+<body class="bg-img">
+<form method='POST' action="{% url 'loanie.signedup' %}" class="container">
+    {% csrf_token %}
+    <label for="fname">Name of The Laonie:</label>
+    <input type="text" name="name" placeholder="Name of The Loanie"><br>
+    <label for="fname">Private Key:</label><br>
+    <input type="text" name="private_key" placeholder="Enter Your Metamask Key"><br>
+    <button type="submit" id="signup">Sign Up</button>
+</form>
+</body>
+</html>

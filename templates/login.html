@@ -1,17 +1,17 @@
 {% load static %}
+<html>
 <h2>Welcome to Graduation Project!</h2>
 <link rel="stylesheet" type="text/css" href="{% static "css/login.css" %}">
 <div class="container" id="container">
     <div class="form-container sign-up-container">
         <form action="#">
-            <h4>Create New Account with MetaMask!</h4>
-            <button><a href="https://metamask.io/">SignUp</a></button>
+            <h4>Don't hesitate to join us!</h4>
+            <button><a href="{% url 'index' %}">SignUp</a></button>
         </form>
     </div>
     <div class="form-container sign-in-container">
         <form action="#">
-            <h4>Connect with MetaMask!</h4>
-            <button><a href="{% url 'loanie'%}">Sign In</a></button>
+            <button><a href="{% url 'home' %}">Sign In</a></button>
         </form>
     </div>
     <div class="overlay-container">
@@ -19,13 +19,13 @@
             <div class="overlay-panel overlay-left">
                 <h2>Welcome Back!</h2>
                 <p>To keep connected with us please login with your personal info</p>
-                <button><a href="{% url 'loanie'%}">Sign In</a></button>
+                <button><a href="{% url 'home' %}">Sign In</a></button>
 
             </div>
             <div class="overlay-panel overlay-right">
                 <h1>Hello, Friend!</h1>
                 <p>Enter your personal details and start journey with us</p>
-                <button class="ghost" id="signUp">Sign Up</button>
+                <button class="ghost" id="signUp"><a href="{% url 'index' %}">Sign Up</button>
             </div>
         </div>
     </div>
@@ -37,3 +37,4 @@
 
     </p>
 </footer>
+</html>

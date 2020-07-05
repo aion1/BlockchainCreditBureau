@@ -13,27 +13,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('login', views.showLoginPage, name='login'),
+                  path('admin/', admin.site.urls),
+                  path('', views.index, name='index'),
+                  path('login', views.showLoginPage, name='login'),
 
-    # Intermediate page to determine whether the user is a loanie or organization
+                  # Intermediate page to determine whether the user is a loanie or organization
     # after logging in
     path('home', views.home, name='home'),
 
-    # Signup urls
-    path('org/signup', views.showOrgSignupPage, name='org.signup'),
-    path('org/signedup', views.orgSignedup, name='org.signedup'),
-    path('loanie/signup', views.showLoanieSignupPage, name='loanie.signup'),
-    path('loanie/signedup', views.loanieSignedup, name='loanie.signedup'),
+                  # Signup urls
+                  path('org/signup', views.showOrgSignupPage, name='org.signup'),
+                  path('org/signedup', views.orgSignedup, name='org.signedup'),
+                  path('loanie/signup', views.showLoanieSignupPage, name='loanie.signup'),
+                  path('loanie/signedup', views.loanieSignedup, name='loanie.signedup'),
 
-    # After logging in urls (must be authenticated)
-    path('loanie/home', views.loanieHome, name='loanie.home'),
-    path('org/home', views.orgHome, name='org.home'),
+                  # After logging in urls (must be authenticated)
+                  path('loanie/home', views.loanieHome, name='loanie.home'),
+                  path('org/home', views.orgHome, name='org.home'),
 
-]
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

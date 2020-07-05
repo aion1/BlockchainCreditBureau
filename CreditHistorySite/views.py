@@ -1,3 +1,5 @@
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from CreditHistorySite.src import main
 from CreditHistorySite.src.loanie import Loanie
@@ -42,20 +44,20 @@ def orgSignedup(request):
         if accountExists:
             errorMsg = 'Sorry this account exists in our system.'
             response = render(request, 'error.html', {'errorMsg': errorMsg})
-
-        # ALERT: THIS IS TEMPORARY IN DEVELOPMENT, SHOULD BE CHANGED WHEN MIGRATING TO THE MAINNET
-        # validate that this public key is on the Ganache private chain on our node
-        # ecryptedAccount = web3.eth.account.encrypt('8700bbbe5cc527282fc13aa85dfc9cbe2493cdaa4b87fea14c0b30ad56c129d7',
-        # 'waliedahmed')
-
-        # Save in database
-        savedInDB = False
-        if not savedInDB:
-            errorMsg = 'Some error happend. Sorry for that'
-            response = render(request, 'error.html', {'errorMsg': errorMsg})
         else:
-            response = redirect('org.home')  # Should pass the data of the
-            # just-registered organization
+            # ALERT: THIS IS TEMPORARY IN DEVELOPMENT, SHOULD BE CHANGED WHEN MIGRATING TO THE MAINNET
+            # validate that this public key is on the Ganache private chain on our node
+            # ecryptedAccount = web3.eth.account.encrypt('8700bbbe5cc527282fc13aa85dfc9cbe2493cdaa4b87fea14c0b30ad56c129d7',
+            # 'waliedahmed')
+
+            # Save in database
+            savedInDB = False
+            if not savedInDB:
+                errorMsg = 'Some error happend. Sorry for that'
+                response = render(request, 'error.html', {'errorMsg': errorMsg})
+            else:
+                response = redirect('org.home')  # Should pass the data of the
+                # just-registered organization
     else:
         # the request is not a POST request
         errorMsg = 'Some error happend. This is not a POST request, please' \
@@ -67,15 +69,18 @@ def orgSignedup(request):
 
 # to clean up the data and navigate to the url('loanie/home');
 def loanieSignedup(request):
-    # process the data
+    # process the data an
 
     return redirect('loanie.home')
 
 
+@login_required(login_url='login')
 def orgHome(request):
+    # show the data of a logged in organization
     return render(request, 'organization/home.html')
 
 
+@login_required(login_url='login')
 def loanieHome(request):
     # I should here have the publickey and password after logining in
     # Then resotre the privatekey from a keystore
@@ -98,34 +103,40 @@ def home(request):
     password = request.POST['password']
 
     # authenticate
+    user = authenticate(request, username=publicKey, password=password)
+    if user is not None:
 
-    # 1. determine if account exists
-    # HINT: accountExists = AccountsContract.accountExist(publicKey);
-    accountExists = False
-    if accountExists:
-        # determine if it's a loanie or organization
-        # 2. get keystore location from database
+        # 1. determine if account exists
+        # HINT: accountExists = AccountsContract.accountExist(publicKey);
+        accountExists = False
+        if accountExists:
 
-        # 3. access this keystore on your file system
+            login(request, user)
+            # determine if it's a loanie or organization
+            # 3. access keystore
 
-        # 4. privateKey = web3.eth.account.decrypt(keystore, password)
+            # 4. privateKey = web3.eth.account.decrypt(keystore, password)
 
-        # 5. access our accounts contract to see its type={loaine, organization}
-        isLoanie = False
-        if isLoanie:
-            # get loanie loans and pendingLoans to show them
-            loans = None
-            pendingLoans = None
-            response = render(request, 'loanie/home.html', {'loans': loans,
-                                                            'pendingLoans': pendingLoans})
+            # 5. access our accounts contract to see its type={loaine, organization}
+            isLoanie = False
+            if isLoanie:
+                # get loanie loans and pendingLoans to show them
+                loans = None
+                pendingLoans = None
+                response = render(request, 'loanie/home.html', {'loans': loans,
+                                                                'pendingLoans': pendingLoans})
 
+            else:
+                # get organization loans and to show them
+                loans = None
+                response = render(request, 'organization/home.html', {'loans': loans})
         else:
-            # get organization loans and to show them
-            loans = None
-            response = render(request, 'organization/home.html', {'loans': loans})
+            errorMsg = 'This account does not exist. Please sign up.'
+            response = render(request, 'error.html', {'errorMsg': errorMsg})
+
 
     else:
+        # Return an 'invalid login' error message.
         errorMsg = 'This account does not exist. Please sign up.'
         response = render(request, 'error.html', {'errorMsg': errorMsg})
-
     return response

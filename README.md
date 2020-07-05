@@ -23,8 +23,8 @@
 	<li><code>$ truffle deploy</code></li>
 </ul>
 </li>
-<li> Create a <code>mysql</code> account with credentials in <code>setting.py</code> file</li>
-<li> Grant all privileges to this account on database named <code>credit</code></li>
+<li> Update <code>mysql</code> credentials in <code>setting.py</code> file to match yours</li>
+<li> Grant all privileges to your account on database in <code>settings.py</code></li>
 <li> Start your <code>mysql server</code></li>
 <li>Start you <code>django</code> server</li>
 </ol>

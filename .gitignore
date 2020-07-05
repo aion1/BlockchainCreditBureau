@@ -14,3 +14,4 @@ CreditHistorySite/src/.ipynb_checkpoints/
 
 #PyCharm Django project
 CreditHistorySite/__pycache__
+CreditHistorySite/migrations/

@@ -12,10 +12,8 @@ from CreditHistorySite.src.utility import Web3Handler
 from CreditHistorySite.src.utility import TransactionDictionary
 from CreditHistorySite.src.utility import AccountsHandler
 
-# In[2]:
-def sqlConnect():
 
-    return True
+# In[2]:
 
 ganache_url = "HTTP://127.0.0.1:7545"
 web3Handler = Web3Handler(ganache_url)
@@ -49,14 +47,8 @@ HERE SHOULD BE THE END OF MAIN FUNCTIONS THAT RUN WHENEVER THE SERVER IS UP
 # In[5]:
 
 accsHandler = AccountsHandler(web3Handler, accountsConract)
-accsHandler.addAccount(web3Handler.getAccount(1), False)
-accsHandler.addAccount(web3Handler.getAccount(2), False)
-accsHandler.addAccount(web3Handler.getAccount(5), True)
-accsHandler.addAccount(web3Handler.getAccount(6), True)
-
-userContractClass = UserContract(userContract,web3Handler)
-
-accountsContractClass = AccountsContract(accountsConract,web3Handler)
+userContractClass = UserContract(userContract, web3Handler)
+accountsContractClass = AccountsContract(accountsConract, web3Handler)
 
 '''
 # In[6]:

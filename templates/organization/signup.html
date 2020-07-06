@@ -12,7 +12,7 @@
 
     <body class="bg-img">
 
-    <form method='POST' action="{% url 'org.signedup' %}" class="container">
+    <form method='POST' action="{% url 'org.signup' %}" class="container">
         {% csrf_token %}
         <label for="fname">Name of The Organiztion:</label><br>
         <input type="text" name="name" placeholder="Name of The Loaner" required><br>

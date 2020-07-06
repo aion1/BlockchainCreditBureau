@@ -3,7 +3,7 @@
 <html lang="en">
 <link rel="stylesheet" href="{% static "css/signupind.css" %}">
 <body class="bg-img">
-<form method='POST' action="{% url 'loanie.signedup' %}" class="container">
+<form method='POST' action="{% url 'loanie.signup' %}" class="container">
     {% csrf_token %}
     <label for="fname">Name</label>
     <input type="text" name="name" placeholder="Name"><br>

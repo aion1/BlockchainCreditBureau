@@ -14,21 +14,14 @@ def showLoginPage(request):
     return render(request, 'login.html')
 
 
-# Will show the signup page
-def showOrgSignupPage(request):
-    return render(request, 'organization/signup.html')
-
-
-def showLoanieSignupPage(request):
-    return render(request, 'loanie/signup.html')
-
 
 # to clean data and navigate after that to the url('org/home');
-def orgSignedup(request):
-    dataSent, successSignup = False, False
-    if request.method == 'POST':
-        dataSent = True
-    if dataSent:
+def orgSignup(request):
+    successSignup = False
+    if 'POST' != request.method:
+        response = render(request, 'organization/signup.html')
+    else:
+
         # Get the form data
         name = request.POST['name']
         commercial_no = request.POST['commercial_no']
@@ -36,6 +29,8 @@ def orgSignedup(request):
         password = request.POST['password']
         publicKey = request.POST['publickey']
         privateKey = request.POST['privatekey']
+
+        # a. create CustomUser
 
         userObject = None  # This should have all the helper function and also have web3
 
@@ -58,20 +53,16 @@ def orgSignedup(request):
             else:
                 response = redirect('org.home')  # Should pass the data of the
                 # just-registered organization
-    else:
-        # the request is not a POST request
-        errorMsg = 'Some error happend. This is not a POST request, please' \
-                   'try again.'
-        response = render(request, 'error.html', {'errorMsg': errorMsg})
 
     return response
 
 
 # to clean up the data and navigate to the url('loanie/home');
-def loanieSignedup(request):
-    # process the data an
+def loanieSignup(request):
+    if 'POST' != request.method:
+        response = render(request, 'loanie/signup.html')
 
-    return redirect('loanie.home')
+    return response
 
 
 @login_required(login_url='login')

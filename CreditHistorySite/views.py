@@ -9,10 +9,51 @@ def index(request):
     return render(request, 'index.html')
 
 
-# Transparent to the user type
-def showLoginPage(request):
-    return render(request, 'login.html')
+def login(request):
+    if 'POST' != request.method:
+        response = render(request, 'login.html')
+    else:
+        publicKey = request.POST['publickey']
+        password = request.POST['password']
 
+        # authenticate
+        user = authenticate(request, username=publicKey, password=password)
+        if user is not None:
+
+            # 1. determine if account exists
+            # HINT: accountExists = AccountsContract.accountExist(publicKey);
+            accountExists = False
+            if accountExists:
+
+                login(request, user)
+                # determine if it's a loanie or organization
+                # 3. access keystore
+
+                # 4. privateKey = web3.eth.account.decrypt(keystore, password)
+
+                # 5. access our accounts contract to see its type={loaine, organization}
+                isLoanie = False
+                if isLoanie:
+                    # get loanie loans and pendingLoans to show them
+                    loans = None
+                    pendingLoans = None
+                    response = render(request, 'loanie/home.html', {'loans': loans,
+                                                                    'pendingLoans': pendingLoans})
+
+                else:
+                    # get organization loans and to show them
+                    loans = None
+                    response = render(request, 'organization/home.html', {'loans': loans})
+            else:
+                errorMsg = 'This account does not exist. Please sign up.'
+                response = render(request, 'error.html', {'errorMsg': errorMsg})
+
+
+        else:
+            # Return an 'invalid login' error message.
+            errorMsg = 'This account does not exist. Please sign up.'
+            response = render(request, 'error.html', {'errorMsg': errorMsg})
+    return response
 
 
 # to clean data and navigate after that to the url('org/home');
@@ -61,6 +102,9 @@ def orgSignup(request):
 def loanieSignup(request):
     if 'POST' != request.method:
         response = render(request, 'loanie/signup.html')
+    else:
+        # TEST
+        response = render(request, 'error.html', {'errorMsg': 'Tesing! We will redirect you now to Home Page! BYE...'})
 
     return response
 
@@ -86,48 +130,3 @@ def loanieHome(request):
     pendingLoans = loanieObj.pendingLoansList
     return render(request, 'loanie/home.html', {'pendingLoans': pendingLoans})
 
-
-# Will go to different home page depending on the user type
-# Will be called after successful login
-def home(request):
-    publicKey = request.POST['publickey']
-    password = request.POST['password']
-
-    # authenticate
-    user = authenticate(request, username=publicKey, password=password)
-    if user is not None:
-
-        # 1. determine if account exists
-        # HINT: accountExists = AccountsContract.accountExist(publicKey);
-        accountExists = False
-        if accountExists:
-
-            login(request, user)
-            # determine if it's a loanie or organization
-            # 3. access keystore
-
-            # 4. privateKey = web3.eth.account.decrypt(keystore, password)
-
-            # 5. access our accounts contract to see its type={loaine, organization}
-            isLoanie = False
-            if isLoanie:
-                # get loanie loans and pendingLoans to show them
-                loans = None
-                pendingLoans = None
-                response = render(request, 'loanie/home.html', {'loans': loans,
-                                                                'pendingLoans': pendingLoans})
-
-            else:
-                # get organization loans and to show them
-                loans = None
-                response = render(request, 'organization/home.html', {'loans': loans})
-        else:
-            errorMsg = 'This account does not exist. Please sign up.'
-            response = render(request, 'error.html', {'errorMsg': errorMsg})
-
-
-    else:
-        # Return an 'invalid login' error message.
-        errorMsg = 'This account does not exist. Please sign up.'
-        response = render(request, 'error.html', {'errorMsg': errorMsg})
-    return response

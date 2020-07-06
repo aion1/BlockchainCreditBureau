@@ -22,11 +22,7 @@ from . import views
 urlpatterns = [
                   # path('admin/', admin.site.urls),
                   path('', views.index, name='index'),
-                  path('login', views.showLoginPage, name='login'),
-
-                  # Intermediate page to determine whether the user is a loanie or organization
-                  # after logging in
-                  path('home', views.home, name='home'),
+                  path('login', views.login, name='login'),
 
                   # Signup urls
                   path('org/signup', views.orgSignup, name='org.signup'),

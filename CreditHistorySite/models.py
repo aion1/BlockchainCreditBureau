@@ -3,13 +3,15 @@ from django.db import models
 from enum import Enum
 from CreditHistorySite.src.jsonserializer import JSONField
 
+
 class CustomUserType(Enum):
-    loanie = False
+    Loanie = False
     Organization = True
 
 
 class CustomUser(AbstractUser):
     type = models.BooleanField(default=None)  # False=Loanie, True=Organization
+    publicKey = models.CharField(max_length=42)
 
     def __str__(self):
         return self.username
@@ -26,14 +28,12 @@ class CustomUserProfile(models.Model):
 class Organization(CustomUserProfile):
     customUser = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='org_profile')
     commertialNum = models.CharField(max_length=100)
-    publicKey = models.CharField(max_length=42)
     keystore = JSONField(null=True, blank=True)
     # We should add a logo later
 
 
 class Loanie(CustomUserProfile):
     customUser = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='loanie_profile')
-    publicKey = models.CharField(max_length=42)
     keystore = JSONField(null=True, blank=True)
 
 

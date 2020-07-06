@@ -6,9 +6,11 @@
 <form method='POST' action="{% url 'loanie.signup' %}" class="container">
     {% csrf_token %}
     <label for="fname">Name</label>
-    <input type="text" name="name" placeholder="Name"><br>
+    <input type="text" name="username" placeholder="Name"><br>
+
     <label for="fname">email</label>
-    <input type="email" name="name" placeholder="some_user@example.com"><br>
+    <input type="email" name="email" placeholder="some_user@example.com"><br>
+
     <label for="fname">Password:</label><br>
     <input type="password" name="password" placeholder="mbh#-oep#213jg435@$%"><br>
     <button type="submit" id="signup">Sign Up</button>

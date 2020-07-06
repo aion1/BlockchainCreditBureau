@@ -24,6 +24,30 @@ class TransactionDictionary:
         })
 
 
+class EthTransactionDict:
+    def __init__(self, gas, sender, web3, to, value):
+        self.gas = gas
+        self.sender = sender
+        self.web3 = web3
+        self.to = to
+        self.value = value
+
+    def __new__(cls, gas, sender, web3, to, value):
+        cls.gas = gas
+        cls.sender = sender
+        cls.web3 = web3
+        cls.to = to
+        cls.value = value
+        return dict({
+            'gas': cls.gas,
+            'gasPrice': cls.web3.toWei('1', 'gwei'),
+            'from': cls.sender,
+            'to': cls.to,
+            'value': cls.web3.toWei(cls.value, 'ether'),
+            'nonce': cls.web3.eth.getTransactionCount(cls.sender)
+        })
+
+
 class Web3Handler:
     def __init__(self, ganache_url):
         self.ganache_url = ganache_url
@@ -33,7 +57,9 @@ class Web3Handler:
         if operating_system == 'Windows':
             self.d = '\\'
         self.web3.eth.defaultAccount = self.web3.eth.accounts[0]
+        self.defaultAccount = self.web3.eth.defaultAccount
         self.defaultKey = 'a0dd259af21c47254d99d6e22e0ac7a9b6da2ed7802a16a8cb264282e279037a'
+        self.ethAccount = self.web3.eth.account
 
     def getContractABI(self, filename):
         with open(os.path.join(BASE_DIR, (
@@ -67,8 +93,17 @@ class Web3Handler:
 
     def createNewAccount(self, password):
         new_account = self.web3.eth.account.create()
+        tx_hash = self.sendEthFromDefault(new_account.address, 3)
         keystore = self.web3.eth.account.encrypt(new_account.privateKey, password)
         return keystore
+
+    def sendEthFromDefault(self, receiver, amount):
+        transactionDict = EthTransactionDict(gas=100000,
+                                             sender=self.defaultAccount,
+                                             web3=self.web3,
+                                             value=amount,
+                                             to=receiver)
+        return self.transact(transactionDict, self.defaultKey)
 
 
 class AccountsHandler:
@@ -77,6 +112,7 @@ class AccountsHandler:
         self.accountsContract = accountsContract
 
     def addAccount(self, public_key, account_type):
+        public_key = self.web3Handler.web3.toChecksumAddress(public_key)
         self.accountsContract.functions.add(public_key, account_type).transact()
 
 

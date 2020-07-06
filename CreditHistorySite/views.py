@@ -1,11 +1,12 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as authLogin
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 
-from CreditHistorySite.models import CustomUser, CustomUserType, CustomUserProfile, Organization
+from CreditHistorySite.models import CustomUser, CustomUserType, CustomUserProfile, Organization, Loanie
 from CreditHistorySite.src import main
-from CreditHistorySite.src.loanie import Loanie
+from CreditHistorySite.src.loanie import Web3Loanie
 from CreditHistorySite.src.utility import EthAccount
 
 
@@ -78,22 +79,26 @@ def orgSignup(request):
         customUser = CustomUser(username=username, email=email,
                                 type=CustomUserType.Organization.value)
         customUserProfile = CustomUserProfile(customUser)
-        customUser.save()
 
         # b. create the keystore that has the encrypted privatekey
         web3Handler = main.web3Handler
         ethAccount = EthAccount(web3Handler)
         keystore = ethAccount.create(password)  # this creates an account and returns its associated keysotre
-        org = Organization(customUser=customUser, commertialNum=commercial_no, keystore=keystore)
-        org.save()
 
-        if org.pk is None:
-            errorMsg = 'Sorry some error occurred while creating this account!'
-            response = render(request, 'error.html', {'errorMsg': errorMsg})
-        else:
+        customUser.publicKey = keystore['address']
+        try:
+            customUser.save()
+            org = Organization(customUser=customUser, commertialNum=commercial_no, keystore=keystore)
+            org.save()
+            # Add the organization into our Accounts Contract
+            accountsHandler = main.accsHandler
+            accountsHandler.addAccount(customUser.publicKey, CustomUserType.Organization.value)
+
             # response = redirect('org.home')  # Should pass the data of the
             response = redirect('index')
-
+        except IntegrityError:
+            errorMsg = 'Sorry! This account already exists!'
+            response = render(request, 'error.html', {'errorMsg': errorMsg})
     return response
 
 
@@ -102,10 +107,38 @@ def loanieSignup(request):
     if 'POST' != request.method:
         response = render(request, 'loanie/signup.html')
     else:
-        # TEST
-        response = render(request, 'error.html', {'errorMsg': 'Tesing! We will redirect you now to Home Page! BYE...'})
+        # Get the form data
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+
+        # validation should go here
+
+        # a. create CustomUser
+        customUser = CustomUser(username=username, email=email,
+                                type=CustomUserType.Loanie.value)
+        customUserProfile = CustomUserProfile(customUser)
+
+        # b. create the keystore that has the encrypted privatekey
+        web3Handler = main.web3Handler
+        ethAccount = EthAccount(web3Handler)
+        keystore = ethAccount.create(password)  # this creates an account and returns its associated keysotre
+        customUser.publicKey = keystore['address']
+        try:
+            customUser.save()
+            loanie = Loanie(customUser=customUser, keystore=keystore)
+            loanie.save()
+            # Add the organization into our Accounts Contract
+            accountsHandler = main.accsHandler
+            accountsHandler.addAccount(customUser.publicKey, CustomUserType.Loanie.value)
+            # response = redirect('org.home')  # Should pass the data of the
+            response = redirect('index')
+        except IntegrityError:
+            errorMsg = 'Sorry! This account already exists!'
+            response = render(request, 'error.html', {'errorMsg': errorMsg})
 
     return response
+
 
 
 @login_required(login_url='login')
@@ -124,7 +157,7 @@ def loanieHome(request):
     web3Handler = main.web3Handler
     userContract = main.userContractClass
     accountsContract = main.accountsContractClass
-    loanieObj = Loanie(public_key, private_key, web3Handler, userContract)
+    loanieObj = Web3Loanie(public_key, private_key, web3Handler, userContract)
     loanieObj.buildPendingLoansList(accountsContract)
     pendingLoans = loanieObj.pendingLoansList
     return render(request, 'loanie/home.html', {'pendingLoans': pendingLoans})

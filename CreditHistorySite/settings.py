@@ -127,3 +127,7 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = os.path.join(BASE_DIR, 'CreditHistorySite/media/')
 AUTH_USER_MODEL = 'CreditHistorySite.CustomUser'
+AUTHENTICATION_BACKENDS = (
+    'CreditHistorySite.backends.BaseBackend',
+    'CreditHistorySite.backends.AddressBackend',
+)

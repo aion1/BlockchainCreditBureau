@@ -21,34 +21,32 @@ def login(request):
         publicKey = request.POST['publickey']
         password = request.POST['password']
 
-        # authenticate
-        user = authenticate(request, username=publicKey, password=password)
-        if user is not None:
+        ethAccount = EthAccount(main.web3Handler)
+        # teset
+        print('innisifnisnf')
+        customUser = authenticate(request, username=publicKey, password=password, ethAccount=ethAccount)
 
+        # authenticate
+        if customUser is not None:
             # 1. determine if account exists
             # HINT: accountExists = AccountsContract.accountExist(publicKey);
-            accountExists = False
+            accountExists = True
             if accountExists:
 
-                authLogin(request, user)
-                # determine if it's a loanie or organization
-                # 3. access keystore
-
-                # 4. privateKey = web3.eth.account.decrypt(keystore, password)
+                authLogin(request, customUser)
 
                 # 5. access our accounts contract to see its type={loaine, organization}
-                isLoanie = False
+                isLoanie = not customUser.type
                 if isLoanie:
                     # get loanie loans and pendingLoans to show them
                     loans = None
                     pendingLoans = None
                     response = render(request, 'loanie/home.html', {'loans': loans,
                                                                     'pendingLoans': pendingLoans})
-
                 else:
                     # get organization loans and to show them
                     loans = None
-                    response = render(request, 'organization/home.html', {'loans': loans})
+                    response = redirect('org.home')
             else:
                 errorMsg = 'This account does not exist. Please sign up.'
                 response = render(request, 'error.html', {'errorMsg': errorMsg})
@@ -81,8 +79,7 @@ def orgSignup(request):
         customUserProfile = CustomUserProfile(customUser)
 
         # b. create the keystore that has the encrypted privatekey
-        web3Handler = main.web3Handler
-        ethAccount = EthAccount(web3Handler)
+        ethAccount = EthAccount(main.web3Handler)
         keystore = ethAccount.create(password)  # this creates an account and returns its associated keysotre
 
         customUser.publicKey = keystore['address']
@@ -120,8 +117,7 @@ def loanieSignup(request):
         customUserProfile = CustomUserProfile(customUser)
 
         # b. create the keystore that has the encrypted privatekey
-        web3Handler = main.web3Handler
-        ethAccount = EthAccount(web3Handler)
+        ethAccount = EthAccount(main.web3Handler)
         keystore = ethAccount.create(password)  # this creates an account and returns its associated keysotre
         customUser.publicKey = keystore['address']
         try:

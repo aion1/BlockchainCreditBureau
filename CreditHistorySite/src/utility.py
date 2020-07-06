@@ -132,3 +132,8 @@ class EthAccount:
     def create(self, password):
         keystore = self.web3Handler.createNewAccount(password)
         return keystore
+
+    def decrypt(self, keystore, password):
+        privateKey = self.web3Handler.web3.eth.account.decrypt(keystore, password)
+        # self.web3Handler.web3.toChecksumAddress
+        return self.web3Handler.web3.toHex(privateKey)

@@ -11,7 +11,8 @@ class CustomUserType(Enum):
 
 class CustomUser(AbstractUser):
     type = models.BooleanField(default=None)  # False=Loanie, True=Organization
-    publicKey = models.CharField(max_length=42)
+    publicKey = models.CharField(max_length=42, unique=True, db_index=True, primary_key=True)
+    USERNAME_FIELD = 'publicKey'
 
     def __str__(self):
         return self.username

@@ -11,16 +11,27 @@
 <ul>
 	<li><code>web3</code></li>	
 	<li><code>django</code></li>	
+	<li><code>mysqlclient</code></li>	
 	<li><code>jupyter</code>(optionally)</li>	
 </ul>
 <h2>To run:</h2></br>
 <ol>
-<li>Launch <code>Ganache</code></li>
-<li>Compile smart contracts. Inside <code>Solidity/</code>
-<ul>
-	<li><code>$ truffle compile</code></li>
-	<li><code>$ truffle deploy</code></li>
-</ul>
-</li>
-<li>Start you <code>django</code> server</li>
+    <li>Launch <code>Ganache</code></li>
+    <li>Compile smart contracts. Inside <code>Solidity/</code>
+    <ul>
+        <li><code>$ truffle compile</code></li>
+        <li><code>$ truffle deploy</code></li>
+    </ul>
+    </li>
+    <li>Update <code>mysql</code> credentials in <code>setting.py</code> file to match yours</li>
+    <li>Grant all privileges to your account on database in <code>settings.py</code></li>
+    <li>Start your <code>mysql server</code></li>
+    <li>Start you <code>django</code> server</li>
+    <li>
+        <p>Inside your project <code>root directory</code>:</p>
+        <ol>
+            <li>Run <code>$ python manage.py makemigrations CreditHistorySite</code> </li>
+            <li>Run <code>$ python manage.py migrate</code></li>
+        </ol>
+    </li>
 </ol>

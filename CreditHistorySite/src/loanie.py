@@ -2,7 +2,7 @@ from CreditHistorySite.src.contracts import UserContract, AccountsContract
 from CreditHistorySite.src.utility import PendingLoan
 
 
-class Loanie:
+class Web3Loanie:
     pendingLoansList = []
 
     def __init__(self, address, key, web3Handler, userContract: UserContract):

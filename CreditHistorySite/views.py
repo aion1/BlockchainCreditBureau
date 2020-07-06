@@ -41,8 +41,7 @@ def login(request):
                     # get loanie loans and pendingLoans to show them
                     loans = None
                     pendingLoans = None
-                    response = render(request, 'loanie/home.html', {'loans': loans,
-                                                                    'pendingLoans': pendingLoans})
+                    response = redirect('loanie.home')
                 else:
                     # get organization loans and to show them
                     loans = None

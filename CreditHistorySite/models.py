@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from enum import Enum
-
+from CreditHistorySite.src.jsonserializer import JSONField
 
 class CustomUserType(Enum):
     loanie = False
@@ -16,32 +16,32 @@ class CustomUser(AbstractUser):
 
 
 class CustomUserProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='profile',
-                                primary_key=True)
+    customUser = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='profile',
+                                      primary_key=True)
 
     class Meta:
         abstract = True
 
 
 class Organization(CustomUserProfile):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='org_profile')
+    customUser = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='org_profile')
     commertialNum = models.CharField(max_length=100)
     publicKey = models.CharField(max_length=42)
-    keystore = models.FileField(upload_to='keystores/organizations/{0}'.format(CustomUser.pk))
+    keystore = JSONField(null=True, blank=True)
     # We should add a logo later
 
 
 class Loanie(CustomUserProfile):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='loanie_profile')
+    customUser = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='loanie_profile')
     publicKey = models.CharField(max_length=42)
-    keystore = models.FileField(upload_to='keystores/loanies/{0}'.format(CustomUser.pk))
+    keystore = JSONField(null=True, blank=True)
 
 
 # to make an object from Organization
 '''
 customUser = CustomUser(first_name='first', email='email@example.com', ..., type=CustomUserType.Organization.value)
-userProfile = UserProfile(user=customUser)
+customUserProfile = CustomUserProfile(user=customUser)
 customUser.save()
-org1 = Organization(user=customUser, commertialNum='42424', ...)
+org1 = Organization(customUser=customUser, commertialNum='42424', ...)
 org1.save()
 '''

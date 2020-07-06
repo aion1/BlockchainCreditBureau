@@ -14,22 +14,23 @@
 
     <form method='POST' action="{% url 'org.signup' %}" class="container">
         {% csrf_token %}
-        <label for="fname">Name of The Organiztion:</label><br>
-        <input type="text" name="name" placeholder="Name of The Loaner" required><br>
-        <label for="fname">Commercial No. of The Organiztion:</label><br>
-        <input type="text" name="commercial_no" placeholder="Commercial Registration No." required><br>
+        <label for="fname">Organiztion Name:</label><br>
+        <input type="text" name="username" placeholder="CIB" required><br>
+
+        <label for="fname">Email:</label><br>
+        <input type="email" name="email" placeholder="organization@org.org" required><br><br>
+
+        <label for="fname">Organiztion Commercial No.:</label><br>
+        <input type="text" name="commercial_no" placeholder="123klk381" required><br>
+
         <label for="fname">Select logo:</label></br>
-        <input type="file" name="logo" placeholder="Logo of The Loaner"></label><br>
-        <label for="fname">Public key:</label></br>
-        <input type="text" name="publickey" placeholder="Enter your public key" required><br>
-        <label for="fname">Private key:</label></br>
-                <input type="password" name="privatekey" placeholder="Enter your private key" required><br>
-                <label for="fname">Password:</label></br>
-                <input type="password" name="password" placeholder="Enter the password"><br>
+        <input type="file" name="logo" placeholder="Logo of The Loaner"></label><br><br>
 
+        <label for="fname">Password:</label></br>
+        <input type="password" name="password" placeholder="wsjfi0123@#$115nj2"><br>
 
-                <button type="submit" id="signup">Sign Up</button>
-            </form>
-            
+        <button type="submit" id="signup">Sign Up</button>
+    </form>
+
     </body>
 </html>

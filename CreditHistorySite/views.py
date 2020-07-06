@@ -1,8 +1,12 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as authLogin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+
+from CreditHistorySite.models import CustomUser, CustomUserType, CustomUserProfile, Organization
 from CreditHistorySite.src import main
 from CreditHistorySite.src.loanie import Loanie
+from CreditHistorySite.src.utility import EthAccount
 
 
 def index(request):
@@ -25,7 +29,7 @@ def login(request):
             accountExists = False
             if accountExists:
 
-                login(request, user)
+                authLogin(request, user)
                 # determine if it's a loanie or organization
                 # 3. access keystore
 
@@ -62,38 +66,33 @@ def orgSignup(request):
     if 'POST' != request.method:
         response = render(request, 'organization/signup.html')
     else:
-
         # Get the form data
-        name = request.POST['name']
+        username = request.POST['username']
+        email = request.POST['email']
         commercial_no = request.POST['commercial_no']
-        logo = request.POST['logo']
         password = request.POST['password']
-        publicKey = request.POST['publickey']
-        privateKey = request.POST['privatekey']
+
+        # validation should go here
 
         # a. create CustomUser
+        customUser = CustomUser(username=username, email=email,
+                                type=CustomUserType.Organization.value)
+        customUserProfile = CustomUserProfile(customUser)
+        customUser.save()
 
-        userObject = None  # This should have all the helper function and also have web3
+        # b. create the keystore that has the encrypted privatekey
+        web3Handler = main.web3Handler
+        ethAccount = EthAccount(web3Handler)
+        keystore = ethAccount.create(password)  # this creates an account and returns its associated keysotre
+        org = Organization(customUser=customUser, commertialNum=commercial_no, keystore=keystore)
+        org.save()
 
-        # add the account in the Accounts contract
-        accountExists = False
-        if accountExists:
-            errorMsg = 'Sorry this account exists in our system.'
+        if org.pk is None:
+            errorMsg = 'Sorry some error occurred while creating this account!'
             response = render(request, 'error.html', {'errorMsg': errorMsg})
         else:
-            # ALERT: THIS IS TEMPORARY IN DEVELOPMENT, SHOULD BE CHANGED WHEN MIGRATING TO THE MAINNET
-            # validate that this public key is on the Ganache private chain on our node
-            # ecryptedAccount = web3.eth.account.encrypt('8700bbbe5cc527282fc13aa85dfc9cbe2493cdaa4b87fea14c0b30ad56c129d7',
-            # 'waliedahmed')
-
-            # Save in database
-            savedInDB = False
-            if not savedInDB:
-                errorMsg = 'Some error happend. Sorry for that'
-                response = render(request, 'error.html', {'errorMsg': errorMsg})
-            else:
-                response = redirect('org.home')  # Should pass the data of the
-                # just-registered organization
+            # response = redirect('org.home')  # Should pass the data of the
+            response = redirect('index')
 
     return response
 

@@ -65,6 +65,11 @@ class Web3Handler:
     def getAccount(self, index):
         return self.web3.eth.accounts[index]
 
+    def createNewAccount(self, password):
+        new_account = self.web3.eth.account.create()
+        keystore = self.web3.eth.account.encrypt(new_account.privateKey, password)
+        return keystore
+
 
 class AccountsHandler:
     def __init__(self, web3Handler, accountsContract):
@@ -82,3 +87,12 @@ class PendingLoan:
         self.id = id
         self.installmentsNum = installmentsNum
         self.interest = interest
+
+
+class EthAccount:
+    def __init__(self, web3Handler):
+        self.web3Handler = web3Handler
+
+    def create(self, password):
+        keystore = self.web3Handler.createNewAccount(password)
+        return keystore

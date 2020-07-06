@@ -15,7 +15,7 @@ class CustomUser(AbstractUser):
         return self.username
 
 
-class UserProfile(models.Model):
+class CustomUserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='profile',
                                 primary_key=True)
 
@@ -23,7 +23,7 @@ class UserProfile(models.Model):
         abstract = True
 
 
-class Organization(UserProfile):
+class Organization(CustomUserProfile):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='org_profile')
     commertialNum = models.CharField(max_length=100)
     publicKey = models.CharField(max_length=42)
@@ -31,7 +31,7 @@ class Organization(UserProfile):
     # We should add a logo later
 
 
-class Loanie(UserProfile):
+class Loanie(CustomUserProfile):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='loanie_profile')
     publicKey = models.CharField(max_length=42)
     keystore = models.FileField(upload_to='keystores/loanies/{0}'.format(CustomUser.pk))

@@ -45,6 +45,14 @@
 <section class="call-to-action-area section-padding-100 bg-img bg-overlay"
          style="background-image: url({% static "img/bg-img/6.jpg" %})">
     <div class="container">
+        <div class="md-form row">
+            <div class="col-1">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
                 <div class="call-to-action-content text-center">
@@ -54,18 +62,18 @@
                 </div>
             </div>
         </div>
-        </div>
-    </section>
-    <!-- ##### Call To Action Area End ##### -->
+    </div>
+</section>
+<!-- ##### Call To Action Area End ##### -->
 
-    <br><br>
-    <!-- Search form -->
-    <!-- 0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c -->
-    <div class="input-group md-form form-sm form-1 pl-0">
-        <div class="input-group-prepend">
+<br><br>
+<!-- Search form -->
+<!-- 0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c -->
+<div class="input-group md-form form-sm form-1 pl-0">
+    <div class="input-group-prepend">
             <span class="input-group-text purple lighten-3" id="basic-text1"><i class="fas fa-search text-white"
-                    aria-hidden="true"></i></span>
-        </div>
+                                                                                aria-hidden="true"></i></span>
+    </div>
         <input class="form-control my-0 py-1" type="text" placeholder="0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c"
             aria-label="Search">
     </div>

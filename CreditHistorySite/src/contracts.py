@@ -1,7 +1,7 @@
 from CreditHistorySite.src.utility import TransactionDictionary
 
 
-class UserContract:
+class UserContractPython:
     def __init__(self, userContract, web3Handler):
         self.userContract = userContract
         self.web3Handler = web3Handler
@@ -17,6 +17,7 @@ class UserContract:
         receipt = self.web3Handler.getTransactionReceipt(transaction_hash)
         rich_logs = self.userContract.events.getAmounts().processReceipt(receipt)
         event_values = rich_logs[0]['args']
+
         self.pendingLoansEventValues = event_values
         self.eventValuesLen = self.getEventLength()
 
@@ -24,17 +25,18 @@ class UserContract:
         return len(self.pendingLoansEventValues['_amounts'])
 
 
-class AccountsContract:
+class AccountsContractPython:
     def __init__(self, accountsContract, web3Handler):
         self.accountsContract = accountsContract
         self.web3Handler = web3Handler
 
     def accountExists(self, accountAddress):
-        accountIndex = self.accountsContract.functions.getIndex(accountAddress).call()
+        accountIndex = self.accountsContract.functions.getIndex(
+            self.web3Handler.toChecksumAddress(accountAddress)).call()
         return False if accountIndex == -1 else True
 
     def isLoanie(self, accountIndex):
         return not self.accountsContract.functions.getType(int(accountIndex)).call()
 
-    def getIndex(self,accountAddress):
-        return self.accountsContract.functions.getIndex(accountAddress).call()
+    def getIndex(self, accountAddress):
+        return self.accountsContract.functions.getIndex(self.web3Handler.toChecksumAddress(accountAddress)).call()

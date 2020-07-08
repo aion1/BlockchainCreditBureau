@@ -1,27 +1,26 @@
-from CreditHistorySite.src.contracts import UserContract, AccountsContract
+from CreditHistorySite.src.contracts import UserContractPython, AccountsContractPython
 from CreditHistorySite.src.utility import PendingLoan
 
 
 class Web3Loanie:
     pendingLoansList = []
 
-    def __init__(self, address, key, web3Handler, userContract: UserContract):
+    def __init__(self, address, key, web3Handler, userContractPython: UserContractPython):
         self.address = address
         self.key = key
         self.web3Handler = web3Handler
-        self.userContract = userContract
+        self.userContractPython = userContractPython
 
     def getPendingLoans(self):
-        event_values = self.userContract.getPendingLoans(self.address, self.key)  # Dictionary
-        return event_values
+        self.userContractPython.getPendingLoans(self.address, self.key)  # Dictionary
 
-    def buildPendingLoansList(self, accountsContract: AccountsContract):
+    def buildPendingLoansList(self, accountsContract: AccountsContractPython):
         if accountsContract.accountExists(self.address):
             index = accountsContract.getIndex(self.address)
             if accountsContract.isLoanie(index):
                 self.getPendingLoans()
-                values = self.userContract.pendingLoansEventValues
-                for i in range(self.userContract.eventValuesLen):
+                values = self.userContractPython.pendingLoansEventValues
+                for i in range(self.userContractPython.eventValuesLen):
                     string = ''
                     for key in values:
                         string += str(values[key][i]) + ' '

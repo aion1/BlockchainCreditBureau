@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as authLogin
+from django.contrib.auth import logout as authLogout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
@@ -14,47 +15,47 @@ def index(request):
     return render(request, 'index.html')
 
 
+def logout(request):
+    authLogout(request)
+    return redirect('index')
+
+
 def login(request):
     if 'POST' != request.method:
         response = render(request, 'login.html')
     else:
-        publicKey = request.POST['publickey']
-        password = request.POST['password']
+        if not request.user.is_authenticated:
+            publicKey = request.POST['publickey']
+            password = request.POST['password']
 
-        ethAccount = EthAccount(main.web3Handler)
-        # teset
-        print('innisifnisnf')
-        customUser = authenticate(request, username=publicKey, password=password, ethAccount=ethAccount)
+            ethAccount = EthAccount(main.web3Handler)
+            # teset
+            customUser = authenticate(request, username=publicKey, password=password, ethAccount=ethAccount)
 
-        # authenticate
-        if customUser is not None:
-            # 1. determine if account exists
-            # HINT: accountExists = AccountsContract.accountExist(publicKey);
-            accountExists = True
-            if accountExists:
-
-                authLogin(request, customUser)
-
-                # 5. access our accounts contract to see its type={loaine, organization}
-                isLoanie = not customUser.type
-                if isLoanie:
-                    # get loanie loans and pendingLoans to show them
-                    loans = None
-                    pendingLoans = None
-                    response = redirect('loanie.home')
+            # authenticate
+            if customUser is not None:
+                # 1. determine if account exists
+                # HINT: accountExists = AccountsContract.accountExist(publicKey);
+                accountExists = True
+                if accountExists:
+                    authLogin(request, customUser)
+                    # 5. access our accounts contract to see its type={loaine, organization}
+                    isLoanie = not customUser.type
+                    if isLoanie:
+                        response = redirect('loanie.home')
+                    else:
+                        response = redirect('org.home')
                 else:
-                    # get organization loans and to show them
-                    loans = None
-                    response = redirect('org.home')
+                    errorMsg = 'This account does not exist. Please sign up.'
+                    response = render(request, 'error.html', {'errorMsg': errorMsg})
+
+
             else:
+                # Return an 'invalid login' error message.
                 errorMsg = 'This account does not exist. Please sign up.'
                 response = render(request, 'error.html', {'errorMsg': errorMsg})
-
-
         else:
-            # Return an 'invalid login' error message.
-            errorMsg = 'This account does not exist. Please sign up.'
-            response = render(request, 'error.html', {'errorMsg': errorMsg})
+            response = redirect('index')
     return response
 
 
@@ -90,8 +91,9 @@ def orgSignup(request):
             accountsHandler = main.accsHandler
             accountsHandler.addAccount(customUser.publicKey, CustomUserType.Organization.value)
 
-            # response = redirect('org.home')  # Should pass the data of the
-            response = redirect('index')
+            customUser = authenticate(request, username=customUser.publicKey, password=password, ethAccount=ethAccount)
+            authLogin(request, customUser)
+            response = redirect('org.home')
         except IntegrityError:
             errorMsg = 'Sorry! This account already exists!'
             response = render(request, 'error.html', {'errorMsg': errorMsg})
@@ -126,8 +128,10 @@ def loanieSignup(request):
             # Add the organization into our Accounts Contract
             accountsHandler = main.accsHandler
             accountsHandler.addAccount(customUser.publicKey, CustomUserType.Loanie.value)
-            # response = redirect('org.home')  # Should pass the data of the
-            response = redirect('index')
+
+            customUser = authenticate(request, username=customUser.publicKey, password=password, ethAccount=ethAccount)
+            authLogin(request, customUser)
+            response = redirect('loanie.home')
         except IntegrityError:
             errorMsg = 'Sorry! This account already exists!'
             response = render(request, 'error.html', {'errorMsg': errorMsg})
@@ -135,25 +139,25 @@ def loanieSignup(request):
     return response
 
 
-
 @login_required(login_url='login')
 def orgHome(request):
-    # show the data of a logged in organization
-    return render(request, 'organization/home.html')
+    if request.user.type == CustomUserType.Loanie.value:
+        response = render(request, 'organization/home.html')
+    else:
+        response = redirect('loanie.home')
+    return response
 
 
 @login_required(login_url='login')
 def loanieHome(request):
-    # I should here have the publickey and password after logining in
-    # Then resotre the privatekey from a keystore
-    # Then show the loans and pending loans of a user in their home page
-    public_key = input("Enter your public key: ")
-    private_key = input("Enter your private key: ")
-    web3Handler = main.web3Handler
-    userContract = main.userContractClass
-    accountsContract = main.accountsContractClass
-    loanieObj = Web3Loanie(public_key, private_key, web3Handler, userContract)
-    loanieObj.buildPendingLoansList(accountsContract)
-    pendingLoans = loanieObj.pendingLoansList
-    return render(request, 'loanie/home.html', {'pendingLoans': pendingLoans})
+    if request.user.type == CustomUserType.Loanie.value:
+        public_key = request.user.pk
+        private_key = request.session.get('privateKey')
 
+        loanieObj = Web3Loanie(public_key, private_key, main.web3Handler, main.userContractPython)
+        loanieObj.buildPendingLoansList(main.accountsContractPython)
+        pendingLoans = loanieObj.pendingLoansList
+        response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoans})
+    else:
+        response = redirect('org.home')
+    return response

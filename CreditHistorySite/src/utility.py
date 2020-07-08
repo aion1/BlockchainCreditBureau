@@ -9,13 +9,13 @@ from CreditHistorySite.settings import BASE_DIR
 class TransactionDictionary:
     def __init__(self, gas, sender, web3):
         self.gas = gas
-        self.sender = sender
         self.web3 = web3
+        self.sender = sender
 
     def __new__(cls, gas, sender, web3):
         cls.gas = gas
-        cls.sender = sender
         cls.web3 = web3
+        cls.sender = cls.web3.toChecksumAddress(sender)
         return dict({
             'gas': cls.gas,
             'gasPrice': cls.web3.toWei('1', 'gwei'),
@@ -27,16 +27,16 @@ class TransactionDictionary:
 class EthTransactionDict:
     def __init__(self, gas, sender, web3, to, value):
         self.gas = gas
-        self.sender = sender
         self.web3 = web3
+        self.sender = sender
         self.to = to
         self.value = value
 
     def __new__(cls, gas, sender, web3, to, value):
         cls.gas = gas
-        cls.sender = sender
         cls.web3 = web3
-        cls.to = to
+        cls.sender = cls.web3.toChecksumAddress(sender)
+        cls.to = cls.web3.toChecksumAddress(to)
         cls.value = value
         return dict({
             'gas': cls.gas,
@@ -104,6 +104,9 @@ class Web3Handler:
                                              value=amount,
                                              to=receiver)
         return self.transact(transactionDict, self.defaultKey)
+
+    def toChecksumAddress(self, address):
+        return self.web3.toChecksumAddress(address)
 
 
 class AccountsHandler:

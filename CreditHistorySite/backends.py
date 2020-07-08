@@ -12,34 +12,22 @@ class AddressBackend(BaseBackend):
         except CustomUser.DoesNotExist:
             return None
 
-        try:
+        if customUser.type == CustomUserType.Organization.value:
             org = customUser.org_profile
             keystore = org.keystore
-            # decrypt here
-            ethAccount = kwargs['ethAccount']
-            privateKey = ethAccount.decrypt(keystore, password)
-            print(privateKey)
+        else:
+            loanie = customUser.loanie_profile
+            keystore = loanie.keystore
 
-            request.session['privateKey'] = privateKey
-
-            print(request.session['privateKey'])
-            if privateKey is not None:
-                return customUser
-
-        except ObjectDoesNotExist:
-            try:
-                loanie = customUser.loanie_profile
-                keystore = loanie.keystore
-                # decrypt here
-                ethAccount = kwargs['ethAccount']
-                privateKey = ethAccount.decrypt(keystore, password)
-                print(privateKey)
-                request.session['privateKey'] = privateKey
-                if privateKey is not None:
-                    return customUser
-
-            except ObjectDoesNotExist:
-                return None
+        # decrypt here
+        ethAccount = kwargs['ethAccount']
+        privateKey = ethAccount.decrypt(keystore, password)
+        request.session['privateKey'] = privateKey
+        print('private key in session', request.session.get('privateKey'))
+        if privateKey is not None:
+            return customUser
+        else:
+            return None
 
     def get_user(self, user_id):
         try:

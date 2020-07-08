@@ -7,7 +7,7 @@ from web3 import Web3
 from getpass import getpass
 import random
 
-from CreditHistorySite.src.contracts import UserContract, AccountsContract
+from CreditHistorySite.src.contracts import UserContractPython, AccountsContractPython
 from CreditHistorySite.src.utility import Web3Handler
 from CreditHistorySite.src.utility import TransactionDictionary
 from CreditHistorySite.src.utility import AccountsHandler
@@ -47,8 +47,8 @@ HERE SHOULD BE THE END OF MAIN FUNCTIONS THAT RUN WHENEVER THE SERVER IS UP
 # In[5]:
 
 accsHandler = AccountsHandler(web3Handler, accountsConract)
-userContractClass = UserContract(userContract, web3Handler)
-accountsContractClass = AccountsContract(accountsConract, web3Handler)
+userContractPython = UserContractPython(userContract, web3Handler)
+accountsContractPython = AccountsContractPython(accountsConract, web3Handler)
 
 '''
 # In[6]:

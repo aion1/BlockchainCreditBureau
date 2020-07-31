@@ -40,3 +40,16 @@ class AccountsContractPython:
 
     def getIndex(self, accountAddress):
         return self.accountsContract.functions.getIndex(self.web3Handler.toChecksumAddress(accountAddress)).call()
+
+
+class OrganiztionContractPython:
+    def __init__(self, organiztionContract, web3Handler):
+        self.organizationContract = organiztionContract
+        self.web3Handler = web3Handler
+
+    def createLoanTransaction(self, loanieAddress, loanerAddress, amount, installmentsNum, interest):
+        transactionDict = TransactionDictionary(3000000, loanerAddress, self.web3Handler.web3)
+        transaction = self.organizationContract \
+            .functions.createLoan(self.web3Handler.toChecksumAddress(loanieAddress), amount, installmentsNum, interest) \
+            .buildTransaction(transactionDict)
+        return transaction

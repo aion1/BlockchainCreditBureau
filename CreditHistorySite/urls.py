@@ -31,5 +31,6 @@ urlpatterns = [
                   # After logging in urls (must be authenticated)
                   path('loanie/home', views.loanieHome, name='loanie.home'),
                   path('org/home', views.orgHome, name='org.home'),
+                  path('org/createloan', views.createLoan, name='org.createloan'),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

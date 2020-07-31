@@ -12,6 +12,7 @@ class CustomUserType(Enum):
 class CustomUser(AbstractUser):
     type = models.BooleanField(default=None)  # False=Loanie, True=Organization
     publicKey = models.CharField(max_length=42, unique=True, db_index=True, primary_key=True)
+    keystore = JSONField(null=True, blank=True)
     USERNAME_FIELD = 'publicKey'
 
     def __str__(self):
@@ -29,13 +30,11 @@ class CustomUserProfile(models.Model):
 class Organization(CustomUserProfile):
     customUser = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='org_profile')
     commertialNum = models.CharField(max_length=100)
-    keystore = JSONField(null=True, blank=True)
     # We should add a logo later
 
 
 class Loanie(CustomUserProfile):
     customUser = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='loanie_profile')
-    keystore = JSONField(null=True, blank=True)
 
 
 # to make an object from Organization

@@ -1,7 +1,7 @@
 from django.contrib.auth.backends import BaseBackend
 from CreditHistorySite.models import CustomUser, CustomUserType
 from django.core.exceptions import ObjectDoesNotExist
-
+from CreditHistorySite.src.jsonserializer import JSONField
 
 class AddressBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
@@ -12,16 +12,15 @@ class AddressBackend(BaseBackend):
         except CustomUser.DoesNotExist:
             return None
 
+        # To get the keystore
         if customUser.type == CustomUserType.Organization.value:
             org = customUser.org_profile
-            keystore = org.keystore
         else:
             loanie = customUser.loanie_profile
-            keystore = loanie.keystore
 
         # decrypt here
         ethAccount = kwargs['ethAccount']
-        privateKey = ethAccount.decrypt(keystore, password)
+        privateKey = ethAccount.decrypt(customUser.keystore, password)
         request.session['privateKey'] = privateKey
         print('private key in session', request.session.get('privateKey'))
         if privateKey is not None:

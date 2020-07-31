@@ -77,10 +77,10 @@
             <div class="single-slide">
 
                 {% if loans|length > 0 %}
-                    <!-- Single Upcoming Events Area -->
-                    <div class="single-upcoming-events-area d-flex flex-wrap align-items-center">
-                        <!-- Content -->
-                        {% for loan in loans %}
+                    {% for loan in loans %}
+                        <!-- Single Upcoming Events Area -->
+                        <div class="single-upcoming-events-area d-flex flex-wrap align-items-center">
+                            <!-- Content -->
                             <!-- Thumbnail -->
                             <div class="upcoming-events-thumbnail">
                                 <img src="{% static "img/bg-img/23.jpg" %}" alt="">
@@ -107,8 +107,8 @@
 
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% endfor %}
 
 
                 {% else %}
@@ -136,10 +136,10 @@
         <div class="col-12">
             <div class="single-slide">
                 {% if pendingLoans|length > 0 %}
-                    <!-- Single Upcoming Events Area -->
-                    <div class="single-upcoming-events-area d-flex flex-wrap align-items-center">
-                        <!-- Content -->
-                        {% for pendingLoan in pendingLoans %}
+                    {% for pendingLoan in pendingLoans %}
+                        <!-- Single Upcoming Events Area -->
+                        <div class="single-upcoming-events-area d-flex flex-wrap align-items-center">
+                            <!-- Content -->
                             <!-- Thumbnail -->
                             <div class="upcoming-events-thumbnail">
                                 <img src="{% static "img/bg-img/23.jpg" %}" alt="">
@@ -178,8 +178,9 @@
                                     </form>
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
+
+                        </div>
+                    {% endfor %}
                 {% endif %}
             </div>
         </div>

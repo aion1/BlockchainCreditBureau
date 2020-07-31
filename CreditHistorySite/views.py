@@ -144,11 +144,16 @@ def loanieSignup(request):
 
 @login_required(login_url='login')
 def orgHome(request):
-    if request.user.type == CustomUserType.Organization.value:
-        print('Entered loanie type')
-        response = render(request, 'organization/home.html')
-    else:
+    if request.user.type != CustomUserType.Organization.value:
         response = redirect('loanie.home')
+    else:
+        public_key = request.user.pk
+        private_key = request.session.get('privateKey')
+
+        web3Org = Web3Organization(public_key, private_key, main.web3Handler, main.organizationContractPython)
+        loans = web3Org.buildLoansList(main.accountsContractPython)
+
+        response = render(request, 'organization/home.html', {'loans': loans})
     return response
 
 

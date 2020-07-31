@@ -67,94 +67,58 @@
 
 <br><br>
 <!-- Upcoming Events Slide -->
-
+<h1>Loans</h1>
+<br><br>
 <div class="container">
     <div class="row">
         <div class="col-12">
 
 
-                <div class="single-slide">
+            <div class="single-slide">
+
+                {% if loans|length > 0 %}
                     <!-- Single Upcoming Events Area -->
                     <div class="single-upcoming-events-area d-flex flex-wrap align-items-center">
-                        <!-- Thumbnail -->
-                        <div class="upcoming-events-thumbnail">
-                            <img src="{% static "img/bg-img/23.jpg" %}" alt="">
-                        </div>
                         <!-- Content -->
-                        <div class="upcoming-events-content d-flex flex-wrap align-items-center">
-                            <div class="events-text">
-                                <h4>Make a Credit Card</h4>
-                                <div class="events-meta">
-                                    <a href="#"><i class="fa fa-calendar" aria-hidden="true"></i> March 01,
-                                        2018</a>
-                                    <a href="#"><i class="fa fa-clock-o" aria-hidden="true"></i> 09:00 -
-                                        11:00</a>
-                                    <a href="#"><i class="fa fa-map-marker" aria-hidden="true"></i> 11 Margani
-                                        St, newMasr, Cairo</a>
+                        {% for loan in loans %}
+                            <!-- Thumbnail -->
+                            <div class="upcoming-events-thumbnail">
+                                <img src="{% static "img/bg-img/23.jpg" %}" alt="">
+                            </div>
+                            <div class="upcoming-events-content d-flex flex-wrap align-items-center">
+                                <div class="events-text">
+                                    <h4>Amount: {{ loan.amount }}</h4>
+                                    <div class="events-meta">
+                                        <a href="#">
+                                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                                            Loaner: {{ loan.loanerAddress }}
+                                        </a>
+                                        <br>
+                                        <a href="#">
+                                            <i class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
+                                            Number of Installments: {{ loan.installmentsNum }}
+                                        </a>
+                                        <br>
+                                        <a href="#">
+                                            <i class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
+                                            Interest: {{ loan.interest }} %
+                                        </a>
+                                    </div>
+
                                 </div>
-                                <p>make a credit card with available amount in that time=5000 LE</p>
-                                <a href="#">Read More <i class="fa fa-angle-double-right"></i></a>
                             </div>
-                            <div class="find-out-more-btn">
-                                <a href="#" class="btn crose-btn btn-2">Find Out More</a>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
 
-                    <!-- Single Upcoming Events Area -->
-                    <div class="single-upcoming-events-area d-flex flex-wrap align-items-center">
-                        <!-- Thumbnail -->
-                        <div class="upcoming-events-thumbnail">
-                            <img src="{% static "img/bg-img/23.jpg" %}" alt="">
-                        </div>
-                        <!-- Content -->
-                        <div class="upcoming-events-content d-flex flex-wrap align-items-center">
-                            <div class="events-text">
-                                <h4>Take a loan</h4>
-                                <div class="events-meta">
-                                    <a href="#"><i class="fa fa-calendar" aria-hidden="true"></i> March 15,
-                                        2018</a>
-                                    <a href="#"><i class="fa fa-clock-o" aria-hidden="true"></i> 11:00 -
-                                        13:00</a>
-                                    <a href="#"><i class="fa fa-map-marker" aria-hidden="true"></i> 11 Margani
-                                        St, newMasr, Cairo</a>
-                                </div>
-                                <p>he toke a loan that is 100000 LE to make a Coffee Shop</p>
-                                <a href="#">Read More <i class="fa fa-angle-double-right"></i></a>
-                            </div>
-                            <div class="find-out-more-btn">
-                                <a href="#" class="btn crose-btn btn-2">Find Out More</a>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Single Upcoming Events Area -->
-                    <div class="single-upcoming-events-area d-flex flex-wrap align-items-center">
-                        <!-- Thumbnail -->
-                        <div class="upcoming-events-thumbnail">
-                            <img src="{% static "img/bg-img/25.jpg" %}" alt="">
-                        </div>
-                        <!-- Content -->
-                        <div class="upcoming-events-content d-flex flex-wrap align-items-center">
-                            <div class="events-text">
-                                <h4>Send money to your cousin</h4>
-                                <div class="events-meta">
-                                    <a href="#"><i class="fa fa-calendar" aria-hidden="true"></i> May 19,
-                                        2019</a>
-                                    <a href="#"><i class="fa fa-clock-o" aria-hidden="true"></i> 09:00 -
-                                        17:00</a>
-                                    <a href="#"><i class="fa fa-map-marker" aria-hidden="true"></i> 17 Faisl St,
-                                        giza</a>
-                                </div>
-                                <p>he sent 5000 LE to Ahmad Samir at Alex</p>
-                                <a href="#">Read More <i class="fa fa-angle-double-right"></i></a>
-                            </div>
-                            <div class="find-out-more-btn">
-                                <a href="#" class="btn crose-btn btn-2">Find Out More</a>
-                            </div>
-                        </div>
+                {% else %}
+                    <div>
+                        <center><h2>There is no loans here!</h2></center>
                     </div>
-                </div>
+                {% endif %}
+
+
+            </div>
 
 
         </div>
@@ -170,41 +134,54 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-                <div class="single-slide">
-                    {% if pendingLoans|length > 0 %}
-                        <!-- Single Upcoming Events Area -->
-                        <div class="single-upcoming-events-area d-flex flex-wrap align-items-center">
+            <div class="single-slide">
+                {% if pendingLoans|length > 0 %}
+                    <!-- Single Upcoming Events Area -->
+                    <div class="single-upcoming-events-area d-flex flex-wrap align-items-center">
+                        <!-- Content -->
+                        {% for pendingLoan in pendingLoans %}
                             <!-- Thumbnail -->
                             <div class="upcoming-events-thumbnail">
                                 <img src="{% static "img/bg-img/23.jpg" %}" alt="">
                             </div>
-                            <!-- Content -->
-                            {% for pendingLoan in pendingLoans %}
-                                <div class="upcoming-events-content d-flex flex-wrap align-items-center">
-                                    <div class="events-text">
-                                        <h4>amount={{ pendingLoan.amount }}</h4>
-                                        <div class="events-meta">
-                                            <a href="#"><i class="fa fa-calendar" aria-hidden="true"></i> March 01,
-                                                2018</a>
-                                            <a href="#"><i class="fa fa-clock-o" aria-hidden="true"></i> 09:00 -
-                                                11:00</a>
-                                        </div>
-                                        <p>make a credit card with available amount in that time=5000 LE</p>
-                                        <a href="#">Read More <i class="fa fa-angle-double-right"></i></a>
+                            <div class="upcoming-events-content d-flex flex-wrap align-items-center">
+                                <div class="events-text">
+                                    <h4>Amount: {{ pendingLoan.amount }}</h4>
+                                    <div class="events-meta">
+                                        <a href="#">
+                                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                                            Loaner: {{ pendingLoan.loanerAddress }}
+                                        </a>
+                                        <br>
+                                        <a href="#">
+                                            <i class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
+                                            Number of Installments: {{ pendingLoan.installmentsNum }}
+                                        </a>
+                                        <br>
+                                        <a href="#">
+                                            <i class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
+                                            Interest: {{ pendingLoan.interest }} %
+                                        </a>
                                     </div>
-                                    <div class="find-out-more-btn">
-                                        <a href="#" class="btn crose-btn btn-2">Find Out More</a>
-                                    </div>
+
                                 </div>
-                            {% endfor %}
-                        </div>
-
-                        </div>
-                    {% endif %}
-
-                </div>
-
-
+                                <div class="find-out-more-btn">
+                                    <form method="POST" action="{% url 'loanie.confirm' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="loanId" value="{{ pendingLoan.id }}">
+                                        <button class="btn crose-btn btn-2" type="submit">Confirm</button>
+                                    </form>
+                                    <form method="POST" action="{% url 'loanie.reject' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="loanId" value="{{ pendingLoan.id }}">
+                                        <button class="btn crose-btn btn-2" type="submit">Reject</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

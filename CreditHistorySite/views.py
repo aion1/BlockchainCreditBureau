@@ -9,6 +9,7 @@ from CreditHistorySite.models import CustomUser, CustomUserType, CustomUserProfi
 from CreditHistorySite.src import main
 from CreditHistorySite.src.loanie import Web3Loanie
 from CreditHistorySite.src.utility import EthAccount
+from CreditHistorySite.src.organization import Web3Organization
 
 
 def index(request):
@@ -83,9 +84,10 @@ def orgSignup(request):
         keystore = ethAccount.create(password)  # this creates an account and returns its associated keysotre
 
         customUser.publicKey = keystore['address']
+        customUser.keystore = keystore
         try:
             customUser.save()
-            org = Organization(customUser=customUser, commertialNum=commercial_no, keystore=keystore)
+            org = Organization(customUser=customUser, commertialNum=commercial_no)
             org.save()
             # Add the organization into our Accounts Contract
             accountsHandler = main.accsHandler
@@ -121,9 +123,10 @@ def loanieSignup(request):
         ethAccount = EthAccount(main.web3Handler)
         keystore = ethAccount.create(password)  # this creates an account and returns its associated keysotre
         customUser.publicKey = keystore['address']
+        customUser.keystore = keystore
         try:
             customUser.save()
-            loanie = Loanie(customUser=customUser, keystore=keystore)
+            loanie = Loanie(customUser=customUser)
             loanie.save()
             # Add the organization into our Accounts Contract
             accountsHandler = main.accsHandler
@@ -141,7 +144,8 @@ def loanieSignup(request):
 
 @login_required(login_url='login')
 def orgHome(request):
-    if request.user.type == CustomUserType.Loanie.value:
+    if request.user.type == CustomUserType.Organization.value:
+        print('Entered loanie type')
         response = render(request, 'organization/home.html')
     else:
         response = redirect('loanie.home')
@@ -160,4 +164,30 @@ def loanieHome(request):
         response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoans})
     else:
         response = redirect('org.home')
+    return response
+
+
+@login_required(login_url='login')
+def createLoan(request):
+    if request.user.type == CustomUserType.Loanie.value:
+        response = redirect('loanie.home')
+    else:
+        if 'POST' != request.method:
+            response = render(request, 'organization/createLoan.html')
+        else:
+            loanieAddress = request.POST['loanie']
+            amount = int(request.POST['amount'])
+            installmentsNum = int(request.POST['installmentsNumber'])
+            interest = int(request.POST['interest'])
+
+            publicKey = request.user.pk
+            privateKey = request.session.get('privateKey')
+
+            web3Organization = Web3Organization(publicKey, privateKey, main.web3Handler,
+                                                main.organizationContractPython)
+            web3Organization.createLoan(
+                loanieAddress, amount, installmentsNum, interest
+            )
+            response = redirect('org.home')
+
     return response

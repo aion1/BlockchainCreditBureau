@@ -2,7 +2,6 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="">
@@ -172,21 +171,23 @@
             </div>
         </div>
     </div>
-    </section>
-    <!-- ##### Upcoming Events Area End ##### -->
-    <br><br><br>
-    <h1>Make a New transaction</h1>
-    <center><a href="#"><button>Make transction</button></a></center>
-    <br><br><br>
-    <!-- ##### All Javascript Script ##### -->
-    <!-- jQuery-2.2.4 js -->
-    <script src="{% static "js/jquery/jquery-2.2.4.min.js" %}"></script>
-    <!-- Popper js -->
-    <script src="{% static "js/bootstrap/popper.min.js" %}"></script>
-    <!-- Bootstrap js -->
-    <script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
-    <!-- All Plugins js -->
-    <script src="{% static "js/plugins/plugins.js" %}"></script>
+</section>
+<!-- ##### Upcoming Events Area End ##### -->
+<br><br><br>
+<h1>Create A New Loan</h1>
+<center><a href="{% url 'org.createloan' %}">
+    <button>Create Loan</button>
+</a></center>
+<br><br><br>
+<!-- ##### All Javascript Script ##### -->
+<!-- jQuery-2.2.4 js -->
+<script src="{% static "js/jquery/jquery-2.2.4.min.js" %}"></script>
+<!-- Popper js -->
+<script src="{% static "js/bootstrap/popper.min.js" %}"></script>
+<!-- Bootstrap js -->
+<script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
+<!-- All Plugins js -->
+<script src="{% static "js/plugins/plugins.js" %}"></script>
     <!-- Active js -->
     <script src="{% static "js/active.js" %}"></script>
 </body>

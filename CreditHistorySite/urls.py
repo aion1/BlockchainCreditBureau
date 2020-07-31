@@ -30,6 +30,9 @@ urlpatterns = [
 
                   # After logging in urls (must be authenticated)
                   path('loanie/home', views.loanieHome, name='loanie.home'),
+                  path('loanie/confrimPendingLoan', views.confirmPendingLoans, name='loanie.confirm'),
+                  path('loanie/rejectPendingLoan', views.rejectPendingLoans, name='loanie.reject'),
+
                   path('org/home', views.orgHome, name='org.home'),
                   path('org/createloan', views.createLoan, name='org.createloan'),
 

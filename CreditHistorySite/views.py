@@ -158,10 +158,13 @@ def loanieHome(request):
         public_key = request.user.pk
         private_key = request.session.get('privateKey')
 
-        loanieObj = Web3Loanie(public_key, private_key, main.web3Handler, main.userContractPython)
-        loanieObj.buildPendingLoansList(main.accountsContractPython)
-        pendingLoans = loanieObj.pendingLoansList
-        response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoans})
+        web3Loanie = Web3Loanie(public_key, private_key, main.web3Handler, main.userContractPython)
+        # Pending Laons
+        pendingLoansList = web3Loanie.buildPendingLoansList(main.accountsContractPython)
+        # Loans
+        laons = web3Loanie.buildLoansList(main.accountsContractPython)
+        response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoansList,
+                                                        'loans': laons})
     else:
         response = redirect('org.home')
     return response
@@ -189,5 +192,37 @@ def createLoan(request):
                 loanieAddress, amount, installmentsNum, interest
             )
             response = redirect('org.home')
+
+    return response
+
+
+@login_required(login_url='login')
+def confirmPendingLoans(request):
+    if request.user.type == CustomUserType.Organization.value:
+        response = redirect('loanie.home')
+    else:
+        public_key = request.user.pk
+        private_key = request.session.get('privateKey')
+        loanId = int(request.POST['loanId'])
+        web3Loanie = Web3Loanie(public_key, private_key, main.web3Handler, main.userContractPython)
+        web3Loanie.confirmPendingLoan(loanId)
+        response = redirect('loanie.home')
+
+    return response
+
+
+@login_required(login_url='login')
+def rejectPendingLoans(request):
+    if request.user.type != CustomUserType.Loanie.value:
+        response = redirect('loanie.home')
+    else:
+        public_key = request.user.pk
+        private_key = request.session.get('privateKey')
+        loanId = int(request.POST['loanId'])
+        web3Loanie = Web3Loanie(public_key, private_key, main.web3Handler, main.userContractPython)
+        web3Loanie.rejectPendingLoan(loanId)
+        response = redirect('loanie.home')
+
+        response = redirect('loanie.home')
 
     return response

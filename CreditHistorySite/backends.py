@@ -3,6 +3,7 @@ from CreditHistorySite.models import CustomUser, CustomUserType
 from django.core.exceptions import ObjectDoesNotExist
 from CreditHistorySite.src.jsonserializer import JSONField
 
+
 class AddressBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         # we made our publicKey the primary key of the CustomUser model

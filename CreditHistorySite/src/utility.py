@@ -119,7 +119,7 @@ class AccountsHandler:
         self.accountsContract.functions.add(public_key, account_type).transact()
 
 
-class PendingLoan:
+class Loan:
     def __init__(self, amount, loanerAddress, id, installmentsNum, interest):
         self.amount = amount
         self.loanerAddress = loanerAddress

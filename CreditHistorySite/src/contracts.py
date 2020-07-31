@@ -8,21 +8,48 @@ class UserContractPython:
 
     pendingLoansEventValues = None
     eventValuesLen = 0
+    loansEventValues = None
+    loansEventValuesLen = 0
 
-    def getPendingLoans(self, address, key):
+    def createGetPendingLoansTransaction(self, address):
         transactionDict = TransactionDictionary(300000, address, self.web3Handler.web3)
         transaction = self.userContract.functions.getPendingLoans(
         ).buildTransaction(transactionDict)
-        transaction_hash = self.web3Handler.transact(transaction, key)
-        receipt = self.web3Handler.getTransactionReceipt(transaction_hash)
+        return transaction
+
+    def setPendingLoansEventValue(self, tx_hash):
+        receipt = self.web3Handler.getTransactionReceipt(tx_hash)
         rich_logs = self.userContract.events.getAmounts().processReceipt(receipt)
         event_values = rich_logs[0]['args']
 
         self.pendingLoansEventValues = event_values
         self.eventValuesLen = self.getEventLength()
 
+    def createGetLoansTransaction(self, address):
+        transactionDict = TransactionDictionary(300000, address, self.web3Handler.web3)
+        transaction = self.userContract.functions.getMyLoans(
+        ).buildTransaction(transactionDict)
+        return transaction
+
+    def setLoansEventValues(self, tx_hash):
+        receipt = self.web3Handler.getTransactionReceipt(tx_hash)
+        rich_logs = self.userContract.events.getAmounts().processReceipt(receipt)
+        event_values = rich_logs[0]['args']
+
+        self.loansEventValues = event_values
+        self.loansEventValuesLen = self.getLoansEventLength()
+
     def getEventLength(self):
         return len(self.pendingLoansEventValues['_amounts'])
+
+    def getLoansEventLength(self):
+        return len(self.loansEventValues['_amounts'])
+
+    def validateLoan(self, loanieAddress, confirmFlag, loanId: int):
+        transactionDict = TransactionDictionary(3000000, loanieAddress, self.web3Handler.web3)
+        validateLoanTransaction = self.userContract.functions.validateLoan(confirmFlag, loanId). \
+            buildTransaction(transactionDict)
+        return validateLoanTransaction
 
 
 class AccountsContractPython:

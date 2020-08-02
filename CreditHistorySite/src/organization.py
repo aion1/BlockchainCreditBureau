@@ -1,24 +1,30 @@
-from CreditHistorySite.src.contracts import OrganiztionContractPython, AccountsContractPython
-from CreditHistorySite.src.utility import Loan
+from CreditHistorySite.src.contracts import \
+    OrganiztionContractPython, AccountsContractPython, LoansContractPython
+from CreditHistorySite.src.utility import Loan, Installment
 
 
 class Web3Organization:
-    def __init__(self, address, key, web3Handler, organizationContractPython: OrganiztionContractPython):
+    def __init__(self, address, key, web3Handler,
+                 organizationContractPython: OrganiztionContractPython,
+                 accountsContractPython: AccountsContractPython,
+                 loansContractPython: LoansContractPython):
         self.address = address
         self.key = key
         self.web3Handler = web3Handler
         self.organizationContractPython = organizationContractPython
+        self.accountsContractPython = accountsContractPython
+        self.loansContractPython = loansContractPython
 
     def createLoan(self, loanieAddress, amount, installmentsNum, interest):
         createLoanTransaction = self.organizationContractPython. \
             createLoanTransaction(loanieAddress, self.address, amount, installmentsNum, interest)
         tx_hash = self.web3Handler.transact(createLoanTransaction, self.key)
 
-    def buildLoansList(self, accountsContractPython: AccountsContractPython):
+    def buildLoansList(self):
         loansList = []
-        if accountsContractPython.accountExists(self.address):
-            index = accountsContractPython.getIndex(self.address)
-            if not accountsContractPython.isLoanie(index):
+        if self.accountsContractPython.accountExists(self.address):
+            index = self.accountsContractPython.getIndex(self.address)
+            if not self.accountsContractPython.isLoanie(index):
                 self.getLoans()
                 values = self.organizationContractPython.loansEventValues
                 for i in range(self.organizationContractPython.loansEventValuesLen):
@@ -26,7 +32,13 @@ class Web3Organization:
                     for key in values:
                         string += str(values[key][i]) + ' '
                     attributes = string.split(' ')
-                    loan = Loan(attributes[0], attributes[1], attributes[2], attributes[3], attributes[4])
+                    loanId = int(attributes[2])
+                    loan = Loan(attributes[0],
+                                attributes[1],
+                                attributes[2],
+                                attributes[3],
+                                attributes[4],
+                                self.buildInstallmentsList(loanId))
                     loansList.append(loan)
 
             else:
@@ -38,3 +50,31 @@ class Web3Organization:
         transaction = self.organizationContractPython.createGetLoansTransaction(self.address)
         tx_hash = self.web3Handler.transact(transaction, self.key)
         self.organizationContractPython.setLoansEventValues(tx_hash)
+
+    def getInstallments(self, loanId):
+        transaction = self.loansContractPython.createGetInstallmentsTransaction(self.address, loanId)
+        tx_hash = self.web3Handler.transact(transaction, self.key)
+        self.loansContractPython.setInstallmentsEventValues(tx_hash)
+
+    def buildInstallmentsList(self, loanId):
+        installmentsList = []
+        if self.accountsContractPython.accountExists(self.address):
+            index = self.accountsContractPython.getIndex(self.address)
+            if self.accountsContractPython.isLoanie(index):
+                self.getInstallments(loanId)
+                values = self.loansContractPython.installmentsEventValues
+                for i in range(self.loansContractPython.installmentsEventValuesLen):
+                    string = ''
+                    for key in values:
+                        string += str(values[key][i]) + ' '
+                    attributes = string.split(' ')
+                    loan = Installment(attributes[0],
+                                       attributes[1],
+                                       attributes[2],
+                                       attributes[3])
+                    installmentsList.append(loan)
+
+            else:
+                print("Either this account is not a loanie or not registered in our system.")
+
+        return installmentsList

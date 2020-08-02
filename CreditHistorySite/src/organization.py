@@ -78,3 +78,6 @@ class Web3Organization:
                 print("Either this account is not a loanie or not registered in our system.")
 
         return installmentsList
+
+    def confrimInstallment(self):
+        pass

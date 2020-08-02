@@ -130,7 +130,7 @@
                                     {% if loan.installments|length > 0 %}
                                         {% for installment in loan.installments %}
                                             <tr>
-                                                <th scope="row">1</th>
+                                                <th scope="row">{{ forloop.counter }}</th>
                                                 <td>{{ installment.amount }}</td>
                                                 <td>{{ installment.payDate }}</td>
                                                 <td>{{ installment.payOutDate }}</td>

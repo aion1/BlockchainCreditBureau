@@ -156,7 +156,7 @@ def orgHome(request):
                                    main.accountsContractPython,
                                    main.loansContractPython)
         loans = web3Org.buildLoansList()
-
+        installmentIndex = 0
         response = render(request, 'organization/home.html', {'loans': loans})
     return response
 

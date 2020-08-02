@@ -8,7 +8,7 @@ from getpass import getpass
 import random
 
 from CreditHistorySite.src.contracts import \
-    UserContractPython, AccountsContractPython, OrganiztionContractPython
+    UserContractPython, AccountsContractPython, OrganiztionContractPython, LoansContractPython
 from CreditHistorySite.src.utility import \
     Web3Handler, TransactionDictionary, AccountsHandler
 
@@ -49,6 +49,7 @@ accsHandler = AccountsHandler(web3Handler, accountsConract)
 userContractPython = UserContractPython(userContract, web3Handler)
 accountsContractPython = AccountsContractPython(accountsConract, web3Handler)
 organizationContractPython = OrganiztionContractPython(organizationContract, web3Handler)
+loansContractPython = LoansContractPython(loansContract, web3Handler)
 
 '''
 # In[6]:

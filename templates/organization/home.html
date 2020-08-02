@@ -73,8 +73,10 @@
             <span class="input-group-text purple lighten-3" id="basic-text1"><i class="fas fa-search text-white"
                                                                                 aria-hidden="true"></i></span>
     </div>
+    <form method="POST" action="">
         <input class="form-control my-0 py-1" type="text" placeholder="0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c"
                aria-label="Search">
+    </form>
 </div>
 <!-- Upcoming Events Slide -->
 <div class="upcoming-events-slides-area">
@@ -115,6 +117,35 @@
 
                                         </div>
                                     </div>
+
+                                    <div class="table-responsive-sm">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Amount</th>
+                                                <th scope="col">Paydate</th>
+                                                <th scope="col">Payout Date</th>
+                                                <th scope="col">Paid</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if loan.installments|length > 0 %}
+                                                {% for installment in loan.installments %}
+                                                    <tr>
+                                                        <th scope="row">1</th>
+                                                        <td>{{ installment.amount }}</td>
+                                                        <td>{{ installment.payDate }}</td>
+                                                        <td>{{ installment.payOutDate }}</td>
+                                                        <td>{{ installment.paid }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
                                 </div>
                             {% endfor %}
                         {% else %}
@@ -146,8 +177,8 @@
 <script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
 <!-- All Plugins js -->
 <script src="{% static "js/plugins/plugins.js" %}"></script>
-    <!-- Active js -->
-    <script src="{% static "js/active.js" %}"></script>
+<!-- Active js -->
+<script src="{% static "js/active.js" %}"></script>
 </body>
 
 </html>

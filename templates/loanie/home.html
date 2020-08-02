@@ -9,6 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Credity</title>
     <link rel="stylesheet" href="{% static "css/orgstyle.css" %}">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+
     <style>
         .input-group.md-form.form-sm.form-1 input {
             border: 1px solid #bdbdbd;
@@ -104,9 +108,43 @@
                                             Interest: {{ loan.interest }} %
                                         </a>
                                     </div>
-
+                                    <div class="find-out-more-btn">
+                                        <a href="#" class="btn crose-btn btn-2">Show Insatllments</a>
+                                    </div>
                                 </div>
+
                             </div>
+
+                            <div class="table-responsive-sm">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Paydate</th>
+                                        <th scope="col">Payout Date</th>
+                                        <th scope="col">Paid</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if loan.installments|length > 0 %}
+                                        {% for installment in loan.installments %}
+                                            <tr>
+                                                <th scope="row">1</th>
+                                                <td>{{ installment.amount }}</td>
+                                                <td>{{ installment.payDate }}</td>
+                                                <td>{{ installment.payOutDate }}</td>
+                                                <td>{{ installment.paid }}</td>
+                                            </tr>
+                                        {% endfor %}
+
+                                    {% else %}
+                                        <h3>No installments Here!</h3>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+
                         </div>
                     {% endfor %}
 

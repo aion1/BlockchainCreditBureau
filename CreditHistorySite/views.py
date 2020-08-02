@@ -150,8 +150,12 @@ def orgHome(request):
         public_key = request.user.pk
         private_key = request.session.get('privateKey')
 
-        web3Org = Web3Organization(public_key, private_key, main.web3Handler, main.organizationContractPython)
-        loans = web3Org.buildLoansList(main.accountsContractPython)
+        web3Org = Web3Organization(public_key, private_key,
+                                   main.web3Handler,
+                                   main.organizationContractPython,
+                                   main.accountsContractPython,
+                                   main.loansContractPython)
+        loans = web3Org.buildLoansList()
 
         response = render(request, 'organization/home.html', {'loans': loans})
     return response
@@ -163,18 +167,29 @@ def loanieHome(request):
         public_key = request.user.pk
         private_key = request.session.get('privateKey')
 
-        web3Loanie = Web3Loanie(public_key, private_key, main.web3Handler, main.userContractPython)
+        web3Loanie = Web3Loanie(public_key, private_key,
+                                main.web3Handler,
+                                main.userContractPython,
+                                main.accountsContractPython,
+                                main.loansContractPython)
         # Pending Laons
-        pendingLoansList = web3Loanie.buildPendingLoansList(main.accountsContractPython)
+        pendingLoansList = web3Loanie.buildPendingLoansList()
         # Loans
-        laons = web3Loanie.buildLoansList(main.accountsContractPython)
+        loans = web3Loanie.buildLoansList()
+
         response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoansList,
-                                                        'loans': laons})
+                                                        'loans': loans})
     else:
         response = redirect('org.home')
     return response
 
 
+"""
+Users' Behaviours
+"""
+
+
+# Organization
 @login_required(login_url='login')
 def createLoan(request):
     if request.user.type == CustomUserType.Loanie.value:
@@ -191,8 +206,11 @@ def createLoan(request):
             publicKey = request.user.pk
             privateKey = request.session.get('privateKey')
 
-            web3Organization = Web3Organization(publicKey, privateKey, main.web3Handler,
-                                                main.organizationContractPython)
+            web3Organization = Web3Organization(publicKey, privateKey,
+                                                main.web3Handler,
+                                                main.organizationContractPython,
+                                                main.accountsContractPython,
+                                                main.loansContractPython)
             web3Organization.createLoan(
                 loanieAddress, amount, installmentsNum, interest
             )
@@ -202,6 +220,25 @@ def createLoan(request):
 
 
 @login_required(login_url='login')
+def searchLoanie(request, loaniePublicKey):
+    if request.user.type == CustomUserType.Loanie.value:
+        response = redirect('loanie.home')
+    else:
+        publicKey = request.user.pk
+        privateKey = request.session.get('privateKey')
+        web3Organization = Web3Organization(publicKey, privateKey,
+                                            main.web3Handler,
+                                            main.organizationContractPython,
+                                            main.accountsContractPython,
+                                            main.loansContractPython)
+        loanieLoans = web3Organization.searchLoanie(loaniePublicKey)
+        response = redirect('org.home')
+
+    return response
+
+
+# Loanie
+@login_required(login_url='login')
 def confirmPendingLoans(request):
     if request.user.type == CustomUserType.Organization.value:
         response = redirect('loanie.home')
@@ -209,7 +246,11 @@ def confirmPendingLoans(request):
         public_key = request.user.pk
         private_key = request.session.get('privateKey')
         loanId = int(request.POST['loanId'])
-        web3Loanie = Web3Loanie(public_key, private_key, main.web3Handler, main.userContractPython)
+        web3Loanie = Web3Loanie(public_key, private_key,
+                                main.web3Handler,
+                                main.userContractPython,
+                                main.accountsContractPython,
+                                main.loansContractPython)
         web3Loanie.confirmPendingLoan(loanId)
         response = redirect('loanie.home')
 
@@ -224,10 +265,13 @@ def rejectPendingLoans(request):
         public_key = request.user.pk
         private_key = request.session.get('privateKey')
         loanId = int(request.POST['loanId'])
-        web3Loanie = Web3Loanie(public_key, private_key, main.web3Handler, main.userContractPython)
+        web3Loanie = Web3Loanie(public_key, private_key,
+                                main.web3Handler,
+                                main.userContractPython,
+                                main.accountsContractPython,
+                                main.loansContractPython)
         web3Loanie.rejectPendingLoan(loanId)
         response = redirect('loanie.home')
 
-        response = redirect('loanie.home')
 
     return response

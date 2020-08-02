@@ -100,3 +100,29 @@ class OrganiztionContractPython:
 
     def getLoansEventLength(self):
         return len(self.loansEventValues['_amounts'])
+
+
+class LoansContractPython:
+    def __init__(self, loansContract, web3Handler):
+        self.loansContract = loansContract
+        self.web3Handler = web3Handler
+
+    installmentsEventValues = None
+    installmentsEventValuesLen = 0
+
+    def createGetInstallmentsTransaction(self, sender, loanId):
+        transactionDict = TransactionDictionary(300000, sender, self.web3Handler.web3)
+        transaction = self.loansContract.functions.getMyInstallments(
+            loanId).buildTransaction(transactionDict)
+        return transaction
+
+    def setInstallmentsEventValues(self, tx_hash):
+        receipt = self.web3Handler.getTransactionReceipt(tx_hash)
+        rich_logs = self.loansContract.events.getLoanInstallments().processReceipt(receipt)
+        event_values = rich_logs[0]['args']
+
+        self.installmentsEventValues = event_values
+        self.installmentsEventValuesLen = self.getLoansEventLength()
+
+    def getLoansEventLength(self):
+        return len(self.installmentsEventValues['_amount'])

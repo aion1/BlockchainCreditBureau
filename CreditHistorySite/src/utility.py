@@ -2,7 +2,7 @@ import json
 import os
 import platform
 from web3 import Web3
-
+from typing import List
 from CreditHistorySite.settings import BASE_DIR
 
 
@@ -119,14 +119,22 @@ class AccountsHandler:
         self.accountsContract.functions.add(public_key, account_type).transact()
 
 
+class Installment:
+    def __init__(self, amount, payDate, payOutDate, paid):
+        self.amount = amount
+        self.payDate = payDate
+        self.payOutDate = payOutDate
+        self.paid = paid
+
+
 class Loan:
-    def __init__(self, amount, loanerAddress, id, installmentsNum, interest):
+    def __init__(self, amount, loanerAddress, id, installmentsNum, interest, installments: List[Installment]):
         self.amount = amount
         self.loanerAddress = loanerAddress
         self.id = id
         self.installmentsNum = installmentsNum
         self.interest = interest
-
+        self.installments = installments
 
 class EthAccount:
     def __init__(self, web3Handler):

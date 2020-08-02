@@ -1,36 +1,79 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
-    <link rel="stylesheet" href="{% static "css/signuporg.css" %}">
-
+<html lang="en">
     <head>
-        <title>Step 1: Enter Your Information</title>
-        <meta charset="UTF-8">
-        <meta name="X-UA-Compitable" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SignUp Page</title>
+        <meta name="description" content="jobs Hunters">
+        <meta charset="utf-8" >
+        <meta name="keywords" content="jobs" >
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" >
+        <!--Bootsrap 4 CDN-->
+	     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <!--Fontawesome CDN-->
+	     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static "css/signuporg.css" %}">
+        <script>
+        function validateForm() {
+        var x = document.getElementById("Email").value;
+        var atpos = x.indexOf("@");
+        var dotpos = x.lastIndexOf(".");
+         if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length) {
+             alert("Not a valid e-mail address");
+             return false;
+            }
+        var pass=document.getElementById("psw").value;
+        if(pass.length<5)
+        {
+            alert("Not a valid password, More Than 5");
+            return false;
+        }
+        }
+    </script>
     </head>
 
-    <body class="bg-img">
+    <body>
+    <div class="container">
+	<div class="d-flex justify-content-center h-100">
+		<div class="card">
+			<div class="card-header">
+				<h3>Sign Up</h3>
 
-    <form method='POST' action="{% url 'org.signup' %}" class="container">
-        {% csrf_token %}
-        <label for="fname">Organiztion Name:</label><br>
-        <input type="text" name="username" placeholder="CIB" required><br>
+			</div>
+			<div class="card-body">
+				<form method="POST" action="{% url 'org.signup' %}" onsubmit="return validateForm()">
+                    {% csrf_token %}
+                    <div class="input-group form-group">
+						<input type="text" name="orgName" class="form-control" placeholder="Organiztion Name"required>
+					</div>
+                    <div class="input-group form-group">
+                            <input type="text" name="commNo" class="form-control" placeholder="Organiztion Commercial No"required>
+                    </div>
+                    <div class="input-group form-group">
+						<input type="text" name="Email" id="Email" class="form-control" placeholder="Email" required>
+					</div>
+					<div class="input-group form-group">
+						<input type="password" name="psw" id="psw" class="form-control" placeholder="Password"required>
+					</div>
+                    <div class="input-group form-group">
+						<input type="file" name="logo" id="logo" class="form-control" placeholder="Logo of The Loaner">
+					</div>
 
-        <label for="fname">Email:</label><br>
-        <input type="email" name="email" placeholder="organization@org.org" required><br><br>
-
-        <label for="fname">Organiztion Commercial No.:</label><br>
-        <input type="text" name="commercial_no" placeholder="123klk381" required><br>
-
-        <label for="fname">Select logo:</label></br>
-        <input type="file" name="logo" placeholder="Logo of The Loaner"></label><br><br>
-
-        <label for="fname">Password:</label></br>
-        <input type="password" name="password" placeholder="wsjfi0123@#$115nj2"><br>
-
-        <button type="submit" id="signup">Sign Up</button>
-    </form>
+					<div class="row align-items-center remember">
+						<input type="checkbox">Remember Me
+					</div>
+					<div class="form-group">
+						<input type="submit" value="SignUp" class="btn float-right login_btn">
+					</div>
+				</form>
+			</div>
+			<div class="card-footer">
+				<div class="d-flex justify-content-center links">
+					Do have an account?<a href="{% url 'login' %}">LogIn</a>
+				</div>
+			    </div>
+		    </div>
+	    </div>
+	</div>
 
     </body>
 </html>

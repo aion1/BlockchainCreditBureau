@@ -60,7 +60,7 @@ class Web3Organization:
         installmentsList = []
         if self.accountsContractPython.accountExists(self.address):
             index = self.accountsContractPython.getIndex(self.address)
-            if self.accountsContractPython.isLoanie(index):
+            if not self.accountsContractPython.isLoanie(index):
                 self.getInstallments(loanId)
                 values = self.loansContractPython.installmentsEventValues
                 for i in range(self.loansContractPython.installmentsEventValuesLen):

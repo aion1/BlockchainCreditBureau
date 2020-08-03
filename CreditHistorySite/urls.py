@@ -35,6 +35,7 @@ urlpatterns = [
 
                   path('org/home', views.orgHome, name='org.home'),
                   path('org/createloan', views.createLoan, name='org.createloan'),
-                  path('org/searchLoanie/<str:loaniePublicKey>', views.searchLoanie, name='org.searchLoanie'),
+                  path('org/searchLoanie/<str:loaniePublcKey>', views.searchLoanie, name='org.searchLoanie'),
+                  path('org/confrimInstallment', views.confirmInstallment, name='org.confirmInstallment')
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

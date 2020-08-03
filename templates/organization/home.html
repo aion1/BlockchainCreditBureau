@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="{% static "css/orgstyle.css" %}">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <style>
         .input-group.md-form.form-sm.form-1 input {
             border: 1px solid #bdbdbd;
@@ -57,7 +59,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="call-to-action-content text-center">
-                    <h6>A Place For You</h6>
+                    <h6>Hi, {{ publicKey }}</h6>
                     <h2>It is your place to make easy transactions and connect with users easily</h2>
                     <a href="#" class="btn crose-btn btn-2">Invite your users</a>
                 </div>
@@ -144,8 +146,8 @@
                                                         <td>{{ installment.paid }}</td>
                                                         <td>
                                                             <button type="button"
-                                                                    id="{{ laon.id|add:forloop.counter0 }}"
-                                                                    class="btn btn-success">Confirm
+                                                                    id="{{ forloop.counter0|stringformat:"s"|add:"_"|add:loan.id }}"
+                                                                    class="confirmBtn btn btn-success">Confirm
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -190,6 +192,33 @@
 <script src="{% static "js/plugins/plugins.js" %}"></script>
 <!-- Active js -->
 <script src="{% static "js/active.js" %}"></script>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('.confirmBtn').click(function () {
+            var id;
+            id = $(this).attr("id");
+
+            $.ajax({
+                type: "GET",
+                url: "confrimInstallment",
+                data: {
+                    installmentId: id
+                },
+                success: function (data) {
+                    /*$( '#like'+ id ).removeClass('btn btn-primary btn-lg');
+                    $( '#like'+ id ).addClass('btn btn-success btn-lg');*/
+                    alert('Installment Confirmed!')
+                }
+            });
+
+        });
+    });
+
+</script>
+
+
 </body>
 
 </html>

@@ -90,6 +90,13 @@ class OrganiztionContractPython:
         ).buildTransaction(transactionDict)
         return transaction
 
+    def createConfirmInstallmentTransaction(self, sender, loanId, installmentIndex):
+        transactionDict = TransactionDictionary(400000, sender, self.web3Handler.web3)
+        transaction = self.organizationContract \
+            .functions.confirmInstallment(installmentIndex, loanId) \
+            .buildTransaction(transactionDict)
+        return transaction
+
     def setLoansEventValues(self, tx_hash):
         receipt = self.web3Handler.getTransactionReceipt(tx_hash)
         rich_logs = self.organizationContract.events.getLoanerLoans().processReceipt(receipt)

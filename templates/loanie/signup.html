@@ -42,14 +42,15 @@
 				<form method="POST" action="{% url 'loanie.signup' %}" onsubmit="return validateForm()">
                     {% csrf_token %}
                     <div class="input-group form-group">
-						<input type="text" name="username" class="form-control" placeholder="Name"required>
-					</div>
+                        <input type="text" name="username" class="form-control" placeholder="Name" required>
+                    </div>
                     <div class="input-group form-group">
-						<input type="text" name="email" id="Email" class="form-control" placeholder="Email" required>
-					</div>
-					<div class="input-group form-group">
-						<input type="password" name="password" id="psw" class="form-control" placeholder="Password"required>
-					</div>
+                        <input type="text" name="email" id="Email" class="form-control" placeholder="Email" required>
+                    </div>
+                    <div class="input-group form-group">
+                        <input type="password" name="password" id="psw" class="form-control" placeholder="Password"
+                               required>
+                    </div>
                     <div class="row align-items-center remember">
                         <input type="checkbox">Remember Me
                     </div>

@@ -43,16 +43,16 @@
 				<form method="POST" action="{% url 'org.signup' %}" onsubmit="return validateForm()">
                     {% csrf_token %}
                     <div class="input-group form-group">
-						<input type="text" name="orgName" class="form-control" placeholder="Organiztion Name"required>
+						<input type="text" name="username" class="form-control" placeholder="Organiztion Name"required>
 					</div>
                     <div class="input-group form-group">
-                            <input type="text" name="commNo" class="form-control" placeholder="Organiztion Commercial No"required>
+                            <input type="text" name="commercial_no" class="form-control" placeholder="Organiztion Commercial No"required>
                     </div>
                     <div class="input-group form-group">
-						<input type="text" name="Email" id="Email" class="form-control" placeholder="Email" required>
+						<input type="text" name="email" id="Email" class="form-control" placeholder="Email" required>
 					</div>
 					<div class="input-group form-group">
-						<input type="password" name="psw" id="psw" class="form-control" placeholder="Password"required>
+						<input type="password" name="password" id="psw" class="form-control" placeholder="Password"required>
 					</div>
                     <div class="input-group form-group">
 						<input type="file" name="logo" id="logo" class="form-control" placeholder="Logo of The Loaner">

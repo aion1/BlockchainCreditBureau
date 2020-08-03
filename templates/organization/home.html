@@ -61,7 +61,7 @@
                 <div class="call-to-action-content text-center">
                     <h6>Hi, {{ publicKey }}</h6>
                     <h2>It is your place to make easy transactions and connect with users easily</h2>
-                    <a href="#" class="btn crose-btn btn-2">Invite your users</a>
+                    <a href="#" id="invite" class="btn crose-btn btn-2">Invite your users</a>
                 </div>
             </div>
         </div>
@@ -145,10 +145,18 @@
                                                         <td>{{ installment.payOutDate }}</td>
                                                         <td>{{ installment.paid }}</td>
                                                         <td>
-                                                            <button type="button"
-                                                                    id="{{ forloop.counter0|stringformat:"s"|add:"_"|add:loan.id }}"
-                                                                    class="confirmBtn btn btn-success">Confirm
-                                                            </button>
+                                                            {% if installment.paid == "True" %}
+                                                                <button type="button"
+                                                                        style="display:none;"
+                                                                        id="{{ forloop.counter0|stringformat:"s"|add:"_"|add:loan.id }}"
+                                                                        class="confirmBtn btn btn-success">Confirm
+                                                                </button>
+                                                            {% else %}
+                                                                <button type="button"
+                                                                        id="{{ forloop.counter0|stringformat:"s"|add:"_"|add:loan.id }}"
+                                                                        class="confirmBtn btn btn-success">Confirm
+                                                                </button>
+                                                            {% endif %}
                                                         </td>
                                                     </tr>
 
@@ -199,7 +207,7 @@
         $('.confirmBtn').click(function () {
             var id;
             id = $(this).attr("id");
-
+            var invite = "invite";
             $.ajax({
                 type: "GET",
                 url: "confrimInstallment",
@@ -207,15 +215,14 @@
                     installmentId: id
                 },
                 success: function (data) {
-                    /*$( '#like'+ id ).removeClass('btn btn-primary btn-lg');
-                    $( '#like'+ id ).addClass('btn btn-success btn-lg');*/
-                    alert('Installment Confirmed!')
+                    window.location.reload()
                 }
             });
 
         });
-    });
 
+
+    });
 </script>
 
 

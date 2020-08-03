@@ -157,7 +157,7 @@ def orgHome(request):
                                    main.accountsContractPython,
                                    main.loansContractPython)
         loans = web3Org.buildLoansList()
-        installmentIndex = 0
+        print(type(loans[0].installments[0].paid))
         response = render(request, 'organization/home.html', {'loans': loans,
                                                               'publicKey': public_key})
     return response
@@ -178,7 +178,6 @@ def loanieHome(request):
         pendingLoansList = web3Loanie.buildPendingLoansList()
         # Loans
         loans = web3Loanie.buildLoansList()
-
         response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoansList,
                                                         'loans': loans,
                                                         'publicKey': public_key})

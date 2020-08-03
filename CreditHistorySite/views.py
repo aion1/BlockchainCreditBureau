@@ -4,6 +4,7 @@ from django.contrib.auth import logout as authLogout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 
 from CreditHistorySite.models import CustomUser, CustomUserType, CustomUserProfile, Organization, Loanie
 from CreditHistorySite.src import main
@@ -157,7 +158,8 @@ def orgHome(request):
                                    main.loansContractPython)
         loans = web3Org.buildLoansList()
         installmentIndex = 0
-        response = render(request, 'organization/home.html', {'loans': loans})
+        response = render(request, 'organization/home.html', {'loans': loans,
+                                                              'publicKey': public_key})
     return response
 
 
@@ -178,7 +180,8 @@ def loanieHome(request):
         loans = web3Loanie.buildLoansList()
 
         response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoansList,
-                                                        'loans': loans})
+                                                        'loans': loans,
+                                                        'publicKey': public_key})
     else:
         response = redirect('org.home')
     return response
@@ -233,6 +236,30 @@ def searchLoanie(request, loaniePublicKey):
                                             main.loansContractPython)
         loanieLoans = web3Organization.searchLoanie(loaniePublicKey)
         response = redirect('org.home')
+
+    return response
+
+
+@login_required(login_url='login')
+def confirmInstallment(request):
+    # Coming from AJAX
+    if request.user.type == CustomUserType.Loanie.value:
+        response = HttpResponse('unsuccessful')
+    else:
+        installmentId = request.GET['installmentId']
+        installmentIndex, loanId = installmentId.split('_')
+
+        publicKey = request.user.pk
+        privateKey = request.session.get('privateKey')
+        web3Organization = Web3Organization(publicKey, privateKey,
+                                            main.web3Handler,
+                                            main.organizationContractPython,
+                                            main.accountsContractPython,
+                                            main.loansContractPython)
+
+        web3Organization.confrimInstallment(int(loanId), int(installmentIndex))
+        # We should check here that the function performed well before returning success
+        response = HttpResponse('Success')
 
     return response
 

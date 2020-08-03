@@ -75,9 +75,17 @@ class Web3Organization:
                     installmentsList.append(loan)
 
             else:
-                print("Either this account is not a loanie or not registered in our system.")
+                print("Either this account is not a loanie ")
+        else:
+            print("or not registered in our system.")
 
         return installmentsList
 
-    def confrimInstallment(self):
-        pass
+    def confrimInstallment(self, loanId, installmentIndex):
+        createInstallmentTransaction = self.organizationContractPython \
+            .createConfirmInstallmentTransaction(
+            self.address,
+            loanId,
+            installmentIndex)
+        tx_hash = self.web3Handler.transact(createInstallmentTransaction,
+                                            self.key)

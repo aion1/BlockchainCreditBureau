@@ -13,32 +13,31 @@
 	     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <link rel="stylesheet" href="{% static "css/signuporg.css" %}">
         <script>
-        function validateForm() {
-        var x = document.getElementById("Email").value;
-        var atpos = x.indexOf("@");
-        var dotpos = x.lastIndexOf(".");
-         if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length) {
-             alert("Not a valid e-mail address");
-             return false;
+            function validateForm() {
+                var x = document.getElementById("Email").value;
+                var atpos = x.indexOf("@");
+                var dotpos = x.lastIndexOf(".");
+                if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= x.length) {
+                    alert("Not a valid e-mail address");
+                    return false;
+                }
+                var pass = document.getElementById("psw").value;
+                if (pass.length < 5) {
+                    alert("Not a valid password, More Than 5");
+                    return false;
+                }
             }
-        var pass=document.getElementById("psw").value;
-        if(pass.length<5)
-        {
-            alert("Not a valid password, More Than 5");
-            return false;
-        }
-        }
-    </script>
+        </script>
     </head>
 
     <body>
     <div class="container">
-	<div class="d-flex justify-content-center h-100">
-		<div class="card">
-			<div class="card-header">
-				<h3>Sign Up</h3>
+        <div class="d-flex justify-content-center h-100">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Sign Up</h3>
 
-			</div>
+                </div>
 			<div class="card-body">
 				<form method="POST" action="{% url 'loanie.signup' %}" onsubmit="return validateForm()">
                     {% csrf_token %}
@@ -51,22 +50,23 @@
 					<div class="input-group form-group">
 						<input type="password" name="password" id="psw" class="form-control" placeholder="Password"required>
 					</div>
-					<div class="row align-items-center remember">
-						<input type="checkbox">Remember Me
-					</div>
-					<div class="form-group">
-						<input type="submit" value="SignUp" class="btn float-right login_btn">
-					</div>
-				</form>
-			</div>
-			<div class="card-footer">
-				<div class="d-flex justify-content-center links">
-					Do have an account?<a href="{% url 'login' %}">LogIn</a>
-				</div>
-			    </div>
-		    </div>
-	    </div>
-	</div>
+                    <div class="row align-items-center remember">
+                        <input type="checkbox">Remember Me
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="SignUp" class="btn float-right login_btn">
+                    </div>
+                </form>
+            </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-center links">
+                        Do have an account?
+                        <a href="{% url 'login' %}">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     </body>
 </html>

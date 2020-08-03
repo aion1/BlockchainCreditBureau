@@ -1,10 +1,13 @@
 import json
 import os
 import platform
+from datetime import date
 from web3 import Web3
 from typing import List
 from CreditHistorySite.settings import BASE_DIR
+import pytz  # $ pip install pytz
 
+tz = pytz.timezone("Africa/Cairo")
 
 class TransactionDictionary:
     def __init__(self, gas, sender, web3):
@@ -122,9 +125,14 @@ class AccountsHandler:
 class Installment:
     def __init__(self, amount, payDate, payOutDate, paid):
         self.amount = amount
-        self.payDate = payDate
-        self.payOutDate = payOutDate
+        self.payDate = date.fromtimestamp(int(payDate))
+        if int(payOutDate) == 0:
+            self.payOutDate = None
+        else:
+            self.payOutDate = date.fromtimestamp(int(payOutDate))
         self.paid = paid
+
+
 
 
 class Loan:

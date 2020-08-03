@@ -157,7 +157,7 @@ def orgHome(request):
                                    main.accountsContractPython,
                                    main.loansContractPython)
         loans = web3Org.buildLoansList()
-        print(type(loans[0].installments[0].paid))
+
         response = render(request, 'organization/home.html', {'loans': loans,
                                                               'publicKey': public_key})
     return response

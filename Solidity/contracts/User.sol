@@ -48,7 +48,7 @@ contract User {
         uint128 [] memory loansInterests = new uint128 [](len);
 
         Loans.Loan [] memory pendingLoans = new Loans.Loan[](len);
-        pendingLoans = loansContract.getPendingLoansList(loanie); 
+        pendingLoans = loansContract.getPendingLoansList(); 
         for(uint256 i = 0; i < len; i += 1)
         {
           loanersAddresses[i] = pendingLoans[i].loaner;

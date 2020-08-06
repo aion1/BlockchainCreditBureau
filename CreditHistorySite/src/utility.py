@@ -61,7 +61,7 @@ class Web3Handler:
             self.d = '\\'
         self.web3.eth.defaultAccount = self.web3.eth.accounts[0]
         self.defaultAccount = self.web3.eth.defaultAccount
-        self.defaultKey = 'ccd199ba10eb1b41a86d066dd824c3225945e5c007eb9fe7dad6341b37770004'
+        self.defaultKey = 'a4763483f8b44b18a205ab8c86f87b61ea2f214da53eb703207458a1aafbfa89'
         self.ethAccount = self.web3.eth.account
 
     def getContractABI(self, filename):

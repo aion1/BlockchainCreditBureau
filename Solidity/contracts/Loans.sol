@@ -120,7 +120,8 @@ contract Loans {
 
   /*Using just one function when compiling with:
     pragma experimental ABIEncoderV2;*/
-  function getPendingLoansList (address _loanie) public returns(Loan [] memory) {
+  function getPendingLoansList () public returns(Loan [] memory) {
+    address _loanie=msg.sender;
     Loan [] memory myPendingLoans = new Loan [](pendingLoansLength);
     uint256 counter = 0;
 
@@ -135,8 +136,9 @@ contract Loans {
   }
 
 
-  function getLoanerLoans(address _loaner)public returns (Loan [] memory)
+  function getLoanerLoans()public returns (Loan [] memory)
   {
+    address _loaner=msg.sender;
     Loan [] memory myLoanerLoans = new Loan [](loanerLoans[_loaner].length);
     for(uint256 i=0; i < loanerLoans[_loaner].length; i+=1)
     {
@@ -150,8 +152,9 @@ contract Loans {
 
 
 
-  function getLoanerLoansLen(address _loaner)public returns (uint256 )
+  function getLoanerLoansLen()public returns (uint256 )
   {
+    address _loaner=msg.sender;
     return loanerLoans[_loaner].length;
   }
   

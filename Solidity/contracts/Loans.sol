@@ -20,7 +20,7 @@ contract Loans {
     uint128  installmentsNum;
     uint128  interest;
   }  
-
+  address sender;
   mapping (uint256 => Loan) allLoans;
   
 
@@ -121,7 +121,9 @@ contract Loans {
   /*Using just one function when compiling with:
     pragma experimental ABIEncoderV2;*/
   function getPendingLoansList () public returns(Loan [] memory) {
-    address _loanie=msg.sender;
+
+  	address _loanie = msg.sender;
+  	sender = _loanie;
     Loan [] memory myPendingLoans = new Loan [](pendingLoansLength);
     uint256 counter = 0;
 
@@ -175,9 +177,9 @@ contract Loans {
    */
 
    //u stands for user
-   function uGetMyLoans (address _loanie) public returns(Loan [] memory){
+   function uGetMyLoans () public returns(Loan [] memory){
 
-    
+    address _loanie = msg.sender;
     Loan [] memory myLoans = new Loan [](loans[_loanie].length);
     for(uint256 i=0; i < loans[_loanie].length; i+=1)
     {

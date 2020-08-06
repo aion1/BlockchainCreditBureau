@@ -2,8 +2,7 @@
 pragma experimental ABIEncoderV2;
 import "./Loans.sol";
 contract User {
-	address sender;
-    address loansContractAddress;
+
     event getAmounts(uint256 [] _amounts, address [] _addresses, uint256 [] _ids, uint128 [] _installmentsNum , uint128 [] _interest);
     event getLoans(Loans.Loan[] _loans);
    	event delegateCall(bool success);
@@ -14,23 +13,16 @@ contract User {
     {
 
     }
+    address sender;
+    address loansContractAddress;
     //To set the (loans contract) address deployed on the chain
     function setLoansContractAddress(address _loansContractAddress) public {
         loansContractAddress=_loansContractAddress;
     }
-    function delegateGetPendingLoans() public returns (Loans.Loan [] memory){
-    	(bool success, bytes memory result) = loansContractAddress.call(abi.encodeWithSignature("getPendingLoansList()"));
-    	emit delegateCall(success);
-    	return abi.decode(result, (Loans.Loan []));
-    }
 
 
-    function delegateUGetMyLoans () public returns(Loans.Loan [] memory) {
-    	(bool success, bytes memory result) = loansContractAddress.call(abi.encodeWithSignature("uGetMyLoans()"));
-    	emit delegateCall(success);
-    	return abi.decode(result, (Loans.Loan []));
 
-    }
+
     
 
 
@@ -66,8 +58,8 @@ contract User {
 
 
 
-        //pendingLoans = loansContract.getPendingLoansList(loanie); 
-        pendingLoans = delegateGetPendingLoans();
+        pendingLoans = loansContract.getPendingLoansList(); 
+
 
 
 
@@ -91,8 +83,7 @@ contract User {
 
 
 
-        //loans = loansContract.uGetMyLoans(loanie);
-        loans = delegateUGetMyLoans();
+        loans = loansContract.uGetMyLoans();
 
 
         address [] memory loanersAddresses = new address [](loansLen);

@@ -131,3 +131,13 @@ AUTHENTICATION_BACKENDS = (
     'CreditHistorySite.backends.BaseBackend',
     'CreditHistorySite.backends.AddressBackend',
 )
+
+# email address settings
+
+DEFAULT_FROM_EMAIL = 'bcbs.ourproject@gmail.com'
+SERVER_EMAIL = 'bcbs.ourproject@gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'bcbs.ourproject@gmail.com'
+EMAIL_HOST_PASSWORD = 'PAGOW2019'

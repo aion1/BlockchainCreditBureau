@@ -5,6 +5,7 @@ import "./Accounts.sol";
 
 contract Loans {
 
+
   struct  Installment{
     uint256 amount;
     uint256 payDate;
@@ -121,7 +122,8 @@ contract Loans {
   /*Using just one function when compiling with:
     pragma experimental ABIEncoderV2;*/
   function getPendingLoansList () public returns(Loan [] memory) {
-  	address _loanie = msg.sender;
+  	//address _loanie = msg.sender;
+    address _loanie=tx.origin;
   	sender = _loanie;
     Loan [] memory myPendingLoans = new Loan [](pendingLoansLength);
     uint256 counter = 0;
@@ -176,7 +178,9 @@ contract Loans {
    //u stands for user
    function uGetMyLoans () public returns(Loan [] memory){
 
-    address _loanie = msg.sender;
+    address _loanie = tx.origin;
+    sender=_loanie;
+    
     Loan [] memory myLoans = new Loan [](loans[_loanie].length);
     for(uint256 i=0; i < loans[_loanie].length; i+=1)
     {

@@ -44,7 +44,7 @@ contract User {
     {
         //Will get the peding loans of the user that calls the function
         address loanie = msg.sender;
-        sender = loanie;
+
 
         Loans loansContract = Loans(loansContractAddress);
         uint256 len = loansContract.getPendingLoansLength();

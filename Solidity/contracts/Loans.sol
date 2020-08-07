@@ -21,7 +21,7 @@ contract Loans {
     uint128  installmentsNum;
     uint128  interest;
   }  
-  address sender;
+
   mapping (uint256 => Loan) allLoans;
   
 
@@ -124,7 +124,7 @@ contract Loans {
   function getPendingLoansList () public returns(Loan [] memory) {
   	//address _loanie = msg.sender;
     address _loanie=tx.origin;
-  	sender = _loanie;
+
     Loan [] memory myPendingLoans = new Loan [](pendingLoansLength);
     uint256 counter = 0;
 
@@ -139,8 +139,11 @@ contract Loans {
   }
 
 
-  function getLoanerLoans(address _loaner)public returns (Loan [] memory)
+  function getLoanerLoans()public returns (Loan [] memory)
   {
+
+    address _loaner=tx.origin;
+
     Loan [] memory myLoanerLoans = new Loan [](loanerLoans[_loaner].length);
     for(uint256 i=0; i < loanerLoans[_loaner].length; i+=1)
     {
@@ -179,7 +182,7 @@ contract Loans {
    function uGetMyLoans () public returns(Loan [] memory){
 
     address _loanie = tx.origin;
-    sender=_loanie;
+    
     
     Loan [] memory myLoans = new Loan [](loans[_loanie].length);
     for(uint256 i=0; i < loans[_loanie].length; i+=1)

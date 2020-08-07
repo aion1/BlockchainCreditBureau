@@ -32,7 +32,11 @@ contract Organization{
     Loans loansContract = Loans(loansContractAddress);
     uint256 loansLen = loansContract.getLoanerLoansLen(loaner);
     Loans.Loan [] memory loans = new Loans.Loan[](loansLen);
-    loans=loansContract.getLoanerLoans(loaner);
+
+
+    loans=loansContract.getLoanerLoans();
+
+
     address [] memory loanersAddresses = new address [](loansLen);
     uint256 [] memory loansAmounts = new uint256 [](loansLen);
     uint256 [] memory loansIds = new uint256 [](loansLen);

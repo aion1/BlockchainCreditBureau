@@ -11,6 +11,8 @@ from CreditHistorySite.src import main
 from CreditHistorySite.src.loanie import Web3Loanie
 from CreditHistorySite.src.utility import EthAccount
 from CreditHistorySite.src.organization import Web3Organization
+from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 
 
 def index(request):
@@ -61,6 +63,25 @@ def login(request):
     return response
 
 
+#  send_mail(
+#     'Sign Up in BCB system',
+#    'your public Address is '+publicAddress,
+#   'bcbs.ourproject@gmail.com',
+#  [email],
+# fail_silently=False,
+# )
+
+# to send mail with public address of user or organization
+def sendMail(publicAddress, email):
+    try:
+        msg = EmailMessage('Request Callback',
+                         'your public Address is '+publicAddress, to=[email])
+        msg.send()
+        return True
+    except:
+        return False
+
+
 # to clean data and navigate after that to the url('org/home');
 def orgSignup(request):
     successSignup = False
@@ -96,6 +117,7 @@ def orgSignup(request):
 
             customUser = authenticate(request, username=customUser.publicKey, password=password, ethAccount=ethAccount)
             authLogin(request, customUser)
+            sendMail(customUser.publicKey, email)
             response = redirect('org.home')
         except IntegrityError:
             errorMsg = 'Sorry! This account already exists!'
@@ -135,6 +157,7 @@ def loanieSignup(request):
 
             customUser = authenticate(request, username=customUser.publicKey, password=password, ethAccount=ethAccount)
             authLogin(request, customUser)
+            sendMail(customUser.publicKey,email)
             response = redirect('loanie.home')
         except IntegrityError:
             errorMsg = 'Sorry! This account already exists!'

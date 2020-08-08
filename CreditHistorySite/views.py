@@ -84,7 +84,6 @@ def sendMail(publicAddress, email):
 
 # to clean data and navigate after that to the url('org/home');
 def orgSignup(request):
-    successSignup = False
     if 'POST' != request.method:
         response = render(request, 'organization/signup.html')
     else:

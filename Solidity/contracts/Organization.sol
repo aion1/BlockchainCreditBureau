@@ -14,7 +14,7 @@ contract Organization{
   constructor() public {
  	   
   }
-   event getLoanerLoans(uint256 [] _amounts, address [] _addresses, uint256 [] _ids, uint128 [] _installmentsNum , uint128 [] _interest);
+  event getLoanerLoans(uint256 [] _amounts, address [] _addresses, address [] _loaniesAddresses, uint256 [] _ids, uint128 [] _installmentsNum , uint128 [] _interest);
   function createLoan (address _loanie, uint256 _amount, uint128 _installmentsNum, uint128 _interest) public returns(bool)  {
     address loaner = msg.sender;
     loanerAddress = loaner;
@@ -42,6 +42,8 @@ contract Organization{
     uint256 [] memory loansIds = new uint256 [](loansLen);
     uint128 [] memory loansInstallmentsNums = new uint128 [](loansLen);
     uint128 [] memory loansInterests = new uint128 [](loansLen);
+    address [] memory loaniesAddresses = new address [](loansLen);
+
     for(uint256 i = 0; i < loansLen; i += 1)
     {
         loanersAddresses[i] = loans[i].loaner;
@@ -49,8 +51,9 @@ contract Organization{
         loansIds[i] = loans[i].id;
         loansInstallmentsNums [i] = loans[i].installmentsNum;
         loansInterests[i] = loans[i].interest;
+        loaniesAddresses[i] = loans[i].loanReceiver;
     }
-    emit getLoanerLoans(loansAmounts, loanersAddresses, loansIds, loansInstallmentsNums, loansInterests);
+    emit getLoanerLoans(loansAmounts, loanersAddresses, loaniesAddresses, loansIds, loansInstallmentsNums, loansInterests);
     return true;
   }
  

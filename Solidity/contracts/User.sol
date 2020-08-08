@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 import "./Loans.sol";
 contract User {
 
-    event getAmounts(uint256 [] _amounts, address [] _addresses, uint256 [] _ids, uint128 [] _installmentsNum , uint128 [] _interest);
+    event getAmounts(uint256 [] _amounts, address [] _addresses, address [] _loaniesAddresses, uint256 [] _ids, uint128 [] _installmentsNum , uint128 [] _interest);
     event getLoans(Loans.Loan[] _loans);
    	event delegateCall(bool success);
 
@@ -53,6 +53,8 @@ contract User {
         uint256 [] memory loansIds = new uint256 [](len);
         uint128 [] memory loansInstallmentsNums = new uint128 [](len);
         uint128 [] memory loansInterests = new uint128 [](len);
+        address [] memory loaniesAddresses = new address [](len);
+
 
         Loans.Loan [] memory pendingLoans = new Loans.Loan[](len);
 
@@ -70,8 +72,9 @@ contract User {
           loansIds[i] = pendingLoans[i].id;
           loansInstallmentsNums [i] = pendingLoans[i].installmentsNum;
           loansInterests[i] = pendingLoans[i].interest;
+          loaniesAddresses[i] = pendingLoans[i].loanReceiver;
         }
-        emit getAmounts(loansAmounts, loanersAddresses, loansIds, loansInstallmentsNums, loansInterests);
+        emit getAmounts(loansAmounts, loanersAddresses, loaniesAddresses, loansIds, loansInstallmentsNums, loansInterests);
         //emit getLoans(pendingLoans);
         return true;
     }
@@ -91,6 +94,10 @@ contract User {
         uint256 [] memory loansIds = new uint256 [](loansLen);
         uint128 [] memory loansInstallmentsNums = new uint128 [](loansLen);
         uint128 [] memory loansInterests = new uint128 [](loansLen);
+        address [] memory loaniesAddresses = new address [](loansLen);
+
+
+
         for(uint256 i = 0; i < loansLen; i += 1)
         {
           loanersAddresses[i] = loans[i].loaner;
@@ -98,8 +105,9 @@ contract User {
           loansIds[i] = loans[i].id;
           loansInstallmentsNums [i] = loans[i].installmentsNum;
           loansInterests[i] = loans[i].interest;
+          loaniesAddresses[i] = loans[i].loanReceiver;
         }
-        emit getAmounts(loansAmounts, loanersAddresses, loansIds, loansInstallmentsNums, loansInterests);
+        emit getAmounts(loansAmounts, loanersAddresses, loaniesAddresses, loansIds, loansInstallmentsNums, loansInterests);
         return true;
     }
 

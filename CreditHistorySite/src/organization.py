@@ -32,12 +32,13 @@ class Web3Organization:
                     for key in values:
                         string += str(values[key][i]) + ' '
                     attributes = string.split(' ')
-                    loanId = int(attributes[2])
+                    loanId = int(attributes[3])
                     loan = Loan(attributes[0],
                                 attributes[1],
                                 attributes[2],
                                 attributes[3],
                                 attributes[4],
+                                attributes[5],
                                 self.buildInstallmentsList(loanId))
                     loansList.append(loan)
 

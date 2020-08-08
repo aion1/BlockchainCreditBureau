@@ -32,9 +32,9 @@ contract User {
         address loanie = msg.sender;
         Loans loansContract = Loans(loansContractAddress);
         if (_type)
-          loansContract.confirmLoan(_loanId, loanie);
+          loansContract.confirmLoan(_loanId);
         else
-          loansContract.rejectLoan(_loanId, loanie);
+          loansContract.rejectLoan(_loanId);
         return true;
     }
 

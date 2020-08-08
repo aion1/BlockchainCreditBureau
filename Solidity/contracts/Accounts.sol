@@ -32,11 +32,12 @@ contract Accounts{
 		return false;
 
 	}
-	function accountExists(address _accAddress) internal returns(bool){
+	function accountExists(address _accAddress) public returns(bool){
 		if (getIndex(_accAddress) == -1)
 			return false;
 		return true;
-	} 
+	}
+	
 
 	function deleteAccount(address _accAddress)public returns(bool){
 		int256 myIndex=getIndex(_accAddress);

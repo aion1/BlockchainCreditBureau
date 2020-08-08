@@ -37,6 +37,11 @@
         .input-group.md-form.form-sm.form-2 input.amber-border {
             border: 1px solid #ffca28;
         }
+
+        input {
+            padding: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
@@ -44,24 +49,26 @@
 <div class="preloader d-flex align-items-center justify-content-center">
     <div class="line-preloader"></div>
 </div>
+<br>
+<div class="">
+    <div class="col-9">
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn crose-btn btn-2">Logout</button>
+        </form>
+    </div>
+</div>
 
 <section class="call-to-action-area section-padding-100 bg-img bg-overlay"
          style="background-image: {% static "img/bg-img/6.jpg" %}">
     <div class="container">
-        <div class="md-form row">
-            <div class="col-1">
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit">Logout</button>
-                </form>
-            </div>
-        </div>
+
         <div class="row">
             <div class="col-12">
                 <div class="call-to-action-content text-center">
                     <h6>Hi, {{ publicKey }}</h6>
                     <h2>It is your place to know your credit history easily</h2>
-                    <a href="#" class="btn crose-btn btn-2">Invite other users</a>
+
                 </div>
             </div>
         </div>
@@ -76,10 +83,7 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-
-
             <div class="single-slide">
-
                 {% if loans|length > 0 %}
                     {% for loan in loans %}
                         <!-- Single Upcoming Events Area -->

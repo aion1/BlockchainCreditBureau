@@ -73,10 +73,12 @@ contract Loans {
   }
 
   
-  function confirmLoan(uint256 _loanId, address _loanie)
+  function confirmLoan(uint256 _loanId)
     public
     returns(bool)
   {
+    address _loanie = tx.origin;
+
     int256 intIndex = searchPending(_loanId, _loanie);
     if(intIndex == -1)
       return false;
@@ -98,7 +100,9 @@ contract Loans {
     return true;
 
   }
-  function rejectLoan(uint256 _loanId, address _loanie)public returns(bool){
+  function rejectLoan(uint256 _loanId)public returns(bool){
+    address _loanie = tx.origin;
+
     int256 intIndex = searchPending(_loanId, _loanie);
     if(intIndex == -1)
       return false;

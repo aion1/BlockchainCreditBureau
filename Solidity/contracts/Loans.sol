@@ -166,6 +166,30 @@ contract Loans {
     return loanerLoans[_loaner].length;
   }
   
+
+
+  function getLoanieLoans (address _loanie) public returns(Loan [] memory) {
+    address loaner = tx.origin;
+    Accounts accountsContract = Accounts(accountsContractAddress);
+    Loan [] memory loanieLoans = new Loan [](0);
+
+
+    if(accountsContract.accountExists(loaner)){
+      uint256 loanerIndex = uint256(accountsContract.getIndex(loaner));
+      if(accountsContract.getType(loanerIndex)){
+        loanieLoans = new Loan [](loans[_loanie].length);
+        for(uint256 i=0; i < loans[_loanie].length; i+=1){
+          uint256 loanId = loans[_loanie][i];
+          loanieLoans[i] = allLoans[loanId];
+        }
+      }
+    }
+    return loanieLoans;
+  }
+  
+
+
+
  /** function getLoans () public returns(Loan [] memory)  {
       return loans;
   }

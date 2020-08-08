@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Credity</title>
+    <link rel="stylesheet" href="{% static "css/orgstyle.css" %}">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+    <style>
+        .input-group.md-form.form-sm.form-1 input {
+            border: 1px solid #bdbdbd;
+            border-top-right-radius: 0.25rem;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .input-group.md-form.form-sm.form-2 input {
+            border: 1px solid #bdbdbd;
+            border-top-left-radius: 0.25rem;
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        .input-group.md-form.form-sm.form-2 input.red-border {
+            border: 1px solid #ef9a9a;
+        }
+
+        .input-group.md-form.form-sm.form-2 input.lime-border {
+            border: 1px solid #cddc39;
+        }
+
+        .input-group.md-form.form-sm.form-2 input.amber-border {
+            border: 1px solid #ffca28;
+        }
+    </style>
+</head>
+
+<body>
+<div class="preloader d-flex align-items-center justify-content-center">
+    <div class="line-preloader"></div>
+</div>
+
+<section class="call-to-action-area section-padding-100 bg-img bg-overlay"
+         style="background-image: {% static "img/bg-img/6.jpg" %}">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="call-to-action-content text-center">
+                    <h6>Loanie: {{ loanieAddress }}</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ##### Call To Action Area End ##### -->
+
+<br><br>
+<!-- Upcoming Events Slide -->
+<h1>Loans</h1>
+<br><br>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="single-slide">
+
+                {% if loanieLoans|length > 0 %}
+                    {% for loan in loanieLoans %}
+                        <!-- Single Upcoming Events Area -->
+                        <div class="single-upcoming-events-area d-flex flex-wrap align-items-center">
+                            <!-- Content -->
+                            <!-- Thumbnail -->
+                            <div class="upcoming-events-thumbnail">
+                                <img src="{% static "img/bg-img/23.jpg" %}" alt="">
+                            </div>
+                            <div class="upcoming-events-content d-flex flex-wrap align-items-center">
+                                <div class="events-text">
+                                    <h4>Amount: {{ loan.amount }}</h4>
+                                    <div class="events-meta">
+                                        <a href="#">
+                                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                                            Loaner: {{ loan.loanerAddress }}
+                                        </a>
+                                        <br>
+                                        <a href="#">
+                                            <i class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
+                                            Number of Installments: {{ loan.installmentsNum }}
+                                        </a>
+                                        <br>
+                                        <a href="#">
+                                            <i class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
+                                            Interest: {{ loan.interest }} %
+                                        </a>
+                                    </div>
+                                    <div class="find-out-more-btn">
+                                        <a href="#" class="btn crose-btn btn-2">Show Insatllments</a>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="table-responsive-sm">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Paydate</th>
+                                        <th scope="col">Payout Date</th>
+                                        <th scope="col">Paid</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if loan.installments|length > 0 %}
+                                        {% for installment in loan.installments %}
+                                            <tr>
+                                                <th scope="row">{{ forloop.counter }}</th>
+                                                <td>{{ installment.amount }}</td>
+                                                <td>{{ installment.payDate }}</td>
+                                                <td>{{ installment.payOutDate }}</td>
+                                                <td>{{ installment.paid }}</td>
+                                            </tr>
+                                        {% endfor %}
+
+                                    {% else %}
+                                        <h3>No installments Here!</h3>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+
+
+                {% else %}
+                    <div>
+                        <center><h2>There is no loans here!</h2></center>
+                    </div>
+                {% endif %}
+
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<br><br><br>
+<!-- ##### All Javascript Script ##### -->
+<!-- jQuery-2.2.4 js -->
+<script src={% static "js/jquery/jquery-2.2.4.min.js" %}></script>
+<!-- Popper js -->
+<script src={% static "js/bootstrap/popper.min.js" %}></script>
+<!-- Bootstrap js -->
+<script src={% static "js/bootstrap/bootstrap.min.js" %}></script>
+<!-- All Plugins js -->
+<script src={% static "js/plugins/plugins.js" %}></script>
+<!-- Active js -->
+<script src={% static "js/active.js" %}></script>
+</body>
+
+</html>

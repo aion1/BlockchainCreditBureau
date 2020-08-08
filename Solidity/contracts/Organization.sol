@@ -77,4 +77,28 @@ contract Organization{
     return result;
 
   }
+
+
+  function getLoanieLoans (address _loanie) public returns(bool) {
+    Loans loansContract = Loans(loansContractAddress);
+    uint256 loanieLoansLen = loansContract.uGetMyLoansLen(_loanie);
+    Loans.Loan [] memory loanieLoans = new Loans.Loan[](loanieLoansLen);
+    loanieLoans = loansContract.getLoanieLoans(_loanie);
+    if (loanieLoans.length > 0){
+      emitLoans(loanieLoans, loanieLoansLen);
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  
+
+
+
+
+
+
+
+
 }

@@ -76,6 +76,8 @@ class OrganiztionContractPython:
 
     loansEventValues = None
     loansEventValuesLen = 0
+    loanieLoansEventValues = None
+    loanieLoansEventValuesLen = 0
 
     def createLoanTransaction(self, loanieAddress, loanerAddress, amount, installmentsNum, interest):
         transactionDict = TransactionDictionary(3000000, loanerAddress, self.web3Handler.web3)
@@ -97,6 +99,14 @@ class OrganiztionContractPython:
             .buildTransaction(transactionDict)
         return transaction
 
+    def createGetLoanieLoansTransaction(self, sender, loanieAddress):
+        loanieAddress = self.web3Handler.toChecksumAddress(loanieAddress)
+        transactionDict = TransactionDictionary(300000, sender, self.web3Handler.web3)
+        transaction = self.organizationContract \
+            .functions.getLoanieLoans(loanieAddress) \
+            .buildTransaction(transactionDict)
+        return transaction
+
     def setLoansEventValues(self, tx_hash):
         receipt = self.web3Handler.getTransactionReceipt(tx_hash)
         rich_logs = self.organizationContract.events.getLoanerLoans().processReceipt(receipt)
@@ -107,6 +117,17 @@ class OrganiztionContractPython:
 
     def getLoansEventLength(self):
         return len(self.loansEventValues['_amounts'])
+
+    def setLoanieLoansEventValues(self, tx_hash):
+        receipt = self.web3Handler.getTransactionReceipt(tx_hash)
+        rich_logs = self.organizationContract.events.getLoanerLoans().processReceipt(receipt)
+        event_values = rich_logs[0]['args']
+
+        self.loanieLoansEventValues = event_values
+        self.loanieLoansEventValuesLen = self.getLoanieLoansEventLength()
+
+    def getLoanieLoansEventLength(self):
+        return len(self.loanieLoansEventValues['_amounts'])
 
 
 class LoansContractPython:

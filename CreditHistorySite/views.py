@@ -244,10 +244,11 @@ def createLoan(request):
 
 
 @login_required(login_url='login')
-def searchLoanie(request, loaniePublicKey):
+def searchLoanie(request):
     if request.user.type == CustomUserType.Loanie.value:
         response = redirect('loanie.home')
     else:
+        loaniePublicKey = request.GET['loanieAddress']
         publicKey = request.user.pk
         privateKey = request.session.get('privateKey')
         web3Organization = Web3Organization(publicKey, privateKey,
@@ -255,8 +256,12 @@ def searchLoanie(request, loaniePublicKey):
                                             main.organizationContractPython,
                                             main.accountsContractPython,
                                             main.loansContractPython)
-        loanieLoans = web3Organization.searchLoanie(loaniePublicKey)
-        response = redirect('org.home')
+        loanieLoans = web3Organization.buildLoanieLoansList(loaniePublicKey)
+
+        response = render(request, 'organization/loanieLoans.html', {
+            'loanieLoans': loanieLoans,
+            'loanieAddress': loaniePublicKey
+        })
 
     return response
 

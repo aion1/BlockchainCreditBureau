@@ -1,5 +1,5 @@
 pragma experimental ABIEncoderV2;
-pragma solidity >=0.4.21 <0.7.0;
+//pragma solidity >=0.4.21 <0.7.0;
 
 /**
  * The contractName contract does this and that...
@@ -26,34 +26,41 @@ contract Organization{
     loansContract.add(_loanie, loaner, _amount, false, _installmentsNum, _interest);
   	return true;
   }
+
+  function emitLoans(Loans.Loan [] memory _loans, uint256 _len ) internal returns(bool res)  {
+        
+    address [] memory loanersAddresses = new address [](_len);
+    uint256 [] memory loansAmounts = new uint256 [](_len);
+    uint256 [] memory loansIds = new uint256 [](_len);
+    uint128 [] memory loansInstallmentsNums = new uint128 [](_len);
+    uint128 [] memory loansInterests = new uint128 [](_len);
+    address [] memory loaniesAddresses = new address [](_len);
+
+
+
+    for(uint256 i = 0; i < _len; i += 1)
+    {
+      loanersAddresses[i] = _loans[i].loaner;
+      loansAmounts[i] = _loans[i].loanAmount;
+      loansIds[i] = _loans[i].id;
+      loansInstallmentsNums [i] = _loans[i].installmentsNum;
+      loansInterests[i] = _loans[i].interest;
+      loaniesAddresses[i] = _loans[i].loanReceiver;
+    }
+    emit getLoanerLoans(loansAmounts, loanersAddresses, loaniesAddresses, loansIds, loansInstallmentsNums, loansInterests);
+    }
+
+
+
+
   function getLoans()public returns(bool) 
   {
     address loaner = msg.sender;
     Loans loansContract = Loans(loansContractAddress);
     uint256 loansLen = loansContract.getLoanerLoansLen(loaner);
     Loans.Loan [] memory loans = new Loans.Loan[](loansLen);
-
-
     loans=loansContract.getLoanerLoans();
-
-
-    address [] memory loanersAddresses = new address [](loansLen);
-    uint256 [] memory loansAmounts = new uint256 [](loansLen);
-    uint256 [] memory loansIds = new uint256 [](loansLen);
-    uint128 [] memory loansInstallmentsNums = new uint128 [](loansLen);
-    uint128 [] memory loansInterests = new uint128 [](loansLen);
-    address [] memory loaniesAddresses = new address [](loansLen);
-
-    for(uint256 i = 0; i < loansLen; i += 1)
-    {
-        loanersAddresses[i] = loans[i].loaner;
-        loansAmounts[i] = loans[i].loanAmount;
-        loansIds[i] = loans[i].id;
-        loansInstallmentsNums [i] = loans[i].installmentsNum;
-        loansInterests[i] = loans[i].interest;
-        loaniesAddresses[i] = loans[i].loanReceiver;
-    }
-    emit getLoanerLoans(loansAmounts, loanersAddresses, loaniesAddresses, loansIds, loansInstallmentsNums, loansInterests);
+    emitLoans(loans, loansLen);
     return true;
   }
  

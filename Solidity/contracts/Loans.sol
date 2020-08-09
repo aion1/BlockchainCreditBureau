@@ -230,7 +230,7 @@ contract Loans {
       uint256 month =  2592000 ;  
       uint256 date = _initialDate +month;
      
-      //_loanAmount + _loanAmount * (_interest/100);
+      _loanAmount+=(_loanAmount*_interest)/100;
       uint256 installmentAmountReminder=_loanAmount % _installmentsNum;
       _loanAmount-=installmentAmountReminder;
       uint256 installmentAmount=_loanAmount/_installmentsNum;
@@ -336,5 +336,15 @@ contract Loans {
     accountsContract.changePoints(_loanie,_points);
     return true;
   }
+
+  function getLoaniePoints () public returns(uint256 [] memory){
+    address _loanie=tx.origin;
+    Accounts accountsContract = Accounts(accountsContractAddress);
+    uint256 [] memory myPoints=new uint256[](2);
+    myPoints=accountsContract.getPoints();
+    return myPoints;
+    
+  }
+  
   
 }

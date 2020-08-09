@@ -200,8 +200,17 @@ def loanieHome(request):
         pendingLoansList = web3Loanie.buildPendingLoansList()
         # Loans
         loans = web3Loanie.buildLoansList()
+        #loanie points
+        point = web3Loanie.buildPointsList()
+        loaniePoints = point[0]
+        loanieOptimalPoints = point[1]
+        #loaniePoints = 0
+        #loanieOptimalPoints = 0
+
         response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoansList,
                                                         'loans': loans,
+                                                        'loaniePoints': loaniePoints,
+                                                        'loanieOptimalPoints': loanieOptimalPoints,
                                                         'publicKey': public_key})
     else:
         response = redirect('org.home')

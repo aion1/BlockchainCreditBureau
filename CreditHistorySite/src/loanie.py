@@ -21,6 +21,7 @@ class Web3Loanie:
         tx_hash = self.web3Handler.transact(transaction, self.key)
         self.userContractPython.setPendingLoansEventValue(tx_hash)
 
+
     def buildPendingLoansList(self):
         pendingLoansList = []
         if self.accountsContractPython.accountExists(self.address):
@@ -78,6 +79,27 @@ class Web3Loanie:
                 print("Either this account is not a loanie or not registered in our system.")
 
         return loansList
+
+    def getPoints(self):
+        transaction = self.userContractPython.createGetPointsTransaction(self.address)
+        tx_hash = self.web3Handler.transact(transaction, self.key)
+        self.userContractPython.setPointsEventValue(tx_hash)
+
+    def buildPointsList(self):
+        points = []
+        if self.accountsContractPython.accountExists(self.address):
+            index = self.accountsContractPython.getIndex(self.address)
+            if self.accountsContractPython.isLoanie(index):
+                self.getPoints()
+                values = self.userContractPython.myPointsEventValues
+                string = str(values['_points'][0])
+                points.append(string)
+                string = str(values['_points'][1])
+                points.append(string)
+            else:
+                print("Either this account is not a loanie or not registered in our system.")
+
+        return points
 
     def getInstallments(self, loanId):
         transaction = self.loansContractPython.createGetInstallmentsTransaction(self.address, loanId)

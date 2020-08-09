@@ -10,12 +10,15 @@ class UserContractPython:
     eventValuesLen = 0
     loansEventValues = None
     loansEventValuesLen = 0
+    myPointsEventValues = None
+    myPointsEventValuesLen = 0
 
     def createGetPendingLoansTransaction(self, address):
         transactionDict = TransactionDictionary(300000, address, self.web3Handler.web3)
         transaction = self.userContract.functions.getPendingLoans(
         ).buildTransaction(transactionDict)
         return transaction
+
 
     def setPendingLoansEventValue(self, tx_hash):
         receipt = self.web3Handler.getTransactionReceipt(tx_hash)
@@ -24,6 +27,21 @@ class UserContractPython:
 
         self.pendingLoansEventValues = event_values
         self.eventValuesLen = self.getEventLength()
+
+    def createGetPointsTransaction(self, address):
+        transactionDict = TransactionDictionary(300000, address, self.web3Handler.web3)
+        transaction = self.userContract.functions.getMyPoints(
+        ).buildTransaction(transactionDict)
+        return transaction
+
+
+    def setPointsEventValue(self, tx_hash):
+        receipt = self.web3Handler.getTransactionReceipt(tx_hash)
+        rich_logs = self.userContract.events.getPoints().processReceipt(receipt)
+        event_values = rich_logs[0]['args']
+
+        self.myPointsEventValues = event_values
+        self.myPointsEventValuesLen = self.getEventLength()
 
     def createGetLoansTransaction(self, address):
         transactionDict = TransactionDictionary(300000, address, self.web3Handler.web3)

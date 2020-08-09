@@ -6,6 +6,8 @@ contract User {
     event getAmounts(uint256 [] _amounts, address [] _addresses, address [] _loaniesAddresses, uint256 [] _ids, uint128 [] _installmentsNum , uint128 [] _interest);
     event getLoans(Loans.Loan[] _loans);
    	event delegateCall(bool success);
+    event getPoints(uint256 [] _points);
+    
 
 
     
@@ -95,9 +97,14 @@ contract User {
         return true;
     }
 
-    function getPoints () public returns(uint256)
+    function getMyPoints () public returns(bool)
     {
         address loanie = msg.sender;
+        uint256 [] memory myPoints=new uint256[](2);
+        Loans loansContract = Loans(loansContractAddress);
+        myPoints=loansContract.getLoaniePoints();
+        emit getPoints(myPoints);
+        return true;
         
     }
     

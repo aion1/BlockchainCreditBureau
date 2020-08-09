@@ -9,12 +9,16 @@ pragma experimental ABIEncoderV2;
 import "./Loans.sol";
  
 contract Organization{
+
+
   address loansContractAddress;
   address loanerAddress;
   constructor() public {
  	   
   }
   event getLoanerLoans(uint256 [] _amounts, address [] _addresses, address [] _loaniesAddresses, uint256 [] _ids, uint128 [] _installmentsNum , uint128 [] _interest);
+  event getPoints(uint256 [] _points);
+
   function createLoan (address _loanie, uint256 _amount, uint128 _installmentsNum, uint128 _interest) public returns(bool)  {
     address loaner = msg.sender;
     loanerAddress = loaner;
@@ -91,6 +95,16 @@ contract Organization{
     else{
       return false;
     }
+  }
+
+  function getLoaniePoints (address loanie) public returns(bool) {
+
+    uint256 [] memory myPoints=new uint256[](2);
+    Loans loansContract = Loans(loansContractAddress);
+    myPoints=loansContract.getLoaniePoints(loanie);
+    emit getPoints(myPoints);
+    return true;
+    
   }
   
 

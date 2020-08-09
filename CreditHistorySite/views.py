@@ -204,8 +204,7 @@ def loanieHome(request):
         point = web3Loanie.buildPointsList()
         loaniePoints = point[0]
         loanieOptimalPoints = point[1]
-        #loaniePoints = 0
-        #loanieOptimalPoints = 0
+
 
         response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoansList,
                                                         'loans': loans,
@@ -266,9 +265,14 @@ def searchLoanie(request):
                                             main.accountsContractPython,
                                             main.loansContractPython)
         loanieLoans = web3Organization.buildLoanieLoansList(loaniePublicKey)
+        point = web3Organization.buildLoaniePointsList(loaniePublicKey)
+        loaniePoints = point[0]
+        loanieOptimalPoints = point[1]
 
         response = render(request, 'organization/loanieLoans.html', {
             'loanieLoans': loanieLoans,
+            'loaniePoints': loaniePoints,
+            'loanieOptimalPoints': loanieOptimalPoints,
             'loanieAddress': loaniePublicKey
         })
 

@@ -102,7 +102,7 @@ contract User {
         address loanie = msg.sender;
         uint256 [] memory myPoints=new uint256[](2);
         Loans loansContract = Loans(loansContractAddress);
-        myPoints=loansContract.getLoaniePoints();
+        myPoints=loansContract.getLoaniePoints(loanie);
         emit getPoints(myPoints);
         return true;
         

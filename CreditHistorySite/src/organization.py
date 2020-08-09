@@ -91,6 +91,26 @@ class Web3Organization:
         tx_hash = self.web3Handler.transact(createInstallmentTransaction,
                                             self.key)
 
+    def getLoaniePoints(self, loanieAddress):
+        transaction = self.organizationContractPython.createLoanieGetPointsTransaction(self.address, loanieAddress)
+        tx_hash = self.web3Handler.transact(transaction, self.key)
+        self.organizationContractPython.setLoaniePointsEventValue(tx_hash)
+
+    def buildLoaniePointsList(self, loanieAddress):
+        points = []
+        if self.accountsContractPython.accountExists(self.address):
+            index = self.accountsContractPython.getIndex(self.address)
+            if not self.accountsContractPython.isLoanie(index):
+                self.getLoaniePoints(loanieAddress)
+                values = self.organizationContractPython.loaniePointsEventValues
+                string = str(values['_points'][0])
+                points.append(string)
+                string = str(values['_points'][1])
+                points.append(string)
+            else:
+                print("Either this account is not a loanie or not registered in our system.")
+        return points
+
     def getLoanieLoans(self, loanieAddress):
         transaction = self.organizationContractPython.createGetLoanieLoansTransaction(self.address, loanieAddress)
         tx_hash = self.web3Handler.transact(transaction, self.key)

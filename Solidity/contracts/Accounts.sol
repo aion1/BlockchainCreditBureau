@@ -61,8 +61,7 @@ contract Accounts{
 		}
 		return false;
 	}
-	function getPoints () public returns(uint256 []memory){
-		address _loanie=tx.origin;
+	function getPoints (address _loanie) public returns(uint256 []memory){
 		uint256 [] memory myPoints=new uint256[](2);
 		int256 myIndex=getIndex(_loanie);
 		if(myIndex != -1)

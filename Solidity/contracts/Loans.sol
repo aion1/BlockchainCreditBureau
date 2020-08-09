@@ -299,11 +299,14 @@ contract Loans {
     uint256 points=5;
     uint256 day=86400;
 
-    // (week*3) and month will be removed
-    uint256 differanceTime=(installments[_id][_index].paidOutDate+month+(week*4))-installments[_id][_index].payDate;
 
+    uint256 differanceTime=(installments[_id][_index].paidOutDate)-installments[_id][_index].payDate;
 
-    if(differanceTime<=day) // pay in the same day
+    if(installments[_id][_index].paidOutDate<installments[_id][_index].payDate) // pay before time
+    {
+      setNewPoints(loanie,points);
+    }
+    else if(differanceTime<=day) // pay in the same day
     {
       setNewPoints(loanie,points);
     }
@@ -337,13 +340,11 @@ contract Loans {
     return true;
   }
 
-  function getLoaniePoints () public returns(uint256 [] memory){
-    address _loanie=tx.origin;
+  function getLoaniePoints (address _loanie) public returns(uint256 [] memory){
     Accounts accountsContract = Accounts(accountsContractAddress);
     uint256 [] memory myPoints=new uint256[](2);
-    myPoints=accountsContract.getPoints();
-    return myPoints;
-    
+    myPoints=accountsContract.getPoints(_loanie);
+    return myPoints;   
   }
   
   

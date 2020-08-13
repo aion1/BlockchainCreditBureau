@@ -5,6 +5,7 @@ import "./Accounts.sol";
 
 contract Loans {
 
+
   struct  Installment{
     uint256 amount;
     uint256 payDate;
@@ -72,10 +73,12 @@ contract Loans {
   }
 
   
-  function confirmLoan(uint256 _loanId, address _loanie)
+  function confirmLoan(uint256 _loanId)
     public
     returns(bool)
   {
+    address _loanie = tx.origin;
+
     int256 intIndex = searchPending(_loanId, _loanie);
     if(intIndex == -1)
       return false;
@@ -97,7 +100,9 @@ contract Loans {
     return true;
 
   }
-  function rejectLoan(uint256 _loanId, address _loanie)public returns(bool){
+  function rejectLoan(uint256 _loanId)public returns(bool){
+    address _loanie = tx.origin;
+
     int256 intIndex = searchPending(_loanId, _loanie);
     if(intIndex == -1)
       return false;
@@ -121,7 +126,11 @@ contract Loans {
   /*Using just one function when compiling with:
     pragma experimental ABIEncoderV2;*/
   function getPendingLoansList () public returns(Loan [] memory) {
-    address _loanie=msg.sender;
+
+  	//address _loanie = msg.sender;
+    address _loanie=tx.origin;
+
+
     Loan [] memory myPendingLoans = new Loan [](pendingLoansLength);
     uint256 counter = 0;
 
@@ -138,7 +147,11 @@ contract Loans {
 
   function getLoanerLoans()public returns (Loan [] memory)
   {
-    address _loaner=msg.sender;
+
+
+    address _loaner=tx.origin;
+
+
     Loan [] memory myLoanerLoans = new Loan [](loanerLoans[_loaner].length);
     for(uint256 i=0; i < loanerLoans[_loaner].length; i+=1)
     {
@@ -158,6 +171,30 @@ contract Loans {
     return loanerLoans[_loaner].length;
   }
   
+
+
+  function getLoanieLoans (address _loanie) public returns(Loan [] memory) {
+    address loaner = tx.origin;
+    Accounts accountsContract = Accounts(accountsContractAddress);
+    Loan [] memory loanieLoans = new Loan [](0);
+
+
+    if(accountsContract.accountExists(loaner)){
+      uint256 loanerIndex = uint256(accountsContract.getIndex(loaner));
+      if(accountsContract.getType(loanerIndex)){
+        loanieLoans = new Loan [](loans[_loanie].length);
+        for(uint256 i=0; i < loans[_loanie].length; i+=1){
+          uint256 loanId = loans[_loanie][i];
+          loanieLoans[i] = allLoans[loanId];
+        }
+      }
+    }
+    return loanieLoans;
+  }
+  
+
+
+
  /** function getLoans () public returns(Loan [] memory)  {
       return loans;
   }
@@ -175,8 +212,10 @@ contract Loans {
    */
 
    //u stands for user
-   function uGetMyLoans (address _loanie) public returns(Loan [] memory){
+   function uGetMyLoans () public returns(Loan [] memory){
 
+    address _loanie = tx.origin;
+    
     
     Loan [] memory myLoans = new Loan [](loans[_loanie].length);
     for(uint256 i=0; i < loans[_loanie].length; i+=1)
@@ -196,7 +235,7 @@ contract Loans {
       uint256 month =  2592000 ;  
       uint256 date = _initialDate +month;
      
-      //_loanAmount + _loanAmount * (_interest/100);
+      _loanAmount+=(_loanAmount*_interest)/100;
       uint256 installmentAmountReminder=_loanAmount % _installmentsNum;
       _loanAmount-=installmentAmountReminder;
       uint256 installmentAmount=_loanAmount/_installmentsNum;
@@ -265,11 +304,14 @@ contract Loans {
     uint256 points=5;
     uint256 day=86400;
 
-    // (week*3) and month will be removed
-    uint256 differanceTime=(installments[_id][_index].paidOutDate+month+(week*4))-installments[_id][_index].payDate;
 
+    uint256 differanceTime=(installments[_id][_index].paidOutDate)-installments[_id][_index].payDate;
 
-    if(differanceTime<=day) // pay in the same day
+    if(installments[_id][_index].paidOutDate<installments[_id][_index].payDate) // pay before time
+    {
+      setNewPoints(loanie,points);
+    }
+    else if(differanceTime<=day) // pay in the same day
     {
       setNewPoints(loanie,points);
     }
@@ -302,5 +344,13 @@ contract Loans {
     accountsContract.changePoints(_loanie,_points);
     return true;
   }
+
+  function getLoaniePoints (address _loanie) public returns(uint256 [] memory){
+    Accounts accountsContract = Accounts(accountsContractAddress);
+    uint256 [] memory myPoints=new uint256[](2);
+    myPoints=accountsContract.getPoints(_loanie);
+    return myPoints;   
+  }
+  
   
 }

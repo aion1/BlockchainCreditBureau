@@ -1,4 +1,6 @@
-pragma solidity >=0.4.21 <0.7.0;
+//pragma solidity >=0.4.21 <0.7.0;
+
+pragma experimental ABIEncoderV2;
 
 contract Accounts{
 	struct Account{
@@ -32,11 +34,12 @@ contract Accounts{
 		return false;
 
 	}
-	function accountExists(address _accAddress) internal returns(bool){
+	function accountExists(address _accAddress) public returns(bool){
 		if (getIndex(_accAddress) == -1)
 			return false;
 		return true;
-	} 
+	}
+	
 
 	function deleteAccount(address _accAddress)public returns(bool){
 		int256 myIndex=getIndex(_accAddress);
@@ -58,5 +61,16 @@ contract Accounts{
 		}
 		return false;
 	}
+	function getPoints (address _loanie) public returns(uint256 []memory){
+		uint256 [] memory myPoints=new uint256[](2);
+		int256 myIndex=getIndex(_loanie);
+		if(myIndex != -1)
+		{
+			myPoints[0]=accounts[uint256(myIndex)].points;
+			myPoints[1]=accounts[uint256(myIndex)].optimalPoints;
+		}
+		return myPoints;
+	}
+	
 	
 }

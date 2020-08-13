@@ -23,7 +23,6 @@ class AddressBackend(BaseBackend):
         ethAccount = kwargs['ethAccount']
         privateKey = ethAccount.decrypt(customUser.keystore, password)
         request.session['privateKey'] = privateKey
-        print('private key in session', request.session.get('privateKey'))
         if privateKey is not None:
             return customUser
         else:

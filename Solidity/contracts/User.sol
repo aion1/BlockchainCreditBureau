@@ -2,10 +2,12 @@
 pragma experimental ABIEncoderV2;
 import "./Loans.sol";
 contract User {
-    address loansContractAddress;
-    event getAmounts(uint256 [] _amounts, address [] _addresses, uint256 [] _ids, uint128 [] _installmentsNum , uint128 [] _interest);
+
+    event getAmounts(uint256 [] _amounts, address [] _addresses, address [] _loaniesAddresses, uint256 [] _ids, uint128 [] _installmentsNum , uint128 [] _interest);
     event getLoans(Loans.Loan[] _loans);
-   
+   	event delegateCall(bool success);
+    event getPoints(uint256 [] _points);
+    
 
 
     
@@ -13,10 +15,17 @@ contract User {
     {
 
     }
+    address sender;
+    address loansContractAddress;
     //To set the (loans contract) address deployed on the chain
     function setLoansContractAddress(address _loansContractAddress) public {
         loansContractAddress=_loansContractAddress;
     }
+
+
+
+
+    
 
 
 
@@ -25,11 +34,36 @@ contract User {
         address loanie = msg.sender;
         Loans loansContract = Loans(loansContractAddress);
         if (_type)
-          loansContract.confirmLoan(_loanId, loanie);
+          loansContract.confirmLoan(_loanId);
         else
-          loansContract.rejectLoan(_loanId, loanie);
+          loansContract.rejectLoan(_loanId);
         return true;
     }
+
+
+    function emitLoans(Loans.Loan [] memory _loans, uint256 _len ) internal returns(bool res)  {
+        
+        address [] memory loanersAddresses = new address [](_len);
+        uint256 [] memory loansAmounts = new uint256 [](_len);
+        uint256 [] memory loansIds = new uint256 [](_len);
+        uint128 [] memory loansInstallmentsNums = new uint128 [](_len);
+        uint128 [] memory loansInterests = new uint128 [](_len);
+        address [] memory loaniesAddresses = new address [](_len);
+
+
+
+        for(uint256 i = 0; i < _len; i += 1)
+        {
+          loanersAddresses[i] = _loans[i].loaner;
+          loansAmounts[i] = _loans[i].loanAmount;
+          loansIds[i] = _loans[i].id;
+          loansInstallmentsNums [i] = _loans[i].installmentsNum;
+          loansInterests[i] = _loans[i].interest;
+          loaniesAddresses[i] = _loans[i].loanReceiver;
+        }
+        emit getAmounts(loansAmounts, loanersAddresses, loaniesAddresses, loansIds, loansInstallmentsNums, loansInterests);
+    }
+    
 
 
 
@@ -41,23 +75,12 @@ contract User {
 
         Loans loansContract = Loans(loansContractAddress);
         uint256 len = loansContract.getPendingLoansLength();
-        address [] memory loanersAddresses = new address [](len);
-        uint256 [] memory loansAmounts = new uint256 [](len);
-        uint256 [] memory loansIds = new uint256 [](len);
-        uint128 [] memory loansInstallmentsNums = new uint128 [](len);
-        uint128 [] memory loansInterests = new uint128 [](len);
-
         Loans.Loan [] memory pendingLoans = new Loans.Loan[](len);
         pendingLoans = loansContract.getPendingLoansList(); 
-        for(uint256 i = 0; i < len; i += 1)
-        {
-          loanersAddresses[i] = pendingLoans[i].loaner;
-          loansAmounts[i] = pendingLoans[i].loanAmount;
-          loansIds[i] = pendingLoans[i].id;
-          loansInstallmentsNums [i] = pendingLoans[i].installmentsNum;
-          loansInterests[i] = pendingLoans[i].interest;
-        }
-        emit getAmounts(loansAmounts, loanersAddresses, loansIds, loansInstallmentsNums, loansInterests);
+
+
+        emitLoans(pendingLoans, len);
+
         //emit getLoans(pendingLoans);
         return true;
     }
@@ -66,27 +89,23 @@ contract User {
         Loans loansContract = Loans(loansContractAddress);
         uint256 loansLen = loansContract.uGetMyLoansLen(loanie);
         Loans.Loan [] memory loans = new Loans.Loan[](loansLen);
-        loans = loansContract.uGetMyLoans(loanie);
-        address [] memory loanersAddresses = new address [](loansLen);
-        uint256 [] memory loansAmounts = new uint256 [](loansLen);
-        uint256 [] memory loansIds = new uint256 [](loansLen);
-        uint128 [] memory loansInstallmentsNums = new uint128 [](loansLen);
-        uint128 [] memory loansInterests = new uint128 [](loansLen);
-        for(uint256 i = 0; i < loansLen; i += 1)
-        {
-          loanersAddresses[i] = loans[i].loaner;
-          loansAmounts[i] = loans[i].loanAmount;
-          loansIds[i] = loans[i].id;
-          loansInstallmentsNums [i] = loans[i].installmentsNum;
-          loansInterests[i] = loans[i].interest;
-        }
-        emit getAmounts(loansAmounts, loanersAddresses, loansIds, loansInstallmentsNums, loansInterests);
+
+
+
+        loans = loansContract.uGetMyLoans();
+
+        emitLoans(loans, loansLen);
         return true;
     }
 
-    function getPoints () public returns(uint256)
+    function getMyPoints () public returns(bool)
     {
         address loanie = msg.sender;
+        uint256 [] memory myPoints=new uint256[](2);
+        Loans loansContract = Loans(loansContractAddress);
+        myPoints=loansContract.getLoaniePoints(loanie);
+        emit getPoints(myPoints);
+        return true;
         
     }
     

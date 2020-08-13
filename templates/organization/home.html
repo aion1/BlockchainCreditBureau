@@ -37,6 +37,11 @@
         .input-group.md-form.form-sm.form-2 input.amber-border {
             border: 1px solid #ffca28;
         }
+
+        input {
+            padding: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
@@ -44,24 +49,24 @@
 <div class="preloader d-flex align-items-center justify-content-center">
     <div class="line-preloader"></div>
 </div>
-
+<br>
+<div class="">
+    <div class="col-9">
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn crose-btn btn-2">Logout</button>
+        </form>
+    </div>
+</div>
 <section class="call-to-action-area section-padding-100 bg-img bg-overlay"
          style="background-image: url({% static "img/bg-img/6.jpg" %})">
     <div class="container">
-        <div class="md-form row">
-            <div class="col-1">
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit">Logout</button>
-                </form>
-            </div>
-        </div>
+
         <div class="row">
             <div class="col-12">
                 <div class="call-to-action-content text-center">
                     <h6>Hi, {{ publicKey }}</h6>
                     <h2>It is your place to make easy transactions and connect with users easily</h2>
-                    <a href="#" id="invite" class="btn crose-btn btn-2">Invite your users</a>
                 </div>
             </div>
         </div>
@@ -73,14 +78,21 @@
 <!-- Search form -->
 <!-- 0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c -->
 <div class="input-group md-form form-sm form-1 pl-0">
-    <div class="input-group-prepend">
-            <span class="input-group-text purple lighten-3" id="basic-text1"><i class="fas fa-search text-white"
-                                                                                aria-hidden="true"></i></span>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="call-to-action-content text-center">
+                    <form method="GET" action="{% url 'org.searchLoanie' %}">
+                        <input class="form-control my-0 py-1" type="text"
+                               placeholder="0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c"
+                               aria-label="Search" name="loanieAddress">
+                        <button type="submit" class="btn crose-btn btn-2">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <form method="POST" action="">
-        <input class="form-control my-0 py-1" type="text" placeholder="0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c"
-               aria-label="Search">
-    </form>
 </div>
 <!-- Upcoming Events Slide -->
 <div class="upcoming-events-slides-area">
@@ -105,7 +117,7 @@
                                             <div class="events-meta">
                                                 <a href="#">
                                                     <i class="fa fa-calendar" aria-hidden="true"></i>
-                                                    Loaner: {{ loan.loanerAddress }}
+                                                    Loanie: {{ loan.loanieAddress }}
                                                 </a>
                                                 <br>
                                                 <a href="#">
@@ -186,7 +198,7 @@
 <br><br><br>
 <h1>Create A New Loan</h1>
 <center><a href="{% url 'org.createloan' %}">
-    <button>Create Loan</button>
+    <button class="btn crose-btn btn-2">Create Loan</button>
 </a></center>
 <br><br><br>
 <!-- ##### All Javascript Script ##### -->

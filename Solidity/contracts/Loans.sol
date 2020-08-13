@@ -45,7 +45,8 @@ contract Loans {
   }
   event getLoanInstallments(uint256 []_amount,uint256 []_payDate,uint256 []_payOutDate,bool []_paid);
   
-  function add(address _loanReceiver, address _loaner, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
+  function add(address _loanReceiver, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
+    address _loaner=tx.origin;
     uint256 id = now;
      Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount, _installmentsNum, _interest);
 
@@ -285,8 +286,9 @@ contract Loans {
     emit getLoanInstallments(installmentAmounts, payDates, payOutDate, paids);
     return true;
   }
-  function confirmLoanInstallment(address loaner,uint256 _index,uint256 _id) public returns (bool)
+  function confirmLoanInstallment(uint256 _index,uint256 _id) public returns (bool)
   {
+    address loaner = tx.origin; 
     if(installments[_id][_index].paid==true)
     {
       return false;
@@ -338,7 +340,7 @@ contract Loans {
     }
     return true;
   } 
-  function setNewPoints (address _loanie,uint256 _points) public returns(bool res)  
+  function setNewPoints (address _loanie,uint256 _points) internal returns(bool res)  
   {
     Accounts accountsContract = Accounts(accountsContractAddress);
     accountsContract.changePoints(_loanie,_points);

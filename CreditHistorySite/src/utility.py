@@ -62,7 +62,7 @@ class Web3Handler:
         self.web3.eth.defaultAccount = self.web3.eth.accounts[0]
         self.defaultAccount = self.web3.eth.defaultAccount
 
-        self.defaultKey = 'a4763483f8b44b18a205ab8c86f87b61ea2f214da53eb703207458a1aafbfa89'
+        self.defaultKey = 'c8c7687fa1b5a614b7203109c12cf9c2d2d710a325825704061b80c32acf42d5'
 
         self.ethAccount = self.web3.eth.account
 

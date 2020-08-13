@@ -40,7 +40,7 @@ contract Accounts{
 		return true;
 	}
 	
-
+    
 	function deleteAccount(address _accAddress)public returns(bool){
 		int256 myIndex=getIndex(_accAddress);
 		if(myIndex != -1)
@@ -50,6 +50,7 @@ contract Accounts{
 		}
 		return false;		
 	}
+	
 	function changePoints (address _loanie,uint256 _points)public returns(bool res)
 	{
 		int256 myIndex=getIndex(_loanie);

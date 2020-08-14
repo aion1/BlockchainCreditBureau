@@ -281,8 +281,9 @@ contract Loans {
     emit getLoanInstallments(installmentAmounts, payDates, payOutDate, paids);
     return true;
   }
-  function confirmLoanInstallment(address loaner,uint256 _index,uint256 _id) public returns (bool)
+  function confirmLoanInstallment(uint256 _index,uint256 _id) public returns (bool)
   {
+    address loaner = tx.origin;
     if(installments[_id][_index].paid==true)
     {
       return false;

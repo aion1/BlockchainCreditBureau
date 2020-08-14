@@ -46,8 +46,8 @@ contract Loans {
   event getLoanInstallments(uint256 []_amount,uint256 []_payDate,uint256 []_payOutDate,bool []_paid);
   
   function add(address _loanReceiver, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
-    address _loaner=tx.origin;
     uint256 id = now;
+    address _loaner = tx.origin;
      Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount, _installmentsNum, _interest);
 
      if (_type){
@@ -127,10 +127,8 @@ contract Loans {
   /*Using just one function when compiling with:
     pragma experimental ABIEncoderV2;*/
   function getPendingLoansList () public returns(Loan [] memory) {
-
   	//address _loanie = msg.sender;
     address _loanie=tx.origin;
-
 
     Loan [] memory myPendingLoans = new Loan [](pendingLoansLength);
     uint256 counter = 0;
@@ -149,9 +147,7 @@ contract Loans {
   function getLoanerLoans()public returns (Loan [] memory)
   {
 
-
     address _loaner=tx.origin;
-
 
     Loan [] memory myLoanerLoans = new Loan [](loanerLoans[_loaner].length);
     for(uint256 i=0; i < loanerLoans[_loaner].length; i+=1)
@@ -166,9 +162,8 @@ contract Loans {
 
 
 
-  function getLoanerLoansLen()public returns (uint256 )
+  function getLoanerLoansLen(address _loaner)public returns (uint256 )
   {
-    address _loaner=msg.sender;
     return loanerLoans[_loaner].length;
   }
   
@@ -286,9 +281,8 @@ contract Loans {
     emit getLoanInstallments(installmentAmounts, payDates, payOutDate, paids);
     return true;
   }
-  function confirmLoanInstallment(uint256 _index,uint256 _id) public returns (bool)
+  function confirmLoanInstallment(address loaner,uint256 _index,uint256 _id) public returns (bool)
   {
-    address loaner = tx.origin; 
     if(installments[_id][_index].paid==true)
     {
       return false;
@@ -340,7 +334,7 @@ contract Loans {
     }
     return true;
   } 
-  function setNewPoints (address _loanie,uint256 _points) internal returns(bool res)  
+  function setNewPoints (address _loanie,uint256 _points) public returns(bool res)  
   {
     Accounts accountsContract = Accounts(accountsContractAddress);
     accountsContract.changePoints(_loanie,_points);

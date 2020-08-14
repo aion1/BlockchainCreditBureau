@@ -78,6 +78,7 @@ contract User {
         Loans.Loan [] memory pendingLoans = new Loans.Loan[](len);
         pendingLoans = loansContract.getPendingLoansList(); 
 
+
         emitLoans(pendingLoans, len);
 
         //emit getLoans(pendingLoans);

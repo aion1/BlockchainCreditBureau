@@ -27,7 +27,7 @@ contract Organization{
     //TRIGGER EVENT TO USER
     // WAIT AN EVENT COMING FROM THE USER IF IT COME ADD
     
-    loansContract.add(_loanie, loaner, _amount, false, _installmentsNum, _interest);
+    loansContract.add(_loanie, _amount, false, _installmentsNum, _interest);
   	return true;
   }
 
@@ -61,10 +61,12 @@ contract Organization{
   {
     address loaner = msg.sender;
     Loans loansContract = Loans(loansContractAddress);
-    uint256 loansLen = loansContract.getLoanerLoansLen(loaner);
+    uint256 loansLen = loansContract.getLoanerLoansLen();
     Loans.Loan [] memory loans = new Loans.Loan[](loansLen);
     loans=loansContract.getLoanerLoans();
+
     emitLoans(loans, loansLen);
+
     return true;
   }
  
@@ -77,7 +79,7 @@ contract Organization{
   {
     address loaner=msg.sender;
     Loans loansContract = Loans(loansContractAddress);
-    bool result =loansContract.confirmLoanInstallment(loaner,_index,_id);
+    bool result =loansContract.confirmLoanInstallment(_index,_id);
     return result;
 
   }

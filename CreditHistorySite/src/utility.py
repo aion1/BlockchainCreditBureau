@@ -137,7 +137,8 @@ class Installment:
 
 class Loan:
     def __init__(self, amount, loanerAddress, loanieAddress, id, installmentsNum, interest,
-                 installments: List[Installment]):
+                 installments: List[Installment],
+                 loanerLogo):
         self.amount = amount
         self.loanerAddress = loanerAddress
         self.loanieAddress = loanieAddress
@@ -145,6 +146,7 @@ class Loan:
         self.installmentsNum = installmentsNum
         self.interest = interest
         self.installments = installments
+        self.loanerLogo = loanerLogo
 
 class EthAccount:
     def __init__(self, web3Handler):

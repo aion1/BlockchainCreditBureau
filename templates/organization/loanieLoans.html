@@ -37,6 +37,11 @@
         .input-group.md-form.form-sm.form-2 input.amber-border {
             border: 1px solid #ffca28;
         }
+
+        img {
+            width: 300px;
+            height: 200px;
+        }
     </style>
 </head>
 
@@ -85,7 +90,7 @@
                             <!-- Content -->
                             <!-- Thumbnail -->
                             <div class="upcoming-events-thumbnail">
-                                <img src="{% static "img/bg-img/23.jpg" %}" alt="">
+                                <img src="{{ loan.loanerLogo.url }}" alt="Organization Logo">
                             </div>
                             <div class="upcoming-events-content d-flex flex-wrap align-items-center">
                                 <div class="events-text">

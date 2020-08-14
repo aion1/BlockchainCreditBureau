@@ -42,6 +42,11 @@
             padding: 10px;
             margin-bottom: 20px;
         }
+
+        img {
+            width: 300px;
+            height: 200px;
+        }
     </style>
 </head>
 
@@ -109,8 +114,7 @@
                                     <!-- Content -->
                                     <!-- Thumbnail -->
                                     <div class="upcoming-events-thumbnail">
-                                        <!--<img src="{% static "img/bg-img/23.jpg" %}" alt="">-->
-                                        <img src="{{ orgLogo.url }}" alt="">
+                                        <img src="{{ orgLogo.url }}" alt="Organization Logo">
                                     </div>
                                     <div class="upcoming-events-content d-flex flex-wrap align-items-center">
                                         <div class="events-text">

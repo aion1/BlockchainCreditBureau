@@ -125,7 +125,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-MEDIA_URL = os.path.join(BASE_DIR, 'CreditHistorySite/media/')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'CreditHistorySite/media/')
+
 AUTH_USER_MODEL = 'CreditHistorySite.CustomUser'
 AUTHENTICATION_BACKENDS = (
     'CreditHistorySite.backends.BaseBackend',

@@ -11,7 +11,8 @@
 <ul>
 	<li><code>web3</code></li>	
 	<li><code>django</code></li>	
-	<li><code>mysqlclient</code></li>	
+	<li><code>mysqlclient</code></li>
+	<li><code>Pillow</code></li>	
 	<li><code>jupyter</code>(optionally)</li>	
 </ul>
 <h2>To run:</h2></br>

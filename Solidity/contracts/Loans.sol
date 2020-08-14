@@ -45,8 +45,9 @@ contract Loans {
   }
   event getLoanInstallments(uint256 []_amount,uint256 []_payDate,uint256 []_payOutDate,bool []_paid);
   
-  function add(address _loanReceiver, address _loaner, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
+  function add(address _loanReceiver, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
     uint256 id = now;
+    address _loaner = tx.origin;
      Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount, _installmentsNum, _interest);
 
      if (_type){
@@ -161,8 +162,9 @@ contract Loans {
 
 
 
-  function getLoanerLoansLen(address _loaner)public returns (uint256 )
+  function getLoanerLoansLen()public returns (uint256 )
   {
+    address _loaner = tx.origin;
     return loanerLoans[_loaner].length;
   }
   
@@ -280,8 +282,9 @@ contract Loans {
     emit getLoanInstallments(installmentAmounts, payDates, payOutDate, paids);
     return true;
   }
-  function confirmLoanInstallment(address loaner,uint256 _index,uint256 _id) public returns (bool)
+  function confirmLoanInstallment(uint256 _index,uint256 _id) public returns (bool)
   {
+    address loaner = tx.origin;
     if(installments[_id][_index].paid==true)
     {
       return false;
@@ -343,7 +346,20 @@ contract Loans {
   function getLoaniePoints (address _loanie) public returns(uint256 [] memory){
     Accounts accountsContract = Accounts(accountsContractAddress);
     uint256 [] memory myPoints=new uint256[](2);
-    myPoints=accountsContract.getPoints(_loanie);
+
+    address functionCaller = tx.origin;
+    if(accountsContract.accountExists(functionCaller)){
+      uint256 functionCallerIndex = uint256(accountsContract.getIndex(functionCaller));
+
+      //if the function caller is an Loanie
+      if(!accountsContract.getType(functionCallerIndex)){
+        if(functionCaller == _loanie)
+          myPoints=accountsContract.getPoints(_loanie);
+      }else{
+        myPoints=accountsContract.getPoints(_loanie); 
+      }
+    }
+
     return myPoints;   
   }
   

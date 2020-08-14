@@ -1,7 +1,7 @@
 from CreditHistorySite.src.contracts import \
     OrganiztionContractPython, AccountsContractPython, LoansContractPython
 from CreditHistorySite.src.utility import Loan, Installment
-
+from CreditHistorySite.models import CustomUser
 
 class Web3Organization:
     def __init__(self, address, key, web3Handler,
@@ -39,7 +39,8 @@ class Web3Organization:
                                 attributes[3],
                                 attributes[4],
                                 attributes[5],
-                                self.buildInstallmentsList(loanId))
+                                self.buildInstallmentsList(loanId),
+                                None)
                     loansList.append(loan)
 
             else:
@@ -129,13 +130,22 @@ class Web3Organization:
                         string += str(values[key][i]) + ' '
                     attributes = string.split(' ')
                     loanId = int(attributes[3])
+
+                    try:
+                        loanerAddress = attributes[1][2:]
+                        loaner = CustomUser.objects.get(pk=loanerAddress)
+                        loanerLogo = loaner.org_profile.logo
+                    except:
+                        loanerLogo = None
+
                     loan = Loan(attributes[0],
                                 attributes[1],
                                 attributes[2],
                                 attributes[3],
                                 attributes[4],
                                 attributes[5],
-                                self.buildInstallmentsList(loanId))
+                                self.buildInstallmentsList(loanId),
+                                loanerLogo)
                     loanieLoansList.append(loan)
 
             else:

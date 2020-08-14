@@ -78,6 +78,7 @@ contract User {
         Loans.Loan [] memory pendingLoans = new Loans.Loan[](len);
         pendingLoans = loansContract.getPendingLoansList(); 
 
+
         emitLoans(pendingLoans, len);
 
         //emit getLoans(pendingLoans);
@@ -105,7 +106,6 @@ contract User {
         myPoints=loansContract.getLoaniePoints(loanie);
         emit getPoints(myPoints);
         return true;
-        
     }
     
    

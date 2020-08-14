@@ -1,3 +1,4 @@
+from CreditHistorySite.models import CustomUser
 from CreditHistorySite.src.contracts import UserContractPython, AccountsContractPython, LoansContractPython
 from CreditHistorySite.src.utility import Loan, Installment
 
@@ -21,7 +22,6 @@ class Web3Loanie:
         tx_hash = self.web3Handler.transact(transaction, self.key)
         self.userContractPython.setPendingLoansEventValue(tx_hash)
 
-
     def buildPendingLoansList(self):
         pendingLoansList = []
         if self.accountsContractPython.accountExists(self.address):
@@ -34,13 +34,20 @@ class Web3Loanie:
                     for key in values:
                         string += str(values[key][i]) + ' '
                     attributes = string.split(' ')
+                    try:
+                        loanerAddress = attributes[1][2:]
+                        loaner = CustomUser.objects.get(pk=loanerAddress)
+                        loanerLogo = loaner.org_profile.logo
+                    except:
+                        loanerLogo = None
                     pendingLoan = Loan(attributes[0],
                                        attributes[1],
                                        attributes[2],
                                        attributes[3],
                                        attributes[4],
                                        attributes[5],
-                                       None)
+                                       None,
+                                       loanerLogo)
                     pendingLoansList.append(pendingLoan)
 
             else:
@@ -66,13 +73,21 @@ class Web3Loanie:
                         string += str(values[key][i]) + ' '
                     attributes = string.split(' ')
                     loanId = int(attributes[3])
+
+                    try:
+                        loanerAddress = attributes[1][2:]
+                        loaner = CustomUser.objects.get(pk=loanerAddress)
+                        loanerLogo = loaner.org_profile.logo
+                    except:
+                        loanerLogo = None
                     loan = Loan(attributes[0],
                                 attributes[1],
                                 attributes[2],
                                 attributes[3],
                                 attributes[4],
                                 attributes[5],
-                                self.buildInstallmentsList(loanId))
+                                self.buildInstallmentsList(loanId),
+                                loanerLogo)
                     loansList.append(loan)
 
             else:

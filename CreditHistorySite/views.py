@@ -92,7 +92,7 @@ def orgSignup(request):
         email = request.POST['email']
         commercial_no = request.POST['commercial_no']
         password = request.POST['password']
-
+        logo = request.FILES['logo']
         # validation should go here
 
         # a. create CustomUser
@@ -108,7 +108,7 @@ def orgSignup(request):
         customUser.keystore = keystore
         try:
             customUser.save()
-            org = Organization(customUser=customUser, commertialNum=commercial_no)
+            org = Organization(customUser=customUser, commertialNum=commercial_no, logo=logo)
             org.save()
             # Add the organization into our Accounts Contract
             accountsHandler = main.accsHandler
@@ -180,8 +180,12 @@ def orgHome(request):
                                    main.loansContractPython)
         loans = web3Org.buildLoansList()
 
+        # test image
+        orgLogo = request.user.org_profile.logo
+
         response = render(request, 'organization/home.html', {'loans': loans,
-                                                              'publicKey': public_key})
+                                                              'publicKey': public_key,
+                                                              'orgLogo': orgLogo})
     return response
 
 
@@ -200,11 +204,15 @@ def loanieHome(request):
         pendingLoansList = web3Loanie.buildPendingLoansList()
         # Loans
         loans = web3Loanie.buildLoansList()
-        #loanie points
-        point = web3Loanie.buildPointsList()
-        loaniePoints = point[0]
-        loanieOptimalPoints = point[1]
 
+        # loanie points
+        point = web3Loanie.buildPointsList()
+
+        loaniePoints = None
+        loanieOptimalPoints = None
+        if len(point) > 0:
+            loaniePoints = point[0]
+            loanieOptimalPoints = point[1]
 
         response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoansList,
                                                         'loans': loans,

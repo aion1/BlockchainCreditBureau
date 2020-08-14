@@ -47,6 +47,17 @@
             width: 300px;
             height: 200px;
         }
+
+        /* Style the accordion panel. Note: hidden by default */
+
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+        }
+
     </style>
 </head>
 
@@ -71,26 +82,14 @@
         <div class="row">
             <div class="col-12">
                 <div class="call-to-action-content text-center">
+                    <h2>Points: {{ loaniePoints }}</h2>
+                    <h2>Optimal Points: {{ loanieOptimalPoints }}</h2>
                     <h6>Hi, {{ publicKey }}</h6>
-                    <h2>It is your place to know your credit history easily</h2>
-
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- ##### Call To Action Area End ##### -->
-
-
-    <p>
-    Points:{{loaniePoints}}
-    </p>
-
-    <p>
-    Optimal Points:{{loanieOptimalPoints}}
-    </p>
-
-
 
 
 <br><br>
@@ -129,14 +128,14 @@
                                             Interest: {{ loan.interest }} %
                                         </a>
                                     </div>
-                                    <div class="find-out-more-btn">
+                                    <div class="find-out-more-btn accordion">
                                         <a href="#" class="btn crose-btn btn-2">Show Insatllments</a>
                                     </div>
                                 </div>
 
                             </div>
 
-                            <div class="table-responsive-sm">
+                            <div class="table-responsive-sm panel">
                                 <table class="table">
                                     <thead>
                                     <tr>
@@ -248,6 +247,25 @@
 
 
 <br><br><br>
+
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var panel = this.parentElement.parentElement.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        });
+    }
+</script>
+
+
 <!-- ##### All Javascript Script ##### -->
 <!-- jQuery-2.2.4 js -->
 <script src={% static "js/jquery/jquery-2.2.4.min.js" %}></script>

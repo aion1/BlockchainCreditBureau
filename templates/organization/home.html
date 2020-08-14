@@ -47,6 +47,14 @@
             width: 300px;
             height: 200px;
         }
+
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+        }
     </style>
 </head>
 
@@ -135,11 +143,13 @@
                                                     Interest: {{ loan.interest }} %
                                                 </a>
                                             </div>
-
+                                            <div class="find-out-more-btn accordion">
+                                                <a href="#" class="btn crose-btn btn-2">Show Insatllments</a>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="table-responsive-sm">
+                                    <div class="table-responsive-sm panel">
                                         <table class="table">
                                             <thead>
                                             <tr>
@@ -206,17 +216,6 @@
     <button class="btn crose-btn btn-2">Create Loan</button>
 </a></center>
 <br><br><br>
-<!-- ##### All Javascript Script ##### -->
-<!-- jQuery-2.2.4 js -->
-<script src="{% static "js/jquery/jquery-2.2.4.min.js" %}"></script>
-<!-- Popper js -->
-<script src="{% static "js/bootstrap/popper.min.js" %}"></script>
-<!-- Bootstrap js -->
-<script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
-<!-- All Plugins js -->
-<script src="{% static "js/plugins/plugins.js" %}"></script>
-<!-- Active js -->
-<script src="{% static "js/active.js" %}"></script>
 
 
 <script type="text/javascript">
@@ -240,7 +239,37 @@
 
 
     });
+
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var panel = this.parentElement.parentElement.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        });
+    }
 </script>
+
+
+<!-- ##### All Javascript Script ##### -->
+<!-- jQuery-2.2.4 js -->
+<script src="{% static "js/jquery/jquery-2.2.4.min.js" %}"></script>
+<!-- Popper js -->
+<script src="{% static "js/bootstrap/popper.min.js" %}"></script>
+<!-- Bootstrap js -->
+<script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
+<!-- All Plugins js -->
+<script src="{% static "js/plugins/plugins.js" %}"></script>
+<!-- Active js -->
+<script src="{% static "js/active.js" %}"></script>
+
+
 
 
 </body>

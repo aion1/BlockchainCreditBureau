@@ -346,7 +346,20 @@ contract Loans {
   function getLoaniePoints (address _loanie) public returns(uint256 [] memory){
     Accounts accountsContract = Accounts(accountsContractAddress);
     uint256 [] memory myPoints=new uint256[](2);
-    myPoints=accountsContract.getPoints(_loanie);
+
+    address functionCaller = tx.origin;
+    if(accountsContract.accountExists(functionCaller)){
+      uint256 functionCallerIndex = uint256(accountsContract.getIndex(functionCaller));
+
+      //if the function caller is an Loanie
+      if(!accountsContract.getType(functionCallerIndex)){
+        if(functionCaller == _loanie)
+          myPoints=accountsContract.getPoints(_loanie);
+      }else{
+        myPoints=accountsContract.getPoints(_loanie); 
+      }
+    }
+
     return myPoints;   
   }
   

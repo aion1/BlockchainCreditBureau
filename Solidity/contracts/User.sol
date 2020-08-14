@@ -106,7 +106,6 @@ contract User {
         myPoints=loansContract.getLoaniePoints(loanie);
         emit getPoints(myPoints);
         return true;
-        
     }
     
    

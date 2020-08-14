@@ -336,7 +336,7 @@ contract Loans {
     }
     return true;
   } 
-  function setNewPoints (address _loanie,uint256 _points) public returns(bool res)  
+  function setNewPoints (address _loanie,uint256 _points) internal returns(bool res)  
   {
     Accounts accountsContract = Accounts(accountsContractAddress);
     accountsContract.changePoints(_loanie,_points);

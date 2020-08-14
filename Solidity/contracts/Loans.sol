@@ -162,8 +162,9 @@ contract Loans {
 
 
 
-  function getLoanerLoansLen(address _loaner)public returns (uint256 )
+  function getLoanerLoansLen()public returns (uint256 )
   {
+    address _loaner = tx.origin;
     return loanerLoans[_loaner].length;
   }
   

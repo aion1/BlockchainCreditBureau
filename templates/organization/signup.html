@@ -3,9 +3,7 @@
 <html lang="en">
     <head>
         <title>SignUp Page</title>
-        <meta name="description" content="jobs Hunters">
         <meta charset="utf-8" >
-        <meta name="keywords" content="jobs" >
         <meta name="viewport" content="width=device-width,initial-scale=1.0" >
         <!--Bootsrap 4 CDN-->
 	     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -38,33 +36,36 @@
                     <h3>Sign Up</h3>
 
                 </div>
-			<div class="card-body">
-				<form method="POST" action="{% url 'org.signup' %}" onsubmit="return validateForm()">
-                    {% csrf_token %}
-                    <div class="input-group form-group">
-						<input type="text" name="username" class="form-control" placeholder="Organiztion Name"required>
-					</div>
-                    <div class="input-group form-group">
-                            <input type="text" name="commercial_no" class="form-control" placeholder="Organiztion Commercial No"required>
-                    </div>
-                    <div class="input-group form-group">
-						<input type="text" name="email" id="Email" class="form-control" placeholder="Email" required>
-					</div>
-					<div class="input-group form-group">
-						<input type="password" name="password" id="psw" class="form-control" placeholder="Password"required>
-					</div>
-                    <div class="input-group form-group">
-						<input type="file" name="logo" id="logo" class="form-control" placeholder="Logo of The Loaner">
-					</div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'org.signup' %}" onsubmit="return validateForm()"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="input-group form-group">
+                            <input type="text" name="username" class="form-control" placeholder="Organiztion Name"
+                                   required>
+                        </div>
+                        <div class="input-group form-group">
+                            <input type="text" name="commercial_no" class="form-control"
+                                   placeholder="Organiztion Commercial No" required>
+                        </div>
+                        <div class="input-group form-group">
+                            <input type="text" name="email" id="Email" class="form-control" placeholder="Email"
+                                   required>
+                        </div>
+                        <div class="input-group form-group">
+                            <input type="password" name="password" id="psw" class="form-control" placeholder="Password"
+                                   required>
+                        </div>
+                        <div class="input-group form-group">
+                            <input type="file" name="logo" id="logo" class="form-control"
+                                   placeholder="Logo of The Loaner">
+                        </div>
 
-                    <div class="row align-items-center remember">
-                        <input type="checkbox">Remember Me
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="SignUp" class="btn float-right login_btn">
-                    </div>
-                </form>
-            </div>
+                        <div class="form-group">
+                            <input type="submit" value="SignUp" class="btn float-right login_btn">
+                        </div>
+                    </form>
+                </div>
                 <div class="card-footer">
                     <div class="d-flex justify-content-center links">
                         Do have an account?

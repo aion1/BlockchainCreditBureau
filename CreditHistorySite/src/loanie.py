@@ -1,3 +1,4 @@
+from CreditHistorySite.models import CustomUser
 from CreditHistorySite.src.contracts import UserContractPython, AccountsContractPython, LoansContractPython
 from CreditHistorySite.src.utility import Loan, Installment
 
@@ -33,12 +34,20 @@ class Web3Loanie:
                     for key in values:
                         string += str(values[key][i]) + ' '
                     attributes = string.split(' ')
+                    try:
+                        loanerAddress = attributes[1][2:]
+                        loaner = CustomUser.objects.get(pk=loanerAddress)
+                        loanerLogo = loaner.org_profile.logo
+                    except:
+                        loanerLogo = None
                     pendingLoan = Loan(attributes[0],
                                        attributes[1],
                                        attributes[2],
                                        attributes[3],
                                        attributes[4],
-                                       None)
+                                       attributes[5],
+                                       None,
+                                       loanerLogo)
                     pendingLoansList.append(pendingLoan)
 
             else:
@@ -63,19 +72,49 @@ class Web3Loanie:
                     for key in values:
                         string += str(values[key][i]) + ' '
                     attributes = string.split(' ')
-                    loanId = int(attributes[2])
+                    loanId = int(attributes[3])
+
+                    try:
+                        loanerAddress = attributes[1][2:]
+                        loaner = CustomUser.objects.get(pk=loanerAddress)
+                        loanerLogo = loaner.org_profile.logo
+                    except:
+                        loanerLogo = None
                     loan = Loan(attributes[0],
                                 attributes[1],
                                 attributes[2],
                                 attributes[3],
                                 attributes[4],
-                                self.buildInstallmentsList(loanId))
+                                attributes[5],
+                                self.buildInstallmentsList(loanId),
+                                loanerLogo)
                     loansList.append(loan)
 
             else:
                 print("Either this account is not a loanie or not registered in our system.")
 
         return loansList
+
+    def getPoints(self):
+        transaction = self.userContractPython.createGetPointsTransaction(self.address)
+        tx_hash = self.web3Handler.transact(transaction, self.key)
+        self.userContractPython.setPointsEventValue(tx_hash)
+
+    def buildPointsList(self):
+        points = []
+        if self.accountsContractPython.accountExists(self.address):
+            index = self.accountsContractPython.getIndex(self.address)
+            if self.accountsContractPython.isLoanie(index):
+                self.getPoints()
+                values = self.userContractPython.myPointsEventValues
+                string = str(values['_points'][0])
+                points.append(string)
+                string = str(values['_points'][1])
+                points.append(string)
+            else:
+                print("Either this account is not a loanie or not registered in our system.")
+
+        return points
 
     def getInstallments(self, loanId):
         transaction = self.loansContractPython.createGetInstallmentsTransaction(self.address, loanId)

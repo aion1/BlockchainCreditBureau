@@ -125,9 +125,21 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-MEDIA_URL = os.path.join(BASE_DIR, 'CreditHistorySite/media/')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'CreditHistorySite/media/')
+
 AUTH_USER_MODEL = 'CreditHistorySite.CustomUser'
 AUTHENTICATION_BACKENDS = (
     'CreditHistorySite.backends.BaseBackend',
     'CreditHistorySite.backends.AddressBackend',
 )
+
+# email address settings
+
+DEFAULT_FROM_EMAIL = 'bcbs.ourproject@gmail.com'
+SERVER_EMAIL = 'bcbs.ourproject@gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'bcbs.ourproject@gmail.com'
+EMAIL_HOST_PASSWORD = 'PAGOW2019'

@@ -62,7 +62,7 @@ class Web3Handler:
         self.web3.eth.defaultAccount = self.web3.eth.accounts[0]
         self.defaultAccount = self.web3.eth.defaultAccount
 
-        self.defaultKey = '4ab66fd05a6484bf63e0356d53b7cd65412fa1b85eeac94b6a50a2fd0667b8ed'
+        self.defaultKey = '6e35bb2862e8ef1ce8fafa6e66ac60b0ca1a6dbbccdeedbea5de50258acb9c60'
         self.ethAccount = self.web3.eth.account
 
     def getContractABI(self, filename):
@@ -137,13 +137,17 @@ class Installment:
 
 
 class Loan:
-    def __init__(self, amount, loanerAddress, id, installmentsNum, interest, installments: List[Installment]):
+    def __init__(self, amount, loanerAddress, loanieAddress, id, installmentsNum, interest,
+                 installments: List[Installment],
+                 loanerLogo):
         self.amount = amount
         self.loanerAddress = loanerAddress
+        self.loanieAddress = loanieAddress
         self.id = id
         self.installmentsNum = installmentsNum
         self.interest = interest
         self.installments = installments
+        self.loanerLogo = loanerLogo
 
 class EthAccount:
     def __init__(self, web3Handler):

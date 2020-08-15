@@ -30,6 +30,7 @@ class CustomUserProfile(models.Model):
 class Organization(CustomUserProfile):
     customUser = models.OneToOneField(CustomUser, on_delete=models.CASCADE, blank=True, related_name='org_profile')
     commertialNum = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='media', default=None)
     # We should add a logo later
 
 

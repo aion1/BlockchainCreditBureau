@@ -1,7 +1,7 @@
 from CreditHistorySite.src.contracts import \
     OrganiztionContractPython, AccountsContractPython, LoansContractPython
 from CreditHistorySite.src.utility import Loan, Installment
-
+from CreditHistorySite.models import CustomUser
 
 class Web3Organization:
     def __init__(self, address, key, web3Handler,
@@ -32,13 +32,15 @@ class Web3Organization:
                     for key in values:
                         string += str(values[key][i]) + ' '
                     attributes = string.split(' ')
-                    loanId = int(attributes[2])
+                    loanId = int(attributes[3])
                     loan = Loan(attributes[0],
                                 attributes[1],
                                 attributes[2],
                                 attributes[3],
                                 attributes[4],
-                                self.buildInstallmentsList(loanId))
+                                attributes[5],
+                                self.buildInstallmentsList(loanId),
+                                None)
                     loansList.append(loan)
 
             else:
@@ -89,3 +91,64 @@ class Web3Organization:
             installmentIndex)
         tx_hash = self.web3Handler.transact(createInstallmentTransaction,
                                             self.key)
+
+    def getLoaniePoints(self, loanieAddress):
+        transaction = self.organizationContractPython.createLoanieGetPointsTransaction(self.address, loanieAddress)
+        tx_hash = self.web3Handler.transact(transaction, self.key)
+        self.organizationContractPython.setLoaniePointsEventValue(tx_hash)
+
+    def buildLoaniePointsList(self, loanieAddress):
+        points = []
+        if self.accountsContractPython.accountExists(self.address):
+            index = self.accountsContractPython.getIndex(self.address)
+            if not self.accountsContractPython.isLoanie(index):
+                self.getLoaniePoints(loanieAddress)
+                values = self.organizationContractPython.loaniePointsEventValues
+                string = str(values['_points'][0])
+                points.append(string)
+                string = str(values['_points'][1])
+                points.append(string)
+            else:
+                print("Either this account is not a loanie or not registered in our system.")
+        return points
+
+    def getLoanieLoans(self, loanieAddress):
+        transaction = self.organizationContractPython.createGetLoanieLoansTransaction(self.address, loanieAddress)
+        tx_hash = self.web3Handler.transact(transaction, self.key)
+        self.organizationContractPython.setLoanieLoansEventValues(tx_hash)
+
+    def buildLoanieLoansList(self, loanieAddress):
+        loanieLoansList = []
+        if self.accountsContractPython.accountExists(self.address):
+            index = self.accountsContractPython.getIndex(self.address)
+            if not self.accountsContractPython.isLoanie(index):
+                self.getLoanieLoans(loanieAddress)
+                values = self.organizationContractPython.loanieLoansEventValues
+                for i in range(self.organizationContractPython.loanieLoansEventValuesLen):
+                    string = ''
+                    for key in values:
+                        string += str(values[key][i]) + ' '
+                    attributes = string.split(' ')
+                    loanId = int(attributes[3])
+
+                    try:
+                        loanerAddress = attributes[1][2:]
+                        loaner = CustomUser.objects.get(pk=loanerAddress)
+                        loanerLogo = loaner.org_profile.logo
+                    except:
+                        loanerLogo = None
+
+                    loan = Loan(attributes[0],
+                                attributes[1],
+                                attributes[2],
+                                attributes[3],
+                                attributes[4],
+                                attributes[5],
+                                self.buildInstallmentsList(loanId),
+                                loanerLogo)
+                    loanieLoansList.append(loan)
+
+            else:
+                print("Either this account is not an organization or not registered in our system.")
+
+        return loanieLoansList

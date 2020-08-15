@@ -5,6 +5,7 @@ import "./Accounts.sol";
 
 contract Loans {
 
+
   struct  Installment{
     uint256 amount;
     uint256 payDate;
@@ -20,7 +21,7 @@ contract Loans {
     uint128  installmentsNum;
     uint128  interest;
   }  
-  address sender;
+
   mapping (uint256 => Loan) allLoans;
   
 
@@ -44,8 +45,9 @@ contract Loans {
   }
   event getLoanInstallments(uint256 []_amount,uint256 []_payDate,uint256 []_payOutDate,bool []_paid);
   
-  function add(address _loanReceiver, address _loaner, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
+  function add(address _loanReceiver, uint256 _loanAmount, bool _type, uint128 _installmentsNum, uint128 _interest) public {
     uint256 id = now;
+    address _loaner = tx.origin;
      Loan memory loan = Loan(id, _loanReceiver, _loaner, _loanAmount, _installmentsNum, _interest);
 
      if (_type){
@@ -72,10 +74,12 @@ contract Loans {
   }
 
   
-  function confirmLoan(uint256 _loanId, address _loanie)
+  function confirmLoan(uint256 _loanId)
     public
     returns(bool)
   {
+    address _loanie = tx.origin;
+
     int256 intIndex = searchPending(_loanId, _loanie);
     if(intIndex == -1)
       return false;
@@ -97,7 +101,9 @@ contract Loans {
     return true;
 
   }
-  function rejectLoan(uint256 _loanId, address _loanie)public returns(bool){
+  function rejectLoan(uint256 _loanId)public returns(bool){
+    address _loanie = tx.origin;
+
     int256 intIndex = searchPending(_loanId, _loanie);
     if(intIndex == -1)
       return false;
@@ -122,8 +128,9 @@ contract Loans {
     pragma experimental ABIEncoderV2;*/
   function getPendingLoansList () public returns(Loan [] memory) {
 
-  	address _loanie = msg.sender;
-  	sender = _loanie;
+  	//address _loanie = msg.sender;
+    address _loanie=tx.origin;
+
     Loan [] memory myPendingLoans = new Loan [](pendingLoansLength);
     uint256 counter = 0;
 
@@ -140,7 +147,9 @@ contract Loans {
 
   function getLoanerLoans()public returns (Loan [] memory)
   {
-    address _loaner=msg.sender;
+
+    address _loaner=tx.origin;
+
     Loan [] memory myLoanerLoans = new Loan [](loanerLoans[_loaner].length);
     for(uint256 i=0; i < loanerLoans[_loaner].length; i+=1)
     {
@@ -156,10 +165,34 @@ contract Loans {
 
   function getLoanerLoansLen()public returns (uint256 )
   {
-    address _loaner=msg.sender;
+    address _loaner = tx.origin;
     return loanerLoans[_loaner].length;
   }
   
+
+
+  function getLoanieLoans (address _loanie) public returns(Loan [] memory) {
+    address loaner = tx.origin;
+    Accounts accountsContract = Accounts(accountsContractAddress);
+    Loan [] memory loanieLoans = new Loan [](0);
+
+
+    if(accountsContract.accountExists(loaner)){
+      uint256 loanerIndex = uint256(accountsContract.getIndex(loaner));
+      if(accountsContract.getType(loanerIndex)){
+        loanieLoans = new Loan [](loans[_loanie].length);
+        for(uint256 i=0; i < loans[_loanie].length; i+=1){
+          uint256 loanId = loans[_loanie][i];
+          loanieLoans[i] = allLoans[loanId];
+        }
+      }
+    }
+    return loanieLoans;
+  }
+  
+
+
+
  /** function getLoans () public returns(Loan [] memory)  {
       return loans;
   }
@@ -179,7 +212,9 @@ contract Loans {
    //u stands for user
    function uGetMyLoans () public returns(Loan [] memory){
 
-    address _loanie = msg.sender;
+    address _loanie = tx.origin;
+    
+    
     Loan [] memory myLoans = new Loan [](loans[_loanie].length);
     for(uint256 i=0; i < loans[_loanie].length; i+=1)
     {
@@ -198,7 +233,7 @@ contract Loans {
       uint256 month =  2592000 ;  
       uint256 date = _initialDate +month;
      
-      //_loanAmount + _loanAmount * (_interest/100);
+      _loanAmount+=(_loanAmount*_interest)/100;
       uint256 installmentAmountReminder=_loanAmount % _installmentsNum;
       _loanAmount-=installmentAmountReminder;
       uint256 installmentAmount=_loanAmount/_installmentsNum;
@@ -248,8 +283,9 @@ contract Loans {
     emit getLoanInstallments(installmentAmounts, payDates, payOutDate, paids);
     return true;
   }
-  function confirmLoanInstallment(address loaner,uint256 _index,uint256 _id) public returns (bool)
+  function confirmLoanInstallment(uint256 _index,uint256 _id) public returns (bool)
   {
+    address loaner = tx.origin;
     if(installments[_id][_index].paid==true)
     {
       return false;
@@ -267,11 +303,14 @@ contract Loans {
     uint256 points=5;
     uint256 day=86400;
 
-    // (week*3) and month will be removed
-    uint256 differanceTime=(installments[_id][_index].paidOutDate+month+(week*4))-installments[_id][_index].payDate;
 
+    uint256 differanceTime=(installments[_id][_index].paidOutDate)-installments[_id][_index].payDate;
 
-    if(differanceTime<=day) // pay in the same day
+    if(installments[_id][_index].paidOutDate<installments[_id][_index].payDate) // pay before time
+    {
+      setNewPoints(loanie,points);
+    }
+    else if(differanceTime<=day) // pay in the same day
     {
       setNewPoints(loanie,points);
     }
@@ -298,11 +337,32 @@ contract Loans {
     }
     return true;
   } 
-  function setNewPoints (address _loanie,uint256 _points) public returns(bool res)  
+  function setNewPoints (address _loanie,uint256 _points) internal returns(bool res)  
   {
     Accounts accountsContract = Accounts(accountsContractAddress);
     accountsContract.changePoints(_loanie,_points);
     return true;
   }
+
+  function getLoaniePoints (address _loanie) public returns(uint256 [] memory){
+    Accounts accountsContract = Accounts(accountsContractAddress);
+    uint256 [] memory myPoints=new uint256[](2);
+
+    address functionCaller = tx.origin;
+    if(accountsContract.accountExists(functionCaller)){
+      uint256 functionCallerIndex = uint256(accountsContract.getIndex(functionCaller));
+
+      //if the function caller is an Loanie
+      if(!accountsContract.getType(functionCallerIndex)){
+        if(functionCaller == _loanie)
+          myPoints=accountsContract.getPoints(_loanie);
+      }else{
+        myPoints=accountsContract.getPoints(_loanie); 
+      }
+    }
+
+    return myPoints;   
+  }
+  
   
 }

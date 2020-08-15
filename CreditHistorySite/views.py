@@ -11,6 +11,8 @@ from CreditHistorySite.src import main
 from CreditHistorySite.src.loanie import Web3Loanie
 from CreditHistorySite.src.utility import EthAccount
 from CreditHistorySite.src.organization import Web3Organization
+from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 
 
 def index(request):
@@ -61,9 +63,27 @@ def login(request):
     return response
 
 
+#  send_mail(
+#     'Sign Up in BCB system',
+#    'your public Address is '+publicAddress,
+#   'bcbs.ourproject@gmail.com',
+#  [email],
+# fail_silently=False,
+# )
+
+# to send mail with public address of user or organization
+def sendMail(publicAddress, email):
+    try:
+        msg = EmailMessage('Request Callback',
+                         'your public Address is '+publicAddress, to=[email])
+        msg.send()
+        return True
+    except:
+        return False
+
+
 # to clean data and navigate after that to the url('org/home');
 def orgSignup(request):
-    successSignup = False
     if 'POST' != request.method:
         response = render(request, 'organization/signup.html')
     else:
@@ -72,7 +92,7 @@ def orgSignup(request):
         email = request.POST['email']
         commercial_no = request.POST['commercial_no']
         password = request.POST['password']
-
+        logo = request.FILES['logo']
         # validation should go here
 
         # a. create CustomUser
@@ -88,7 +108,7 @@ def orgSignup(request):
         customUser.keystore = keystore
         try:
             customUser.save()
-            org = Organization(customUser=customUser, commertialNum=commercial_no)
+            org = Organization(customUser=customUser, commertialNum=commercial_no, logo=logo)
             org.save()
             # Add the organization into our Accounts Contract
             accountsHandler = main.accsHandler
@@ -96,6 +116,7 @@ def orgSignup(request):
 
             customUser = authenticate(request, username=customUser.publicKey, password=password, ethAccount=ethAccount)
             authLogin(request, customUser)
+            sendMail(customUser.publicKey, email)
             response = redirect('org.home')
         except IntegrityError:
             errorMsg = 'Sorry! This account already exists!'
@@ -135,6 +156,7 @@ def loanieSignup(request):
 
             customUser = authenticate(request, username=customUser.publicKey, password=password, ethAccount=ethAccount)
             authLogin(request, customUser)
+            sendMail(customUser.publicKey,email)
             response = redirect('loanie.home')
         except IntegrityError:
             errorMsg = 'Sorry! This account already exists!'
@@ -158,8 +180,12 @@ def orgHome(request):
                                    main.loansContractPython)
         loans = web3Org.buildLoansList()
 
+        # test image
+        orgLogo = request.user.org_profile.logo
+
         response = render(request, 'organization/home.html', {'loans': loans,
-                                                              'publicKey': public_key})
+                                                              'publicKey': public_key,
+                                                              'orgLogo': orgLogo})
     return response
 
 
@@ -178,8 +204,20 @@ def loanieHome(request):
         pendingLoansList = web3Loanie.buildPendingLoansList()
         # Loans
         loans = web3Loanie.buildLoansList()
+
+        # loanie points
+        point = web3Loanie.buildPointsList()
+
+        loaniePoints = None
+        loanieOptimalPoints = None
+        if len(point) > 0:
+            loaniePoints = point[0]
+            loanieOptimalPoints = point[1]
+
         response = render(request, 'loanie/home.html', {'pendingLoans': pendingLoansList,
                                                         'loans': loans,
+                                                        'loaniePoints': loaniePoints,
+                                                        'loanieOptimalPoints': loanieOptimalPoints,
                                                         'publicKey': public_key})
     else:
         response = redirect('org.home')
@@ -222,10 +260,11 @@ def createLoan(request):
 
 
 @login_required(login_url='login')
-def searchLoanie(request, loaniePublicKey):
+def searchLoanie(request):
     if request.user.type == CustomUserType.Loanie.value:
         response = redirect('loanie.home')
     else:
+        loaniePublicKey = request.GET['loanieAddress']
         publicKey = request.user.pk
         privateKey = request.session.get('privateKey')
         web3Organization = Web3Organization(publicKey, privateKey,
@@ -233,8 +272,17 @@ def searchLoanie(request, loaniePublicKey):
                                             main.organizationContractPython,
                                             main.accountsContractPython,
                                             main.loansContractPython)
-        loanieLoans = web3Organization.searchLoanie(loaniePublicKey)
-        response = redirect('org.home')
+        loanieLoans = web3Organization.buildLoanieLoansList(loaniePublicKey)
+        point = web3Organization.buildLoaniePointsList(loaniePublicKey)
+        loaniePoints = point[0]
+        loanieOptimalPoints = point[1]
+
+        response = render(request, 'organization/loanieLoans.html', {
+            'loanieLoans': loanieLoans,
+            'loaniePoints': loaniePoints,
+            'loanieOptimalPoints': loanieOptimalPoints,
+            'loanieAddress': loaniePublicKey
+        })
 
     return response
 
